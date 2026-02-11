@@ -1,0 +1,77 @@
+# AI Registry - Single Source of Truth
+#
+# All model definitions for /call-ai and /second-opinion skills.
+# Update models HERE only. Other files reference this registry.
+#
+# Last updated: 2026-02-05
+
+providers:
+  codex:
+    cli: codex
+    models:
+      thorough: gpt-5.3-codex
+      fast: gpt-5.2-codex
+    execution: cli  # Uses ask-ai.sh wrapper
+
+  gemini:
+    cli: gemini
+    models:
+      thorough: gemini-3-pro-preview
+      fast: gemini-3-flash-preview
+    execution: cli  # Uses ask-ai.sh wrapper
+
+  claude:
+    cli: claude
+    models:
+      thorough: sonnet
+      fast: haiku
+    execution: cli  # Uses ask-ai.sh wrapper (unified with codex/gemini)
+
+# Parsing rules for AI_SPEC argument
+parsing_rules:
+  default:        # No AI specified
+    action: "Codex + Gemini thorough"
+    providers: [codex, gemini]
+    variant: thorough
+    response_count: 2
+
+  ":all":
+    action: "All 3 AIs × both variants"
+    providers: [codex, gemini, claude]
+    variant: [thorough, fast]
+    response_count: 6
+
+  "codex":
+    action: "Codex thorough only"
+    providers: [codex]
+    variant: thorough
+    response_count: 1
+
+  "gemini":
+    action: "Gemini thorough only"
+    providers: [gemini]
+    variant: thorough
+    response_count: 1
+
+  "claude":
+    action: "Claude thorough only"
+    providers: [claude]
+    variant: thorough
+    response_count: 1
+
+# Retry configuration
+retry:
+  max_attempts: 3
+  backoff_seconds: [10, 20, 40]
+  jitter_percent: 10
+  retryable_errors:
+    - timeout
+    - rate_limit
+    - connection
+
+# Response storage
+storage:
+  directory: ".responses"
+  filename_format: "{ai}-{model}-{YYYYMMDD}-{HHMMSS}.txt"
+  metrics_sidecar: ".metrics.json"
+  metrics_log: "metrics.csv"

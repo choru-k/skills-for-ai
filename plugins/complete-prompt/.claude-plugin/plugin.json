@@ -1,0 +1,9 @@
+{
+  "name": "complete-prompt",
+  "version": "1.9.0",
+  "description": "Generate structured XML context prompts for AI-to-AI handoffs with 9 specialized modes",
+  "author": "choru-k",
+  "repository": "https://github.com/choru-k/skills-for-claude",
+  "license": "MIT",
+  "keywords": ["context", "handoff", "prompt", "xml", "ai-to-ai"]
+}

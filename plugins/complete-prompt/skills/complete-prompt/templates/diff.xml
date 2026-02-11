@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context-handoff version="1.1" mode="diff">
+<meta>
+<generated-at>[YYYY-MM-DD HH:MM:SS]</generated-at>
+<source>Claude Code /cp</source>
+</meta>
+
+<!-- ═══════════════ PRIMACY ZONE ═══════════════ -->
+
+<summary>[One sentence: What was changed and why]</summary>
+
+<system-role>
+You are reviewing code changes. Check: correctness, edge cases, breaking changes, test coverage. Be specific about line numbers and potential issues.
+</system-role>
+
+<success-criteria>
+<criterion>Changes are correct and complete</criterion>
+<criterion>No regressions introduced</criterion>
+<criterion>Code follows project conventions</criterion>
+</success-criteria>
+
+<!-- ═══════════════ CONTEXT ZONE ═══════════════ -->
+
+<change-summary>
+<goal>[What these changes accomplish]</goal>
+<scope>[Files/components affected]</scope>
+</change-summary>
+
+<changes>
+  <!-- SECURITY: Scrub ALL secrets, API keys, and private tokens before including file content. -->
+<file path="path/to/file.ext">
+<before><![CDATA[
+[Original code]
+]]></before>
+<after><![CDATA[
+[Modified code]
+]]></after>
+<rationale>[Why this change was made]</rationale>
+</file>
+</changes>
+
+<testing>
+<tested>[What was tested]</tested>
+<not-tested>[What wasn't tested and why]</not-tested>
+</testing>
+
+<!-- ═══════════════ RECENCY ZONE ═══════════════ -->
+
+<verification>
+<method>[How were the changes verified? e.g., ran test suite, manual check]</method>
+<result>[Specific outcome of verification]</result>
+</verification>
+
+<concerns>
+<concern>[Potential issue or area needing attention]</concern>
+</concerns>
+
+<next-steps>Review these changes and provide feedback.</next-steps>
+
+<!--
+FEEDBACK (for continuous improvement):
+- Did you have enough context to start? [yes/partially/no]
+- How many clarifications did you need? [0/1-2/3+]
+- What was missing? [text]
+-->
+
+</context-handoff>

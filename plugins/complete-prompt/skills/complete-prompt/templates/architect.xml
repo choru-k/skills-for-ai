@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context-handoff version="1.1" mode="architect">
+<meta>
+<generated-at>[YYYY-MM-DD HH:MM:SS]</generated-at>
+<source>Claude Code /cp</source>
+</meta>
+
+<!-- ═══════════════ PRIMACY ZONE ═══════════════ -->
+
+<summary>[One sentence: What system/feature is being designed]</summary>
+
+<system-role>
+You are reviewing system design. Analyze trade-offs, scalability, and integration points. Present options with pros/cons. Stay at design level—no implementation code unless asked.
+</system-role>
+
+<success-criteria>
+<criterion>Clear, justified architectural decision</criterion>
+<criterion>Trade-offs are explicitly documented</criterion>
+<criterion>Design is implementable with current stack</criterion>
+</success-criteria>
+
+<non-goals>
+<item>Writing implementation code</item>
+<item>Premature optimization</item>
+</non-goals>
+
+<!-- ═══════════════ CONTEXT ZONE ═══════════════ -->
+
+<problem>
+<description>[What problem are we solving?]</description>
+<requirements>
+<requirement priority="must">[Essential requirement]</requirement>
+<requirement priority="should">[Important but flexible]</requirement>
+<requirement priority="could">[Nice to have]</requirement>
+</requirements>
+</problem>
+
+<current-architecture>
+<description>[How the system works today]</description>
+<diagram><![CDATA[
+[ASCII diagram or description of current state]
+]]></diagram>
+</current-architecture>
+
+<proposed-design>
+<description>[Proposed solution]</description>
+<components>
+<component name="[Name]">[Responsibility]</component>
+</components>
+<diagram><![CDATA[
+[ASCII diagram of proposed architecture]
+]]></diagram>
+</proposed-design>
+
+<trade-offs>
+<option name="[Option A]">
+<pros>[Benefits]</pros>
+<cons>[Drawbacks]</cons>
+</option>
+<option name="[Option B]">
+<pros>[Benefits]</pros>
+<cons>[Drawbacks]</cons>
+</option>
+</trade-offs>
+
+<constraints>
+  <!-- Use MoSCoW: Must have, Should have, Could have -->
+  <!-- SECURITY: Consider security implications of architectural decisions -->
+<constraint>[Must/Should/Could]: [Technical constraint]</constraint>
+<constraint>[Must/Should/Could]: [Business constraint]</constraint>
+</constraints>
+
+<!-- ═══════════════ RECENCY ZONE ═══════════════ -->
+
+<verification>
+<method>[How was the design or requirements verified? e.g., documentation review, stakeholder sync]</method>
+<result>[Specific outcome of verification]</result>
+</verification>
+
+<open-questions>
+<question>[Unresolved design question 1]</question>
+<question>[Unresolved design question 2]</question>
+</open-questions>
+
+<next-steps>Review this design and provide feedback on the approach.</next-steps>
+
+<!--
+FEEDBACK (for continuous improvement):
+- Did you have enough context to start? [yes/partially/no]
+- How many clarifications did you need? [0/1-2/3+]
+- What was missing? [text]
+-->
+
+</context-handoff>

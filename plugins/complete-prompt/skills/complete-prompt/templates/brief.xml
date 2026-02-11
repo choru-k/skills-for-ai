@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context-handoff version="1.1" mode="brief">
+<meta>
+<generated-at>[YYYY-MM-DD HH:MM:SS]</generated-at>
+<source>Claude Code /cp</source>
+</meta>
+
+<!-- ═══════════════ PRIMACY ZONE ═══════════════ -->
+
+<summary>[One sentence TL;DR]</summary>
+
+<system-role>
+Continue this task directly with minimal ceremony. Be concise and action-oriented. Ask only if blocking.
+</system-role>
+
+<!-- ═══════════════ CONTEXT ZONE ═══════════════ -->
+
+<task>[What needs to be done]</task>
+
+<files>
+  <!-- SECURITY: Scrub ALL secrets, API keys, and private tokens before including file content. -->
+<file path="path/to/file.ext" purpose="[why]">
+<![CDATA[
+[Key code only - not full file]
+]]>
+</file>
+</files>
+
+<!-- ═══════════════ RECENCY ZONE ═══════════════ -->
+
+<status>[Current state in 1-2 sentences]</status>
+
+<verification>
+<method>[How was current state verified?]</method>
+<result>[Specific outcome]</result>
+</verification>
+
+<next-steps>[What to do next]</next-steps>
+
+<what-is-missing>List what you need if context is insufficient.</what-is-missing>
+
+<!--
+FEEDBACK (for continuous improvement):
+- Did you have enough context to start? [yes/partially/no]
+- How many clarifications did you need? [0/1-2/3+]
+- What was missing? [text]
+-->
+
+</context-handoff>

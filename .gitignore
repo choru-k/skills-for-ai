@@ -1,0 +1,6 @@
+# OS
+.DS_Store
+
+# Response/output files (generated at runtime)
+.responses/
+.prompts/

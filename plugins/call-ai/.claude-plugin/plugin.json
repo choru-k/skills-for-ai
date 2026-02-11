@@ -1,0 +1,9 @@
+{
+  "name": "call-ai",
+  "version": "1.0.0",
+  "description": "Run prompts against external AIs (Codex, Gemini, Claude) with parallel execution, retries, and Zellij pane streaming",
+  "author": "choru-k",
+  "repository": "https://github.com/choru-k/skills-for-claude",
+  "license": "MIT",
+  "keywords": ["ai", "codex", "gemini", "parallel", "zellij", "multi-model"]
+}

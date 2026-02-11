@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context-handoff version="1.1" mode="debug">
+<meta>
+<generated-at>[YYYY-MM-DD HH:MM:SS]</generated-at>
+<source>Claude Code /cp</source>
+</meta>
+
+<!-- ═══════════════ PRIMACY ZONE ═══════════════ -->
+
+<summary>[One sentence: What's broken and when it started]</summary>
+
+<system-role>
+You are debugging. Approach systematically: (1) Form hypotheses, (2) Isolate variables, (3) Find root cause, (4) Propose minimal fix. Focus on causes, not symptoms.
+</system-role>
+
+<success-criteria>
+<criterion>Error is resolved</criterion>
+<criterion>Root cause is identified and explained</criterion>
+<criterion>Fix doesn't introduce regressions</criterion>
+</success-criteria>
+
+<!-- ═══════════════ CONTEXT ZONE ═══════════════ -->
+
+<error>
+<message><![CDATA[
+[Exact error message / stack trace]
+]]></message>
+<when>[When does it occur? Always, intermittent, specific conditions?]</when>
+<where>[File/function/line where error originates]</where>
+</error>
+
+<reproduction>
+<steps>
+<step>[Step 1 to reproduce]</step>
+<step>[Step 2 to reproduce]</step>
+</steps>
+<expected>[What should happen]</expected>
+<actual>[What actually happens]</actual>
+</reproduction>
+
+<context>
+<recent-changes>[What changed before the error started?]</recent-changes>
+<environment>[OS, versions, relevant config]</environment>
+</context>
+
+<files>
+  <!-- SECURITY: Scrub ALL secrets, API keys, and private tokens before including file content. -->
+<file path="path/to/file.ext" purpose="[error originates here / related]">
+<![CDATA[
+[Relevant code]
+]]>
+</file>
+</files>
+
+<hypotheses>
+<hypothesis status="untested">[Possible cause 1]</hypothesis>
+<hypothesis status="ruled-out" reason="[why]">[Cause that was eliminated]</hypothesis>
+</hypotheses>
+
+<attempted-fixes>
+<fix result="[did not work / partial / etc.]">[What was tried]</fix>
+</attempted-fixes>
+
+<!-- ═══════════════ RECENCY ZONE ═══════════════ -->
+
+<verification>
+<method>[How was the error reproduced or verified? e.g., ran test suite, checked logs]</method>
+<result>[Specific outcome of verification]</result>
+</verification>
+
+<next-steps>Diagnose and fix this error.</next-steps>
+
+<what-is-missing>
+What logs, files, or information would help debug this?
+</what-is-missing>
+
+<!--
+FEEDBACK (for continuous improvement):
+- Did you have enough context to start? [yes/partially/no]
+- How many clarifications did you need? [0/1-2/3+]
+- What was missing? [text]
+-->
+
+</context-handoff>

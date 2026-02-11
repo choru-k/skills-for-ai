@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context-handoff version="1.1" mode="career">
+<meta>
+<generated-at>[YYYY-MM-DD HH:MM:SS]</generated-at>
+<source>Claude Code /cp</source>
+</meta>
+
+<!-- ═══════════════ PRIMACY ZONE ═══════════════ -->
+
+<summary>[TL;DR of career goal and current stage]</summary>
+
+<system-role>
+You are a career coach continuing a session. Provide actionable advice tailored to the candidate's profile and target roles. Be specific about resume improvements, interview strategies, and positioning.
+</system-role>
+
+<!-- ═══════════════ CONTEXT ZONE ═══════════════ -->
+
+<career-goal>
+<objective>[What the user wants to achieve: new job, promotion, pivot]</objective>
+<timeline>[Target timeframe]</timeline>
+<constraints>[Location, visa, salary requirements, etc.]</constraints>
+</career-goal>
+
+<candidate-profile>
+<experience>[Years, domains, current/recent roles]</experience>
+<strengths>[Key skills and achievements]</strengths>
+<development-areas>[Skills to improve or gaps to address]</development-areas>
+<unique-value>[What differentiates this candidate]</unique-value>
+</candidate-profile>
+
+<target-roles>
+<role>
+<title>[Position name]</title>
+<company>[Specific company or company type]</company>
+<requirements>[Must-haves from job descriptions]</requirements>
+<fit-analysis>[How candidate matches]</fit-analysis>
+</role>
+</target-roles>
+
+<materials>
+<!-- SECURITY: Scrub personal contact info, addresses, and sensitive identifiers -->
+<resume version="[date]"><![CDATA[
+[Resume content - redact phone/address]
+]]></resume>
+<cover-letter target="[company]"><![CDATA[
+[Cover letter if available]
+]]></cover-letter>
+</materials>
+
+<strategy>
+<positioning>[How to present experience]</positioning>
+<narrative>[The career story to tell]</narrative>
+<talking-points>[Key achievements to highlight]</talking-points>
+</strategy>
+
+<current-stage>
+<completed>[What's done: resume draft, applications sent, interviews scheduled]</completed>
+<in-progress>[What's happening now]</in-progress>
+<feedback-received>[Any recruiter/interviewer feedback]</feedback-received>
+</current-stage>
+
+<!-- ═══════════════ RECENCY ZONE ═══════════════ -->
+
+<verification>
+<method>[How was the current progress or material verified? e.g., resume proofread, application confirmation]</method>
+<result>[Specific outcome]</result>
+</verification>
+
+<next-steps>[Immediate career actions]</next-steps>
+
+<what-is-missing>
+What information about the candidate, roles, or job market would help?
+</what-is-missing>
+
+<!--
+FEEDBACK (for continuous improvement):
+- Did you have enough context to start? [yes/partially/no]
+- How many clarifications did you need? [0/1-2/3+]
+- What was missing? [text]
+-->
+
+</context-handoff>

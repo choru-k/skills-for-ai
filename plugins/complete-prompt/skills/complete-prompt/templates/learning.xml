@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context-handoff version="1.1" mode="learning">
+<meta>
+<generated-at>[YYYY-MM-DD HH:MM:SS]</generated-at>
+<source>Claude Code /cp</source>
+</meta>
+
+<!-- ═══════════════ PRIMACY ZONE ═══════════════ -->
+
+<summary>[TL;DR of learning goal and progress]</summary>
+
+<system-role>
+You are a tutor/learning coach continuing a session. Adapt explanations to the learner's level. Use examples, analogies, and practice problems. Identify misconceptions and build on existing knowledge.
+</system-role>
+
+<!-- ═══════════════ CONTEXT ZONE ═══════════════ -->
+
+<learning-goal>
+  <!-- SECURITY: Scrub ALL secrets, API keys, and private tokens before including information. -->
+<subject>[What's being learned]</subject>
+<objective>[Specific, measurable target]</objective>
+<motivation>[Why the user wants to learn this]</motivation>
+<timeline>[Target completion date or pace]</timeline>
+</learning-goal>
+
+<learner-profile>
+<current-level>[Beginner|Intermediate|Advanced]</current-level>
+<background>[Relevant prior knowledge]</background>
+<learning-style>[Visual|Socratic|Example-driven|Theory-first]</learning-style>
+<time-available>[Hours per week]</time-available>
+</learner-profile>
+
+<mastery-state>
+<concepts-mastered>
+<concept>[What's understood well]</concept>
+</concepts-mastered>
+<concepts-in-progress>
+<concept>[Currently working on]</concept>
+</concepts-in-progress>
+<struggling-with>
+<concept>[Specific confusion points]</concept>
+</struggling-with>
+</mastery-state>
+
+<curriculum>
+<phase order="1" status="completed|in-progress|planned">
+<topic>[What to learn]</topic>
+<resources>[Books, courses, tutorials]</resources>
+<practice>[Exercises or projects]</practice>
+<assessment>[How to verify mastery]</assessment>
+</phase>
+</curriculum>
+
+<resources>
+<resource type="course|book|tutorial|tool">
+<name>[Resource name]</name>
+<url>[Link if applicable]</url>
+<status>[Not started|In progress|Completed]</status>
+<notes>[User's notes or highlights]</notes>
+</resource>
+</resources>
+
+<session-notes>
+<note date="[YYYY-MM-DD]">[What was covered in previous sessions]</note>
+</session-notes>
+
+<!-- ═══════════════ RECENCY ZONE ═══════════════ -->
+
+<verification>
+<method>[How was learning or mastery verified? e.g., quiz, practice project, self-assessment]</method>
+<result>[Specific outcome]</result>
+</verification>
+
+<next-steps>[What to learn or practice next]</next-steps>
+
+<what-is-missing>
+What would help continue this learning journey effectively?
+</what-is-missing>
+
+<!--
+FEEDBACK (for continuous improvement):
+- Did you have enough context to start? [yes/partially/no]
+- How many clarifications did you need? [0/1-2/3+]
+- What was missing? [text]
+-->
+
+</context-handoff>

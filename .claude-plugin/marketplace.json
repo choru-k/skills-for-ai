@@ -1,0 +1,22 @@
+{
+  "name": "skills-for-claude",
+  "owner": "choru-k",
+  "description": "Custom Claude Code skills: multi-AI orchestration, context handoffs, and session forking",
+  "plugins": [
+    {
+      "name": "call-ai",
+      "description": "Run prompts against external AIs (Codex, Gemini, Claude) with parallel execution, retries, and Zellij pane streaming",
+      "source": "plugins/call-ai"
+    },
+    {
+      "name": "complete-prompt",
+      "description": "Generate structured XML context prompts for AI-to-AI handoffs with 9 specialized modes",
+      "source": "plugins/complete-prompt"
+    },
+    {
+      "name": "context-fork",
+      "description": "Fork the current session to Haiku, Sonnet, or Opus with full conversation context preserved",
+      "source": "plugins/context-fork"
+    }
+  ]
+}

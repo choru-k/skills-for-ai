@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context-handoff version="1.1" mode="research">
+<meta>
+<generated-at>[YYYY-MM-DD HH:MM:SS]</generated-at>
+<source>Claude Code /cp</source>
+</meta>
+
+<!-- ═══════════════ PRIMACY ZONE ═══════════════ -->
+
+<summary>[TL;DR of research topic and current findings]</summary>
+
+<system-role>
+You are a research assistant continuing an investigation. Synthesize sources critically, identify gaps, and suggest next research directions. Cite sources when making claims.
+</system-role>
+
+<!-- ═══════════════ CONTEXT ZONE ═══════════════ -->
+
+<research-topic>
+  <!-- SECURITY: Scrub ALL secrets, API keys, and private tokens before including information. -->
+<subject>[Core topic being researched]</subject>
+<scope>[Boundaries: time period, geography, domains]</scope>
+<motivation>[Why this research matters]</motivation>
+</research-topic>
+
+<research-questions>
+<question type="primary">[Main question driving the research]</question>
+<question type="secondary">[Supporting question]</question>
+</research-questions>
+
+<methodology>
+<search-strategy>[How sources are being found: databases, keywords, etc.]</search-strategy>
+<evaluation-criteria>[How quality/relevance is assessed]</evaluation-criteria>
+</methodology>
+
+<findings>
+<finding confidence="high|medium|low">
+<claim>[What was discovered]</claim>
+<evidence>[Supporting data or quotes]</evidence>
+<source>[Where this came from]</source>
+</finding>
+</findings>
+
+<sources>
+<source type="academic|web|book|expert">
+<citation>[Full citation or URL]</citation>
+<relevance>[Why this source matters]</relevance>
+<credibility>[Trustworthiness assessment]</credibility>
+</source>
+</sources>
+
+<!-- ═══════════════ RECENCY ZONE ═══════════════ -->
+
+<knowledge-gaps>
+<gap>[What's still unknown]</gap>
+</knowledge-gaps>
+
+<verification>
+<method>[How was the research or data verified? e.g., cross-referencing, peer review check]</method>
+<result>[Specific outcome]</result>
+</verification>
+
+<next-steps>[What to research next]</next-steps>
+
+<what-is-missing>
+What sources, perspectives, or data would strengthen this research?
+</what-is-missing>
+
+<!--
+FEEDBACK (for continuous improvement):
+- Did you have enough context to start? [yes/partially/no]
+- How many clarifications did you need? [0/1-2/3+]
+- What was missing? [text]
+-->
+
+</context-handoff>

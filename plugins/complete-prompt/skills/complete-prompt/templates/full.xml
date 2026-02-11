@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context-handoff version="1.1" mode="full">
+<meta>
+<generated-at>[YYYY-MM-DD HH:MM:SS]</generated-at>
+<source>Claude Code /cp</source>
+</meta>
+
+<!-- ═══════════════ PRIMACY ZONE ═══════════════ -->
+
+<summary>
+[One paragraph TL;DR: What is being built, why, and what's the current state.
+This is the most important section - receiving AI reads this first.]
+</summary>
+
+<system-role>
+You are a senior engineer continuing implementation. Maintain code consistency, write tests alongside code. If architecture decisions are unclear, ask specific questions before proceeding.
+</system-role>
+
+<success-criteria>
+<criterion>[Specific, measurable outcome 1]</criterion>
+<criterion>[Specific, measurable outcome 2]</criterion>
+<criterion>[Tests pass / builds successfully / etc.]</criterion>
+</success-criteria>
+
+<non-goals>
+<item>[What NOT to do - prevents scope creep]</item>
+<item>[Explicit exclusions from this task]</item>
+</non-goals>
+
+<!-- ═══════════════ CONTEXT ZONE ═══════════════ -->
+
+<background>
+<project>[Repository name]</project>
+<path>[/path/to/project]</path>
+<stack>[Language, framework, key technologies]</stack>
+<architecture>[Brief description of relevant architecture]</architecture>
+</background>
+
+<task>
+<description>[Clear description of what we're accomplishing]</description>
+<original-request>[Quote the user's original request verbatim]</original-request>
+</task>
+
+<files>
+  <!-- SECURITY: Scrub ALL secrets, API keys, and private tokens before including file content. -->
+<file path="path/to/file.ext" purpose="[why this file matters]">
+<![CDATA[
+[Full file content or generous context.
+CDATA prevents parsing issues with backticks, # comments, etc.]
+]]>
+</file>
+
+<file path="path/to/another.ext" purpose="[relationship to task]">
+<![CDATA[
+[File content]
+]]>
+</file>
+</files>
+
+<decisions>
+<decision choice="[What was chosen]" rationale="[Why]">
+<rejected>[Alternative that was NOT chosen and why]</rejected>
+</decision>
+</decisions>
+
+<constraints>
+  <!-- Use MoSCoW: Must have, Should have, Could have -->
+<constraint>[Must/Should/Could]: [Technical limitation]</constraint>
+<constraint>[Must/Should/Could]: [User preference or requirement]</constraint>
+<constraint>[Must/Should/Could]: [Compatibility requirement]</constraint>
+</constraints>
+
+<assumptions>
+<assumption>[Implicit knowledge that could be wrong]</assumption>
+<assumption>[Inferred requirement - verify if unsure]</assumption>
+</assumptions>
+
+<preferences>
+<style>[Coding style: functional, OOP, etc.]</style>
+<verbosity>[Minimal comments / well-documented / etc.]</verbosity>
+<conventions>[Project-specific patterns to follow]</conventions>
+</preferences>
+
+<!-- ═══════════════ RECENCY ZONE ═══════════════ -->
+
+<status>
+<completed>
+<item>[What's done]</item>
+</completed>
+<in-progress>
+<item>[What's partially done]</item>
+</in-progress>
+<blocked>
+<item>[What's waiting on something]</item>
+</blocked>
+</status>
+
+<verification>
+<method>[How was current state verified? e.g., ran tests, checked logs, manual verification]</method>
+<result>[Specific outcome of verification]</result>
+</verification>
+
+<next-steps>
+[Specific actions the receiving AI should take next.
+Be directive: "Implement X" not "Consider implementing X"]
+</next-steps>
+
+<what-is-missing>
+If this context is insufficient, please list:
+- What information is missing?
+- What files would you need to see?
+- What decisions need clarification?
+</what-is-missing>
+
+<!--
+FEEDBACK (for continuous improvement):
+- Did you have enough context to start? [yes/partially/no]
+- How many clarifications did you need? [0/1-2/3+]
+- What was missing? [text]
+-->
+
+</context-handoff>

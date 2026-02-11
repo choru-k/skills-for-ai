@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context-handoff version="1.1" mode="general">
+<meta>
+<generated-at>[YYYY-MM-DD HH:MM:SS]</generated-at>
+<source>Claude Code /cp</source>
+</meta>
+
+<!-- ═══════════════ PRIMACY ZONE ═══════════════ -->
+
+<summary>
+[TL;DR of the topic or request]
+</summary>
+
+<system-role>
+You are an intelligent assistant continuing a session. Your goal is to provide continuity by understanding what has already been discussed, researched, or decided.
+</system-role>
+
+<goal>
+[What is the user trying to achieve? e.g., "Improve resume", "Understand Quantum Computing"]
+</goal>
+
+<!-- ═══════════════ CONTEXT ZONE ═══════════════ -->
+
+<context>
+  <!-- SECURITY: Scrub ALL secrets, API keys, and private tokens before including information. -->
+<background>
+[Relevant background information, constraints, or personal context shared by the user]
+</background>
+<current-state>
+[What has been done/discussed so far?]
+</current-state>
+</context>
+
+<key-points>
+<!-- Extracted facts, findings, or core concepts -->
+<point>[Key fact or requirement 1]</point>
+<point>[Key fact or requirement 2]</point>
+</key-points>
+
+<!-- ═══════════════ RECENCY ZONE ═══════════════ -->
+
+<open-questions>
+<question>[What is still unknown or needs to be answered?]</question>
+</open-questions>
+
+<verification>
+<method>[How was the current information or state verified?]</method>
+<result>[Specific outcome]</result>
+</verification>
+
+<next-steps>
+[Immediate next actions for the AI]
+</next-steps>
+
+<what-is-missing>
+If this context is insufficient, please list:
+- What information is missing?
+- What concepts need clarification?
+</what-is-missing>
+
+<!--
+FEEDBACK (for continuous improvement):
+- Did you have enough context to start? [yes/partially/no]
+- How many clarifications did you need? [0/1-2/3+]
+- What was missing? [text]
+-->
+
+</context-handoff>
