@@ -60,14 +60,14 @@ PANE_HOLD="${ZELLIJ_AI_PANE_HOLD:-30}"
 PANE_HOLD_ERROR="${ZELLIJ_AI_PANE_HOLD_ON_ERROR:-60}"
 
 # Setup output directory and files (same naming as ask-ai.sh)
-RESPONSES_DIR="$SKILL_DIR/.responses"
+# RESPONSES_DIR is set by common.sh
 mkdir -p "$RESPONSES_DIR"
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 PROMPT_FILE="$RESPONSES_DIR/${AI}-${MODEL}-${TIMESTAMP}-$$.prompt.txt"
 RAW_FILE="$RESPONSES_DIR/${AI}-${MODEL}-${TIMESTAMP}-$$.txt"
 ERR_FILE="$RAW_FILE.err"
 METRICS_FILE="$RAW_FILE.metrics.json"
-METRICS_CSV="$RESPONSES_DIR/metrics.csv"
+# METRICS_CSV is set by common.sh
 DONE_SENTINEL="$RAW_FILE.done"
 PID_FILE="$RAW_FILE.pid"
 

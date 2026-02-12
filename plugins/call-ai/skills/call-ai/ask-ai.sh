@@ -173,7 +173,7 @@ if [[ -z "$AI" || -z "$MODEL" || -z "$QUESTION" ]]; then
 fi
 
 # Setup output directory and files
-RESPONSES_DIR="$SKILL_DIR/.responses"
+# RESPONSES_DIR is set by common.sh
 mkdir -p "$RESPONSES_DIR"
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 PROMPT_FILE="$RESPONSES_DIR/${AI}-${MODEL}-${TIMESTAMP}-$$.prompt.txt"
@@ -183,7 +183,7 @@ ERR_FILE="$RAW_FILE.err"
 # Metrics: capture start time and setup paths
 START_TIME_MS=$(get_time_ms)
 METRICS_FILE="$RAW_FILE.metrics.json"
-METRICS_CSV="$RESPONSES_DIR/metrics.csv"
+# METRICS_CSV is set by common.sh
 
 # Write prompt to file (for debugging and to pipe via stdin)
 echo "$QUESTION" > "$PROMPT_FILE"

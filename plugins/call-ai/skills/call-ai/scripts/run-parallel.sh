@@ -20,7 +20,8 @@ set -uo pipefail
 # Note: not using set -e because we handle exit codes manually
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CALL_AI_DIR="$(dirname "$SCRIPT_DIR")"
+# Source common.sh for config (sets SKILL_DIR, METRICS_CSV, etc.)
+source "$SCRIPT_DIR/common.sh"
 
 # ─── Arguments ─────────────────────────────────────────────────────────────────
 
@@ -73,7 +74,7 @@ done
 
 # ─── Pre-create metrics CSV header (avoids race between parallel children) ────
 
-METRICS_CSV="$CALL_AI_DIR/.responses/metrics.csv"
+# METRICS_CSV is set by common.sh
 mkdir -p "$(dirname "$METRICS_CSV")"
 if [[ ! -f "$METRICS_CSV" ]]; then
   echo "timestamp,ai,model,status,attempts,duration_ms,response_chars,error" > "$METRICS_CSV"
@@ -89,7 +90,7 @@ for i in "${!AI_NAMES[@]}"; do
 
   # Launch in background — capture stdout and stderr to separate files
   # (Standard redirection > and 2> creates the files immediately)
-  "$CALL_AI_DIR/ask-ai-zellij.sh" "$ai" "$model" -f "$PROMPT_FILE" \
+  "$SKILL_DIR/ask-ai-zellij.sh" "$ai" "$model" -f "$PROMPT_FILE" \
     > "$out_file" 2>"$WORK_DIR/${i}-${ai}-${model}.err" &
   PIDS+=($!)
   EXIT_CODES+=("0")
