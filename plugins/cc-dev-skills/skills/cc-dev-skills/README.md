@@ -1,4 +1,4 @@
-# skill-creator
+# cc-dev-skills
 
 A Claude Code skill that guides you through creating effective skills — from SKILL.md frontmatter to workflow design, reference docs, and Python helper scripts. Use it to bootstrap new skills or improve existing ones.
 
@@ -7,7 +7,7 @@ A Claude Code skill that guides you through creating effective skills — from S
 Invoke when creating or improving skills:
 
 ```
-/skill-creator
+/cc-dev-skills
 "Create a new skill for managing Docker containers"
 "Update my skill's SKILL.md frontmatter"
 "Add a reference doc to my skill"
@@ -33,15 +33,15 @@ Invoke when creating or improving skills:
 ### Via plugin marketplace (recommended)
 
 ```bash
-claude plugin marketplace add choru-k/skills-for-claude
-claude plugin install skill-creator
+claude plugin marketplace add choru-k/skills-for-ai
+claude plugin install cc-dev-skills
 ```
 
 ### Manual
 
 ```bash
-git clone https://github.com/choru-k/skills-for-claude.git /tmp/skills-for-claude
-cp -r /tmp/skills-for-claude/plugins/skill-creator/skills/skill-creator ~/.claude/skills/skill-creator
+git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
+cp -r /tmp/skills-for-ai/plugins/cc-dev-skills/skills/cc-dev-skills ~/.claude/skills/cc-dev-skills
 ```
 
 ## License

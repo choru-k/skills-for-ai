@@ -1,4 +1,4 @@
-# hook-development
+# cc-dev-hooks
 
 A Claude Code skill that provides comprehensive guidance for creating hooks — event-driven automations that run on tool calls, permission requests, session events, and more. Covers command, prompt, and agent hook types.
 
@@ -7,7 +7,7 @@ A Claude Code skill that provides comprehensive guidance for creating hooks — 
 Invoke when creating or configuring hooks:
 
 ```
-/hook-development
+/cc-dev-hooks
 "Create a PreToolUse hook to block dangerous commands"
 "Add a PostToolUse hook for auto-formatting"
 "How do I use ${CLAUDE_PLUGIN_ROOT}?"
@@ -27,15 +27,15 @@ Invoke when creating or configuring hooks:
 ### Via plugin marketplace (recommended)
 
 ```bash
-claude plugin marketplace add choru-k/skills-for-claude
-claude plugin install hook-development
+claude plugin marketplace add choru-k/skills-for-ai
+claude plugin install cc-dev-hooks
 ```
 
 ### Manual
 
 ```bash
-git clone https://github.com/choru-k/skills-for-claude.git /tmp/skills-for-claude
-cp -r /tmp/skills-for-claude/plugins/hook-development/skills/hook-development ~/.claude/skills/hook-development
+git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
+cp -r /tmp/skills-for-ai/plugins/cc-dev-hooks/skills/cc-dev-hooks ~/.claude/skills/cc-dev-hooks
 ```
 
 ## License

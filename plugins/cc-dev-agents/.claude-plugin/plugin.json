@@ -1,9 +1,9 @@
 {
-  "name": "agent-development",
+  "name": "cc-dev-agents",
   "version": "0.3.0",
   "description": "Comprehensive guide for creating Claude Code subagents with frontmatter, permissions, storage, and hooks",
   "author": "choru-k",
-  "repository": "https://github.com/choru-k/skills-for-claude",
+  "repository": "https://github.com/choru-k/skills-for-ai",
   "license": "MIT",
   "keywords": ["subagent", "agent", "development", "task-tool", "automation"]
 }

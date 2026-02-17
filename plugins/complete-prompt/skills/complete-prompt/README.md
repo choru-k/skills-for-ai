@@ -23,15 +23,15 @@ Add `--refs` to any mode (e.g., `/cp debug --refs`) for token-efficient referenc
 ### Via plugin marketplace (recommended)
 
 ```bash
-claude plugin marketplace add choru-k/skills-for-claude
+claude plugin marketplace add choru-k/skills-for-ai
 claude plugin install complete-prompt
 ```
 
 ### Manual
 
 ```bash
-git clone https://github.com/choru-k/skills-for-claude.git /tmp/skills-for-claude
-cp -r /tmp/skills-for-claude/plugins/complete-prompt/skills/complete-prompt ~/.claude/skills/complete-prompt
+git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
+cp -r /tmp/skills-for-ai/plugins/complete-prompt/skills/complete-prompt ~/.claude/skills/complete-prompt
 ```
 
 Claude Code discovers skills in `~/.claude/skills/` automatically.

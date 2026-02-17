@@ -1,4 +1,4 @@
-# agent-development
+# cc-dev-agents
 
 A Claude Code skill that provides comprehensive guidance for creating subagents (Task tool agents). Covers frontmatter configuration, system prompts, tool selection, permission modes, memory/storage, hooks, and best practices.
 
@@ -7,7 +7,7 @@ A Claude Code skill that provides comprehensive guidance for creating subagents 
 Invoke when creating or configuring subagents:
 
 ```
-/agent-development
+/cc-dev-agents
 "Create a subagent for running tests"
 "What permissionMode should I use?"
 "How do I give a subagent access to memory?"
@@ -29,15 +29,15 @@ Invoke when creating or configuring subagents:
 ### Via plugin marketplace (recommended)
 
 ```bash
-claude plugin marketplace add choru-k/skills-for-claude
-claude plugin install agent-development
+claude plugin marketplace add choru-k/skills-for-ai
+claude plugin install cc-dev-agents
 ```
 
 ### Manual
 
 ```bash
-git clone https://github.com/choru-k/skills-for-claude.git /tmp/skills-for-claude
-cp -r /tmp/skills-for-claude/plugins/agent-development/skills/agent-development ~/.claude/skills/agent-development
+git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
+cp -r /tmp/skills-for-ai/plugins/cc-dev-agents/skills/cc-dev-agents ~/.claude/skills/cc-dev-agents
 ```
 
 ## License

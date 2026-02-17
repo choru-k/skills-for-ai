@@ -1,7 +1,7 @@
 {
-  "name": "skills-for-claude",
+  "name": "skills-for-ai",
   "owner": "choru-k",
-  "description": "Custom Claude Code skills: multi-AI orchestration, context handoffs, and session forking",
+  "description": "Custom AI-agent skills: multi-AI orchestration, context handoffs, and session forking",
   "plugins": [
     {
       "name": "call-ai",
@@ -24,19 +24,19 @@
       "source": "plugins/second-opinion"
     },
     {
-      "name": "skill-creator",
+      "name": "cc-dev-skills",
       "description": "Guide for creating effective Claude Code skills with SKILL.md templates, validation scripts, and best practices",
-      "source": "plugins/skill-creator"
+      "source": "plugins/cc-dev-skills"
     },
     {
-      "name": "agent-development",
+      "name": "cc-dev-agents",
       "description": "Comprehensive guide for creating Claude Code subagents with frontmatter, permissions, storage, and hooks",
-      "source": "plugins/agent-development"
+      "source": "plugins/cc-dev-agents"
     },
     {
-      "name": "hook-development",
+      "name": "cc-dev-hooks",
       "description": "Comprehensive guide for creating Claude Code hooks with command, prompt, and agent hook types",
-      "source": "plugins/hook-development"
+      "source": "plugins/cc-dev-hooks"
     }
   ]
 }

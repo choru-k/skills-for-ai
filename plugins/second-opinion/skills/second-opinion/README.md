@@ -16,15 +16,15 @@ A Claude Code skill that gets second opinions from external AIs (Codex, Gemini, 
 
 This skill requires two sibling skills to be installed:
 
-- **[call-ai](https://github.com/choru-k/skills-for-claude)** — Low-level AI calling (provides `run-parallel.sh` and `ai-registry.yaml`)
-- **[complete-prompt](https://github.com/choru-k/skills-for-claude)** — Context prompt generation (provides XML prompt builder)
+- **[call-ai](https://github.com/choru-k/skills-for-ai)** — Low-level AI calling (provides `run-parallel.sh` and `ai-registry.yaml`)
+- **[complete-prompt](https://github.com/choru-k/skills-for-ai)** — Context prompt generation (provides XML prompt builder)
 
 ## Installation
 
 ### Via plugin marketplace (recommended)
 
 ```bash
-claude plugin marketplace add choru-k/skills-for-claude
+claude plugin marketplace add choru-k/skills-for-ai
 claude plugin install second-opinion
 claude plugin install call-ai          # required dependency
 claude plugin install complete-prompt  # required dependency
@@ -33,10 +33,10 @@ claude plugin install complete-prompt  # required dependency
 ### Manual
 
 ```bash
-git clone https://github.com/choru-k/skills-for-claude.git /tmp/skills-for-claude
-cp -r /tmp/skills-for-claude/plugins/second-opinion/skills/second-opinion ~/.claude/skills/second-opinion
-cp -r /tmp/skills-for-claude/plugins/call-ai/skills/call-ai ~/.claude/skills/call-ai
-cp -r /tmp/skills-for-claude/plugins/complete-prompt/skills/complete-prompt ~/.claude/skills/complete-prompt
+git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
+cp -r /tmp/skills-for-ai/plugins/second-opinion/skills/second-opinion ~/.claude/skills/second-opinion
+cp -r /tmp/skills-for-ai/plugins/call-ai/skills/call-ai ~/.claude/skills/call-ai
+cp -r /tmp/skills-for-ai/plugins/complete-prompt/skills/complete-prompt ~/.claude/skills/complete-prompt
 ```
 
 ## How It Works

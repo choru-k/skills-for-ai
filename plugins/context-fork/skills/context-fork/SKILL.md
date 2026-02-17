@@ -1,5 +1,5 @@
 ---
-name: context-fork
+name: cc-context-fork
 description: |
   Fork the current session and run a prompt with a different model.
   Full conversation context preserved. Use for "fork with haiku",
@@ -14,10 +14,10 @@ allowed-tools: Bash, Read, Write
 Fork the current session to a different model (Haiku by default) with full conversation context preserved. Useful for delegating sub-tasks to a model better suited for the job.
 
 **Usage:**
-- `/context-fork "summarize our conversation"` — Haiku (default)
-- `/context-fork sonnet "review the architecture decisions"` — Sonnet
-- `/context-fork opus "deep analysis of this module"` — Opus
-- `/context-fork --tools "Read,Bash" "run tests and report"` — Custom tools
+- `/cc-context-fork "summarize our conversation"` — Haiku (default)
+- `/cc-context-fork sonnet "review the architecture decisions"` — Sonnet
+- `/cc-context-fork opus "deep analysis of this module"` — Opus
+- `/cc-context-fork --tools "Read,Bash" "run tests and report"` — Custom tools
 
 ---
 

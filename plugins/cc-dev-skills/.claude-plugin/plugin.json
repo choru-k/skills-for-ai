@@ -1,9 +1,9 @@
 {
-  "name": "skill-creator",
+  "name": "cc-dev-skills",
   "version": "1.0.0",
   "description": "Guide for creating effective Claude Code skills with SKILL.md templates, validation scripts, and best practices",
   "author": "choru-k",
-  "repository": "https://github.com/choru-k/skills-for-claude",
+  "repository": "https://github.com/choru-k/skills-for-ai",
   "license": "MIT",
   "keywords": ["skills", "creator", "scaffold", "template", "development"]
 }

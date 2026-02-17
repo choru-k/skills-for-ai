@@ -3,7 +3,7 @@
   "version": "1.2.0",
   "description": "Get second opinions from external AIs (Codex, Gemini, Claude) on programming questions with parallel execution and synthesis",
   "author": "choru-k",
-  "repository": "https://github.com/choru-k/skills-for-claude",
+  "repository": "https://github.com/choru-k/skills-for-ai",
   "license": "MIT",
   "keywords": ["ai", "codex", "gemini", "second-opinion", "multi-model", "synthesis"]
 }

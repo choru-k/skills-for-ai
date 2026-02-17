@@ -1,4 +1,4 @@
-# context-fork
+# cc-context-fork
 
 A Claude Code skill that forks the current session to a different model (Haiku, Sonnet, or Opus) with full conversation context preserved. Useful for delegating sub-tasks to a model better suited for the job.
 
@@ -6,9 +6,9 @@ A Claude Code skill that forks the current session to a different model (Haiku, 
 
 | Command | Model | Use Case |
 |---------|-------|----------|
-| `/context-fork "prompt"` | Haiku (default) | Quick queries, summaries, cheap tasks |
-| `/context-fork sonnet "prompt"` | Sonnet | Balanced analysis, moderate complexity |
-| `/context-fork opus "prompt"` | Opus | Deep analysis, complex reasoning |
+| `/cc-context-fork "prompt"` | Haiku (default) | Quick queries, summaries, cheap tasks |
+| `/cc-context-fork sonnet "prompt"` | Sonnet | Balanced analysis, moderate complexity |
+| `/cc-context-fork opus "prompt"` | Opus | Deep analysis, complex reasoning |
 
 Add `--tools "Read,Bash"` to customize allowed tools (default: `Read,Grep,Glob`).
 
@@ -17,15 +17,15 @@ Add `--tools "Read,Bash"` to customize allowed tools (default: `Read,Grep,Glob`)
 ### Via plugin marketplace (recommended)
 
 ```bash
-claude plugin marketplace add choru-k/skills-for-claude
+claude plugin marketplace add choru-k/skills-for-ai
 claude plugin install context-fork
 ```
 
 ### Manual
 
 ```bash
-git clone https://github.com/choru-k/skills-for-claude.git /tmp/skills-for-claude
-cp -r /tmp/skills-for-claude/plugins/context-fork/skills/context-fork ~/.claude/skills/context-fork
+git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
+cp -r /tmp/skills-for-ai/plugins/context-fork/skills/context-fork ~/.claude/skills/cc-context-fork
 ```
 
 ## How It Works

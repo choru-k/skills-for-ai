@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Fork the current session to Haiku, Sonnet, or Opus with full conversation context preserved",
   "author": "choru-k",
-  "repository": "https://github.com/choru-k/skills-for-claude",
+  "repository": "https://github.com/choru-k/skills-for-ai",
   "license": "MIT",
   "keywords": ["fork", "haiku", "sonnet", "opus", "context", "delegate"]
 }

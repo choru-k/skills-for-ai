@@ -1,9 +1,9 @@
 {
-  "name": "hook-development",
+  "name": "cc-dev-hooks",
   "version": "0.2.0",
   "description": "Comprehensive guide for creating Claude Code hooks with command, prompt, and agent hook types",
   "author": "choru-k",
-  "repository": "https://github.com/choru-k/skills-for-claude",
+  "repository": "https://github.com/choru-k/skills-for-ai",
   "license": "MIT",
   "keywords": ["hooks", "automation", "events", "PreToolUse", "PostToolUse", "development"]
 }

@@ -1,5 +1,5 @@
 ---
-name: Subagent Development
+name: cc-dev-agents
 description: This skill should be used when the user asks to "create a subagent", "add a subagent", "write a subagent", "subagent frontmatter", "permissionMode", "subagent memory", "subagent hooks", "/agents command", "agent frontmatter", "when to use description", "agent examples", "agent tools", "autonomous agent", or needs guidance on subagent structure, system prompts, triggering conditions, storage scopes, or subagent development best practices for Claude Code.
 version: 0.3.0
 ---

@@ -1,5 +1,5 @@
 ---
-name: skill-creator
+name: cc-dev-skills
 description: Guide for creating effective skills. Use for "create a skill", "new skill", "write a SKILL.md", "update a skill", "skill template", or extending Claude's capabilities with specialized workflows and tools.
 ---
 
