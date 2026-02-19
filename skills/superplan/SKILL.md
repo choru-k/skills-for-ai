@@ -11,100 +11,62 @@ allowed-tools: Read, Write, Bash, Glob, AskUserQuestion, Skill
 
 # Superplan (Hierarchical Router)
 
-You are a router only. You do not create plan content yourself.
+Router-only skill. It must not generate plan artifacts directly.
+
+## Progressive Loading Contract (Skill Graph)
+
+For each invocation, load in order:
+1. `graph/index.md`
+2. `graph/mocs/router-flow.md`
+3. Only required nodes under `graph/nodes/`
+4. Delegate to exactly one child tier skill
 
 ## Hard Rules
 
 1. Resolve valid `target_directory` before delegation.
-2. Delegate exactly one tier (`big` OR `medium` OR `small`) per invocation.
+2. Delegate exactly one tier (`big` or `medium` or `small`) per invocation.
 3. Keep all generated files inside the ticket/project folder tree.
 4. Do not auto-run child planners in the same invocation.
+5. Router does not write tier artifacts itself.
 
 ## Hierarchy Model
 
-- **big** (ticket root): creates `main.md` + `phase-*.md`
-- **medium** (expand one phase): creates `phase-<N>/main.md` + `item-*.md`
-- **small** (expand one item): creates `phase-<N>/item-<N>/main.md` + `task-*.md` + `plan.md`
+- **big** (ticket root): `main.md` + `phase-*.md`
+- **medium** (expand one phase): `phase-<N>/main.md` + `item-*.md`
+- **small** (expand one item): `phase-<N>/item-<N>/main.md` + `task-*.md` + `plan.md`
 
 Use lazy expansion: only selected phase/item is expanded.
 
-## 1. Resolve Save Location
+## Router Flow
 
-### Case A: Called by ticket skills
+| Stage | Load |
+|------|------|
+| Resolve target | `graph/nodes/resolve-target-directory.md` |
+| Validate target | `graph/nodes/validate-target-directory.md` |
+| Determine tier | `graph/nodes/determine-tier.md` |
+| Resolve context | `graph/nodes/resolve-expansion-context.md` |
+| Delegate once | `graph/nodes/delegate-once.md` |
+| Return summary | `graph/nodes/return-summary.md` |
 
-If caller provides `target_directory`, use it directly.
+## Delegation Targets
 
-### Case B: Called directly
+- `big` -> `superplan-big`
+- `medium` -> `superplan-medium`
+- `small` -> `superplan-small`
 
-Ask where to save:
-- choru-ticket (personal project)
-- work-ticket (work/Jira)
-- direct folder path
-
-If direct path is chosen:
-1. Ask absolute path.
-2. `mkdir -p <path>` when needed.
-3. Verify it exists.
-
-## 2. Validate Target Directory
-
-If missing, stop and ask for save method again.
-
-If coming from ticket skills, expected roots:
-- `~/Desktop/choru/choru-notes/1-projects/personal/`
-- `~/Desktop/choru/choru-notes/1-projects/work/`
-
-If outside these roots, ask for confirmation.
-
-## 3. Determine Tier
-
-Use `$ARGUMENTS` first (`small|medium|big`).
-If absent, infer:
-- small: focused change, 1-5 files
-- medium: multi-item phase, 6-15 files
-- big: architecture/system redesign, 15+ files
-
-Ask only if truly ambiguous.
-
-## 4. Resolve Expansion Context
-
-Before delegating, pass the most specific context available:
-
-- For **big**: ticket root only (`target_directory`).
-- For **medium**:
-  - pass `target_directory` (ticket root)
-  - pass `phase_file` if user specified `phase-<N>`
-- For **small**:
-  - pass `target_directory` (phase directory if known; otherwise ticket root)
-  - pass `item_file` if user specified `item-<N>`
-  - pass `phase_file` when available to help small locate item context
-
-If context is incomplete, child planner should ask user to choose the phase/item.
-
-## 5. Delegate Once
-
-Invoke exactly one planner:
-- `superplan-big`
-- `superplan-medium`
-- `superplan-small`
-
-Pass:
+Always pass:
 - `target_directory`
 - selected tier
 - ticket/project metadata
 - user goals/constraints
-- resolved `phase_file`/`item_file` when available
+- `phase_file` / `item_file` when available
 
-## 6. Return Summary
+## Return Contract
 
 Return:
 - selected tier
 - target directory
 - delegated planner
-- expansion context passed (`phase_file`/`item_file` if any)
+- expansion context passed (`phase_file`, `item_file` when present)
 
-## Important Notes
-
-- Router only: do not write plan files in this skill.
-- Keep flow one-by-one across tiers.
-- For medium/small runs, prefer explicit selected phase/item context.
+Do not claim artifact creation by router itself.

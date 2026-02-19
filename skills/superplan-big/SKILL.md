@@ -12,107 +12,69 @@ allowed-tools: Read, Write, Bash, Glob, AskUserQuestion
 
 **Announce:** "Creating a big architecture plan with phase stubs."
 
-You create the **forest view** and define phase boundaries.
+This tier creates architecture-level root artifacts only.
+
+## Progressive Loading Contract (Skill Graph)
+
+1. `graph/index.md`
+2. `graph/mocs/big-execution.md`
+3. Required nodes only
+4. Deep reference only when needed: `references/architecture-template.md`
 
 ## Hard Rules
 
-1. Use caller-provided `target_directory` as the **ticket root**.
-2. Create only big-tier root artifacts:
+1. Use caller-provided `target_directory` as ticket root.
+2. Create only:
    - `<target_directory>/main.md`
    - `<target_directory>/phase-1.md`, `phase-2.md`, ...
 3. Do **not** create `phase-*` directories in this tier.
 4. Do **not** create `item-*`, `task-*`, or `plan.md` in this tier.
-5. Use **lazy expansion**: phase directories are created later by `superplan-medium`.
+5. Preserve existing root files (read/update, no blind overwrite).
 
 ## Scope
 
-Use this tier when work:
-- Requires architecture decisions
-- Spans many components/services (~15+ files)
-- Needs multi-phase sequencing over days/weeks
+Use big tier when work:
+- requires architecture decisions
+- spans many components/services (~15+ files)
+- needs multi-phase sequencing over days/weeks
 
-## 1. Determine Target Root
+## Execution Flow
 
-Use `target_directory` from caller. Keep all outputs in this folder.
+| Stage | Load |
+|------|------|
+| Resolve root target | `graph/nodes/resolve-root-target.md` |
+| Gather requirements | `graph/nodes/gather-big-requirements.md` |
+| Architecture analysis | `graph/nodes/perform-architecture-analysis.md` |
+| Write root main | `graph/nodes/write-root-main.md` |
+| Write phase stubs | `graph/nodes/write-phase-stubs.md` |
+| Return summary | `graph/nodes/big-return-summary.md` |
 
-## 2. Gather Requirements (if needed)
+## Output Requirements
 
-Ask up to **3 targeted questions** only when critical context is missing:
-- Business/user outcome
-- Constraints and trade-offs
-- Timeline/milestones
+### Root `main.md`
+Must include:
+- frontmatter (`tier: big`)
+- goal/scope in-out
+- architecture overview
+- components/data flow
+- key decisions + alternatives
+- risk register
+- phase index (`[[phase-1]]`, `[[phase-2]]`, ...)
+- required findings sections (Quality / Architecture / Security / Performance / Tester)
+- approval block
+- log
 
-## 3. Architecture Analysis
+### `phase-*.md` stubs
+Each stub must include:
+- goal
+- scope in/out
+- dependencies
+- exit criteria checklist
+- expand instruction: run `/superplan medium`
 
-Before writing:
-- Define system boundaries
-- Define high-level data flow
-- Select stack/approach rationale
-- Identify key risks and mitigations
-- Split work into clear executable phases
-
-## 4. Write Root main.md
-
-Create `<target_directory>/main.md` with:
-- Frontmatter (`tier: big`)
-- Goal/scope (in/out)
-- Architecture overview
-- Components and data flow
-- Key decisions + alternatives
-- Risk register
-- **Phase Index** linking to `[[phase-1]]`, `[[phase-2]]`, ...
-- `## Quality Findings`
-- `## Architecture Findings`
-- `## Security Findings`
-- `## Performance Findings`
-- `## Tester Findings`
-- `## Approval` (Quality / Architecture / Security / Performance / Tester / Overall)
-- Log
-
-## 5. Write phase stubs (`phase-*.md`)
-
-Create one stub per phase at ticket root.
-
-Template:
-
-```markdown
----
-type: phase-entry
-status: pending
-parent: [[main]]
-phase: <N>
----
-
-# Phase <N>: <Phase Title>
-
-## Goal
-<what this phase delivers>
-
-## Scope
-- In: ...
-- Out: ...
-
-## Dependencies
-- Depends on: <none or prior phase>
-
-## Exit Criteria
-- [ ] <criterion 1>
-- [ ] <criterion 2>
-
-## Expand
-- Run `/superplan medium` for this phase.
-- This will create `./phase-<N>/main.md` and `item-*.md` files.
-```
-
-## 6. Return Summary
+## Return Contract
 
 Return:
-- Root `main.md` path
-- Created `phase-*.md` list
-- Recommended first phase to expand with `/superplan medium`
-
-## Important Notes
-
-- Big tier is architecture + phased decomposition only.
-- Keep phase stubs concise and executable.
-- Preserve existing root files: read/update, do not blindly overwrite.
+- root `main.md` path
+- created `phase-*.md` list
+- recommended first phase for `/superplan medium`

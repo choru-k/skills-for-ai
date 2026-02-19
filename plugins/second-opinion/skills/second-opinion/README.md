@@ -41,11 +41,12 @@ cp -r /tmp/skills-for-ai/plugins/complete-prompt/skills/complete-prompt ~/.claud
 
 ## How It Works
 
-1. Parses AI spec and question from arguments
-2. Evaluates whether external AIs can add value
-3. Builds context via `/complete-prompt` with `--refs` (file paths, not full contents)
-4. Spawns a Sonnet coordinator sub-agent that calls external AIs in parallel
-5. Verifies responses and synthesizes agreements/disagreements
+1. Uses a skill graph entrypoint (`graph/index.md`) for progressive disclosure
+2. Parses AI spec and question from arguments
+3. Evaluates whether external AIs can add value
+4. Builds context via `/complete-prompt` with `--refs` (file paths, not full contents)
+5. Spawns a Sonnet coordinator sub-agent that calls external AIs in parallel
+6. Verifies responses and synthesizes agreements/disagreements
 
 ## License
 
