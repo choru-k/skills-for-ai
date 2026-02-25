@@ -1,0 +1,9 @@
+{
+  "name": "front-compaction-claude",
+  "version": "1.0.0",
+  "description": "Manual front-only partial compaction workflow for Claude with hard tail replay semantics",
+  "author": "choru-k",
+  "repository": "https://github.com/choru-k/skills-for-ai",
+  "license": "MIT",
+  "keywords": ["compaction", "conversation", "context", "pi", "memory"]
+}

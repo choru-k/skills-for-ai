@@ -37,6 +37,21 @@
       "name": "cc-dev-hooks",
       "description": "Comprehensive guide for creating Claude Code hooks with command, prompt, and agent hook types",
       "source": "plugins/cc-dev-hooks"
+    },
+    {
+      "name": "front-compaction-claude",
+      "description": "Manual front-only partial compaction workflow for Claude with hard tail replay semantics",
+      "source": "plugins/front-compaction"
+    },
+    {
+      "name": "skill-playbook",
+      "description": "Analyze external ideas, validate claims, track lifecycle status, and maintain a best-practice playbook",
+      "source": "plugins/skill-playbook"
+    },
+    {
+      "name": "clarify",
+      "description": "Turn ambiguous requests into clean, actionable specifications with structured clarification",
+      "source": "plugins/clarify"
     }
   ]
 }

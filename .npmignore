@@ -1,0 +1,21 @@
+# Runtime artifacts
+.responses/
+**/.responses/
+**/.responses/**
+.prompts/
+**/.prompts/
+**/.prompts/**
+
+# Python cache
+**/__pycache__/
+**/*.pyc
+
+# Front-compaction runtime state
+plugins/front-compaction/claude/hooks/front-compaction/context-pack/*
+plugins/front-compaction/claude/hooks/front-compaction/state/*
+plugins/front-compaction/claude/hooks/front-compaction/logs/*
+
+# Keep placeholder files if present
+!plugins/front-compaction/claude/hooks/front-compaction/context-pack/.gitkeep
+!plugins/front-compaction/claude/hooks/front-compaction/state/.gitkeep
+!plugins/front-compaction/claude/hooks/front-compaction/logs/.gitkeep

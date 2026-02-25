@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# skills-for-ai pre-commit hook
+# Runs skill graph QA before commit.
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+GRAPH_QA_SCRIPT="$REPO_ROOT/skills/skill-playbook/scripts/graph-qa.sh"
+
+if [[ ! -f "$GRAPH_QA_SCRIPT" ]]; then
+  echo "✗ Missing graph QA script: $GRAPH_QA_SCRIPT" >&2
+  exit 1
+fi
+
+echo "→ Running skill graph QA"
+bash "$GRAPH_QA_SCRIPT"
+echo "✓ Skill graph QA passed"

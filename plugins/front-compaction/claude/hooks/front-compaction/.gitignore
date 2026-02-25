@@ -1,0 +1,7 @@
+context-pack/*
+state/*
+logs/*
+
+!context-pack/.gitkeep
+!state/.gitkeep
+!logs/.gitkeep

@@ -1,0 +1,4 @@
+{"type":"user","message":{"role":"user","content":"Turn 1 user short session."}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Turn 1 assistant response."}]}}
+{"type":"user","message":{"role":"user","content":"Turn 2 user short session."}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Turn 2 assistant response."}]}}

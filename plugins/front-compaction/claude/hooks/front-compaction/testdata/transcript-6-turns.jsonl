@@ -1,0 +1,12 @@
+{"type":"user","message":{"role":"user","content":"Turn 1 user: project context and goals."}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Turn 1 assistant: acknowledged goals and setup plan."}]}}
+{"type":"user","message":{"role":"user","content":"Turn 2 user: list current constraints."}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Turn 2 assistant: captured constraints and trade-offs."}]}}
+{"type":"user","message":{"role":"user","content":"Turn 3 user: decide approach A vs B."}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Turn 3 assistant: recommended approach A with caveats."}]}}
+{"type":"user","message":{"role":"user","content":"Turn 4 user: start implementation details."}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Turn 4 assistant: outlined implementation steps."}]}}
+{"type":"user","message":{"role":"user","content":"Turn 5 user: discuss error handling and retries."}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Turn 5 assistant: proposed retry and timeout policy."}]}}
+{"type":"user","message":{"role":"user","content":"Turn 6 user: finalize rollout and validation."}}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Turn 6 assistant: provided rollout checklist."}]}}

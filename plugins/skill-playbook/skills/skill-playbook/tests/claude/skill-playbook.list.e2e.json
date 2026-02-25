@@ -1,0 +1,45 @@
+{
+  "name": "skill-playbook-list-e2e",
+  "model": "sonnet",
+  "permission_mode": "bypassPermissions",
+  "timeout_seconds": 300,
+  "cwd": "/Users/cheol/Desktop/choru/skills-for-ai",
+  "session_assertions": {
+    "session_id_present": true,
+    "skills_contains": [
+      "skill-playbook"
+    ],
+    "slash_commands_contains": [
+      "skill-playbook"
+    ]
+  },
+  "turns": [
+    {
+      "prompt": "For setup, reply with token SP_WARMUP_1.",
+      "assertions": {
+        "exit_code": 0,
+        "assistant_contains": [
+          "SP_WARMUP_1"
+        ]
+      }
+    },
+    {
+      "prompt": "/skill-playbook list",
+      "assertions": {
+        "exit_code": 0,
+        "assistant_contains": [
+          "adopted",
+          "proposed"
+        ],
+        "assistant_not_contains": [
+          "Unsupported:"
+        ]
+      }
+    }
+  ],
+  "assertions": {
+    "assistant_contains": [
+      "adopted"
+    ]
+  }
+}

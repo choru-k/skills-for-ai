@@ -4,3 +4,12 @@
 # Response/output files (generated at runtime)
 .responses/
 .prompts/
+**/.responses/
+**/.prompts/
+
+# Python cache
+**/__pycache__/
+**/*.pyc
+
+# npm pack output
+*.tgz

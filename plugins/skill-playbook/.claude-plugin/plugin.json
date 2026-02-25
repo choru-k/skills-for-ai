@@ -1,0 +1,9 @@
+{
+  "name": "skill-playbook",
+  "version": "1.0.0",
+  "description": "Analyze external ideas, validate claims, track lifecycle status, and maintain a best-practice playbook",
+  "author": "choru-k",
+  "repository": "https://github.com/choru-k/skills-for-ai",
+  "license": "MIT",
+  "keywords": ["playbook", "best-practice", "evaluation", "workflow", "governance"]
+}

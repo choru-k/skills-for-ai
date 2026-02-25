@@ -1,0 +1,18 @@
+{
+  "name": "example-call-ai-sanity",
+  "model": "sonnet",
+  "permission_mode": "bypassPermissions",
+  "timeout_seconds": 180,
+  "cwd": ".",
+  "prompt": "Reply with exactly: CALL_AI_SKILL_TEST_OK",
+  "assertions": {
+    "exit_code": 0,
+    "assistant_contains": [
+      "CALL_AI_SKILL_TEST_OK"
+    ],
+    "stderr_not_contains": [
+      "Error"
+    ],
+    "assistant_min_chars": 5
+  }
+}

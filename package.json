@@ -1,0 +1,67 @@
+{
+  "name": "@choru-k/skills-for-ai",
+  "version": "0.1.0",
+  "description": "Shared Claude and Pi skills/extensions from a single repository",
+  "keywords": [
+    "pi-package",
+    "pi-skill",
+    "pi-extension",
+    "claude-plugin",
+    "skills"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/choru-k/skills-for-ai.git"
+  },
+  "homepage": "https://github.com/choru-k/skills-for-ai#readme",
+  "bugs": {
+    "url": "https://github.com/choru-k/skills-for-ai/issues"
+  },
+  "files": [
+    "README.md",
+    "LICENSE",
+    "CLAUDE.md",
+    ".claude-plugin",
+    "plugins",
+    "skills",
+    "scripts",
+    "package.json"
+  ],
+  "pi": {
+    "extensions": [
+      "plugins/front-compaction/pi/extensions/front-compaction.ts"
+    ],
+    "skills": [
+      "plugins/call-ai/skills/call-ai/SKILL.md",
+      "plugins/clarify/skills/clarify/SKILL.md",
+      "plugins/complete-prompt/skills/complete-prompt/SKILL.md",
+      "plugins/front-compaction/pi/skills/front-compaction-pi/SKILL.md",
+      "plugins/second-opinion/skills/second-opinion/SKILL.md",
+      "plugins/skill-playbook/skills/skill-playbook/SKILL.md",
+      "skills/choru-ticket/SKILL.md",
+      "skills/feature-spec/SKILL.md",
+      "skills/jira/SKILL.md",
+      "skills/skill-commons/SKILL.md",
+      "skills/study/SKILL.md",
+      "skills/subagent-trace-debug/SKILL.md",
+      "skills/superplan/SKILL.md",
+      "skills/superplan-big/SKILL.md",
+      "skills/superplan-medium/SKILL.md",
+      "skills/superplan-small/SKILL.md",
+      "skills/work-lessons/SKILL.md",
+      "skills/work-ticket/SKILL.md",
+      "skills/work-workspace/SKILL.md"
+    ]
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-ai": "*",
+    "@mariozechner/pi-agent-core": "*",
+    "@mariozechner/pi-coding-agent": "*",
+    "@mariozechner/pi-tui": "*",
+    "@sinclair/typebox": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

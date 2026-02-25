@@ -1,0 +1,9 @@
+{
+  "name": "clarify",
+  "version": "1.0.0",
+  "description": "Turn ambiguous requests into clean, actionable specifications with structured clarification",
+  "author": "choru-k",
+  "repository": "https://github.com/choru-k/skills-for-ai",
+  "license": "MIT",
+  "keywords": ["clarify", "requirements", "specification", "scope", "questions"]
+}

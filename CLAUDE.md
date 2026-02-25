@@ -4,7 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A collection of AI-agent skills with Claude plugin packaging for multi-AI orchestration, context handoffs, session forking, and development guides. Skills follow the [Agent Skills](https://agentskills.io) open standard and are distributed via the Claude Code plugin marketplace while also exposing a shared `skills/` index for cross-harness use.
+A collection of AI-agent skills with dual packaging:
+- Claude Code plugin marketplace metadata (`.claude-plugin/marketplace.json`)
+- Pi package metadata (`package.json#pi`)
+
+Skills follow the [Agent Skills](https://agentskills.io) open standard and are exposed through a shared `skills/` index for cross-harness use.
 
 ## Repository Structure
 
@@ -21,7 +25,8 @@ plugins/
         templates/                # XML/markdown templates (complete-prompt)
         assets/                   # Output files not loaded into context
 skills/                           # Shared cross-harness skill index (phase-1 bridge)
-.claude-plugin/marketplace.json   # Top-level marketplace registry listing all plugins
+.claude-plugin/marketplace.json   # Claude-only marketplace registry listing all plugins
+package.json                      # Pi package manifest (`pi` key: extensions/skills)
 ```
 
 Each plugin is self-contained under `plugins/<name>/` with its own `plugin.json` and skill directory.
@@ -45,7 +50,8 @@ Each plugin is self-contained under `plugins/<name>/` with its own `plugin.json`
 ## Key Files
 
 - **`ai-registry.yaml`** (`plugins/call-ai/skills/call-ai/`): Single source of truth for all AI provider/model definitions. Update models here only. Parsed at runtime with a section-aware Python3 parser.
-- **`marketplace.json`** (`.claude-plugin/`): Registry of all plugins with `source` paths pointing to plugin directories.
+- **`marketplace.json`** (`.claude-plugin/`): Claude-only registry of plugins with `source` paths pointing to plugin directories.
+- **`package.json`** (root): Pi package manifest. `pi.extensions` and `pi.skills` define what `pi install` loads.
 - **`plugin.json`** (per-plugin `.claude-plugin/`): Plugin metadata — name, version, description, author.
 
 ## SKILL.md Conventions
@@ -71,7 +77,17 @@ Scripts in `call-ai` use bash with:
 3. Add the plugin entry to `.claude-plugin/marketplace.json`
 4. Add scripts, references, examples as needed following the directory convention
 
+## Adding Pi-Loadable Resources
+
+- Add/maintain skills under either:
+  - `skills/<name>/SKILL.md` (shared index), or
+  - `plugins/<name>/skills/<name>/SKILL.md` (plugin source)
+- Add Pi extensions as TypeScript files (for example `plugins/<name>/pi/extensions/*.ts`)
+- Update `package.json#pi.skills` and/or `package.json#pi.extensions` so `pi install` can load them
+- Run `just skills-index-sync` to regenerate plugin-backed symlinks under `skills/` from `package.json#pi.skills`
+
 ## Installation Methods
 
-- **Marketplace**: `claude plugin marketplace add choru-k/skills-for-ai && claude plugin install <name>`
-- **Manual**: Copy `plugins/<name>/skills/<name>/` to `~/.claude/skills/<name>/`
+- **Claude marketplace**: `claude plugin marketplace add choru-k/skills-for-ai && claude plugin install <name>`
+- **Claude manual**: Copy `plugins/<name>/skills/<name>/` to `~/.claude/skills/<name>/`
+- **Pi package**: `pi install git:github.com/choru-k/skills-for-ai` (or `pi install npm:@choru-k/skills-for-ai` after publish), loads resources from `package.json#pi`
