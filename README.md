@@ -120,17 +120,26 @@ just pi-install-local
 # Preview package tarball contents
 just pi-pack-dry-run
 
-# Sync generated skills/ symlink index
+# Sync all catalog-managed public artifacts
+just catalog-sync
+
+# Non-mutating contract check for catalog-managed public artifacts
+just catalog-check
+
+# Sync generated skills/ symlink index only
 just skills-index-sync
 
 # CI-style index drift check (no writes)
 just skills-index-check
 
-# Public-output drift checks (index + manifest paths)
+# Public-output drift checks (catalog + generated outputs)
 just drift-check
 
 # Private-ID leak checks for public outputs (includes npm pack dry-run artifact scan)
 just private-leak-check
+
+# Negative scenario checks (drift + leak) in isolated temp copies
+just contract-scenario-check
 ```
 
 ## Development Hook (Graph QA)
@@ -159,8 +168,10 @@ Operator runbooks:
 Recommended acceptance command set:
 
 ```bash
+just catalog-check
 just drift-check
 just private-leak-check
+just contract-scenario-check
 bash skills/skill-playbook/scripts/graph-qa.sh
 just pi-pack-dry-run
 ```

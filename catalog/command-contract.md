@@ -84,25 +84,30 @@ The command must not partially write files in `check` mode.
 Current enforced command set:
 
 ```bash
+python3 scripts/sync-catalog-artifacts.py --check --lane public
 bash scripts/check-public-output-drift.sh
 bash scripts/check-private-leaks.sh
-python3 scripts/sync-skills-index.py --check
+bash scripts/validate-contract-scenarios.sh
 ```
 
 Local shortcuts:
 
 ```bash
+just catalog-check
 just drift-check
 just private-leak-check
+just contract-scenario-check
 just skills-index-check
 ```
 
 Contracts:
-- `check-public-output-drift.sh` must be non-mutating and fail on index/manifest drift.
+- `sync-catalog-artifacts.py --check --lane public` is the canonical non-mutating public-lane contract check.
+- `check-public-output-drift.sh` is a wrapper around the canonical check and must fail non-zero on drift.
 - `check-private-leaks.sh` must fail on private-ID leakage in public distribution outputs, including `npm pack --dry-run --json` artifact paths.
-- `skills-index-check` remains non-mutating and fails non-zero when symlink index drift exists.
+- `validate-contract-scenarios.sh` must prove reproducible detection for at least one drift and one private-leak negative scenario in isolated temp copies.
+- `skills-index-check` remains a scoped non-mutating check over `skills/` symlink index (`--only skills-index`).
 
 ## Compatibility Notes
 
-- Existing `scripts/sync-skills-index.py` remains a valid narrow implementation for `skills/` only.
-- Full catalog sync/check command should subsume that behavior while preserving current semantics (`--check` is non-mutating and returns non-zero on drift).
+- `scripts/sync-skills-index.py` remains available as a legacy narrow utility.
+- `scripts/sync-catalog-artifacts.py` is the canonical sync/check entrypoint for catalog-managed public artifacts.

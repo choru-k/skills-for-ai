@@ -9,6 +9,31 @@
       "source": "plugins/call-ai"
     },
     {
+      "name": "cc-dev-agents",
+      "description": "Comprehensive guide for creating Claude Code subagents with frontmatter, permissions, storage, and hooks",
+      "source": "plugins/cc-dev-agents"
+    },
+    {
+      "name": "cc-dev-hooks",
+      "description": "Comprehensive guide for creating Claude Code hooks with command, prompt, and agent hook types",
+      "source": "plugins/cc-dev-hooks"
+    },
+    {
+      "name": "cc-dev-skills",
+      "description": "Guide for creating effective Claude Code skills with SKILL.md templates, validation scripts, and best practices",
+      "source": "plugins/cc-dev-skills"
+    },
+    {
+      "name": "cc-front-compaction",
+      "description": "Claude lifecycle wrapper for manual front-only partial compaction with hard tail replay semantics",
+      "source": "plugins/front-compaction"
+    },
+    {
+      "name": "clarify",
+      "description": "Turn ambiguous requests into clean, actionable specifications with structured clarification",
+      "source": "plugins/clarify"
+    },
+    {
       "name": "complete-prompt",
       "description": "Generate structured XML context prompts for AI-to-AI handoffs with 9 specialized modes",
       "source": "plugins/complete-prompt"
@@ -24,34 +49,9 @@
       "source": "plugins/second-opinion"
     },
     {
-      "name": "cc-dev-skills",
-      "description": "Guide for creating effective Claude Code skills with SKILL.md templates, validation scripts, and best practices",
-      "source": "plugins/cc-dev-skills"
-    },
-    {
-      "name": "cc-dev-agents",
-      "description": "Comprehensive guide for creating Claude Code subagents with frontmatter, permissions, storage, and hooks",
-      "source": "plugins/cc-dev-agents"
-    },
-    {
-      "name": "cc-dev-hooks",
-      "description": "Comprehensive guide for creating Claude Code hooks with command, prompt, and agent hook types",
-      "source": "plugins/cc-dev-hooks"
-    },
-    {
-      "name": "cc-front-compaction",
-      "description": "Claude lifecycle wrapper for manual front-only partial compaction with hard tail replay semantics",
-      "source": "plugins/front-compaction"
-    },
-    {
       "name": "skill-playbook",
       "description": "Analyze external ideas, validate claims, track lifecycle status, and maintain a best-practice playbook",
       "source": "plugins/skill-playbook"
-    },
-    {
-      "name": "clarify",
-      "description": "Turn ambiguous requests into clean, actionable specifications with structured clarification",
-      "source": "plugins/clarify"
     }
   ]
 }

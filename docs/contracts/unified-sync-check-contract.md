@@ -57,6 +57,12 @@
 - Failures MUST clearly identify condition class (lane mismatch, drift, missing artifact, invalid input, leak).
 - The normative mapping table is defined in `operator-failure-semantics.md`.
 
+## Operator Commands
+- `just catalog-sync` — sync public catalog-managed artifacts.
+- `just catalog-check` — non-mutating public contract check.
+- `just drift-check` — guardrail wrapper around public contract checks.
+- `just private-leak-check` — fail on private ID leakage into public outputs.
+
 ## Non-Goals
 - Defining implementation-level script internals.
 - Defining CI workflow ownership details.

@@ -20,4 +20,5 @@
   - `unified-sync-check-contract.md`
   - `operator-failure-semantics.md`
   - `acceptance-matrix.md`
+  - `validation-evidence.md`
 - Implementation must not change contract intent without re-ratification update in this file.
