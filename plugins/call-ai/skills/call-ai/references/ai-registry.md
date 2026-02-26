@@ -26,10 +26,10 @@ Shared reference for AI models used by `/call-ai` and `/second-opinion`.
 
 ## Execution
 
-All providers now use the unified CLI wrapper:
+All providers now use the unified runner wrapper:
 
 ```bash
-./ask-ai.sh {AI_NAME} {MODEL_NAME} -f "{PROMPT_FILE_PATH}"
+./ask-ai-runner.sh {AI_NAME} {MODEL_NAME} -f "{PROMPT_FILE_PATH}"
 ```
 
 ## Response Storage
@@ -49,4 +49,4 @@ When AI providers release new models:
 
 1. Edit `ai-registry.yaml` (single source of truth)
 2. Update this file's table to match (human-readable view)
-3. Test with: `./ask-ai.sh codex gpt-5.3-codex "test"`
+3. Test with: `./ask-ai-runner.sh codex gpt-5.3-codex "test"`

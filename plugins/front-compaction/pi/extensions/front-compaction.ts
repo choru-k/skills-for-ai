@@ -59,12 +59,16 @@ export default function frontCompaction(pi: ExtensionAPI) {
   };
 
   registerFrontCompactionCommand(
-    "front-compaction-pi",
+    "pi-front-compaction",
     "Compact the oldest N% of complete user+assistant turns (default: 30)",
   );
   registerFrontCompactionCommand(
     "front-compaction",
-    "Alias for /front-compaction-pi (backward compatibility)",
+    "Alias for /pi-front-compaction (backward compatibility)",
+  );
+  registerFrontCompactionCommand(
+    "front-compaction-pi",
+    "Alias for /pi-front-compaction (legacy compatibility)",
   );
 
   pi.on("session_before_compact", async (event, ctx) => {

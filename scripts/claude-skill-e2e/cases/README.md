@@ -47,13 +47,13 @@ bash scripts/claude-skill-e2e/test-claude-skills.sh --case scripts/claude-skill-
 
 ```json
 {
-  "name": "front-compaction-e2e",
+  "name": "cc-front-compaction-e2e",
   "model": "sonnet",
   "cwd": "/Users/you/dotfiles",
   "session_assertions": {
     "session_id_present": true,
-    "skills_contains": ["front-compaction-claude"],
-    "slash_commands_contains": ["front-compaction-claude"]
+    "skills_contains": ["cc-front-compaction"],
+    "slash_commands_contains": ["cc-front-compaction"]
   },
   "turns": [
     {
@@ -61,7 +61,7 @@ bash scripts/claude-skill-e2e/test-claude-skills.sh --case scripts/claude-skill-
       "assertions": { "assistant_contains": ["TOKEN_A"] }
     },
     {
-      "prompt": "/front-compaction-claude 30",
+      "prompt": "/cc-front-compaction 30",
       "assertions": {
         "assistant_contains": ["/compact"],
         "assistant_not_contains": ["Unsupported:"]

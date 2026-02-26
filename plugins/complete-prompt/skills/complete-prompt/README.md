@@ -39,10 +39,11 @@ Claude Code discovers skills in `~/.claude/skills/` automatically.
 ## How It Works
 
 1. **Invoke** — Type `/cp [mode]` in Claude Code (e.g., `/cp debug`)
-2. **Review** — The agent analyzes your full conversation history, extracting project context, files, decisions, and status
-3. **Template** — Loads the matching XML template from `templates/`
-4. **Fill** — Populates every section automatically (you never fill templates manually)
-5. **Save** — Writes the handoff XML to `.prompts/` and provides a clipboard command
+2. **Route** — The skill graph entrypoint (`graph/index.md`) selects the minimal nodes needed
+3. **Review** — The agent analyzes your conversation history, extracting project context, files, decisions, and status
+4. **Template** — Loads the matching XML template from `templates/`
+5. **Fill** — Populates every section automatically (you never fill templates manually)
+6. **Save** — Writes the handoff XML to `.prompts/` and provides a clipboard command
 
 ## Output
 
@@ -63,7 +64,7 @@ See the `examples/` directory for sample outputs across modes:
 - `examples/architect.md` — 3 architect handoff examples
 - `examples/diff.md` — 3 diff handoff examples
 
-Inline examples for general, research, career, and learning modes are in `SKILL.md`.
+Mode-specific routing and generation rules are in the skill graph (`graph/`) and `templates/*.xml`.
 
 ## License
 

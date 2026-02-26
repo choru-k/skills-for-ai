@@ -11,21 +11,21 @@ providers:
     models:
       thorough: gpt-5.3-codex
       fast: gpt-5.2-codex
-    execution: cli  # Uses ask-ai.sh wrapper
+    execution: cli  # Uses ask-ai-runner.sh wrapper
 
   gemini:
     cli: gemini
     models:
       thorough: gemini-3-pro-preview
       fast: gemini-3-flash-preview
-    execution: cli  # Uses ask-ai.sh wrapper
+    execution: cli  # Uses ask-ai-runner.sh wrapper
 
   claude:
     cli: claude
     models:
       thorough: sonnet
       fast: haiku
-    execution: cli  # Uses ask-ai.sh wrapper (unified with codex/gemini)
+    execution: cli  # Uses ask-ai-runner.sh wrapper (unified with codex/gemini)
 
 # Parsing rules for AI_SPEC argument
 parsing_rules:

@@ -10,7 +10,7 @@ links:
 # Update Parent Item Entry
 
 Update source `item-<N>.md` to include:
-- link to `[[item-<N>/main]]`
+- link to `item-<N>/main.md`
 - status (`expanded` or `in-progress`)
 - last-updated date
 

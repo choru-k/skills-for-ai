@@ -65,8 +65,8 @@ print(json.dumps({
     "type": "system",
     "subtype": "init",
     "session_id": session_id,
-    "skills": ["front-compaction-claude", "call-ai"],
-    "slash_commands": ["front-compaction-claude", "call-ai"],
+    "skills": ["cc-front-compaction", "call-ai"],
+    "slash_commands": ["cc-front-compaction", "call-ai"],
 }))
 print(json.dumps({
     "type": "assistant",
@@ -112,8 +112,8 @@ if summary["exit_code"] != 0:
     raise SystemExit("expected exit_code 0")
 if summary.get("session_id") != "stub-session-1":
     raise SystemExit("expected session_id stub-session-1")
-if "front-compaction-claude" not in summary.get("skills", []):
-    raise SystemExit("expected front-compaction-claude in skills metadata")
+if "cc-front-compaction" not in summary.get("skills", []):
+    raise SystemExit("expected cc-front-compaction in skills metadata")
 if "stub:hello-from-run" not in assistant_text:
     raise SystemExit("assistant artifact missing expected text")
 for key in ("run_dir", "prompt", "stdout", "stderr", "assistant", "summary"):
@@ -183,8 +183,8 @@ cat > "$CASE_MULTI_FILE" <<'EOF'
   "cwd": ".",
   "session_assertions": {
     "session_id_present": true,
-    "skills_contains": ["front-compaction-claude"],
-    "slash_commands_contains": ["front-compaction-claude"]
+    "skills_contains": ["cc-front-compaction"],
+    "slash_commands_contains": ["cc-front-compaction"]
   },
   "turns": [
     {
@@ -200,14 +200,14 @@ cat > "$CASE_MULTI_FILE" <<'EOF'
       }
     },
     {
-      "prompt": "/front-compaction-claude 30",
+      "prompt": "/cc-front-compaction 30",
       "assertions": {
-        "assistant_contains": ["stub:/front-compaction-claude 30"]
+        "assistant_contains": ["stub:/cc-front-compaction 30"]
       }
     }
   ],
   "assertions": {
-    "assistant_contains": ["stub:/front-compaction-claude 30"]
+    "assistant_contains": ["stub:/cc-front-compaction 30"]
   }
 }
 EOF

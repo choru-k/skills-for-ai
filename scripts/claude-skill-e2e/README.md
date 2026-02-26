@@ -15,13 +15,13 @@ Run all colocated tests for one skill:
 
 ```bash
 cd /Users/cheol/Desktop/choru/skills-for-ai
-bash scripts/claude-skill-e2e/test-claude-skills.sh --skill front-compaction-claude
+bash scripts/claude-skill-e2e/test-claude-skills.sh --skill cc-front-compaction
 ```
 
 Run one explicit case:
 
 ```bash
-bash scripts/claude-skill-e2e/test-claude-skills.sh --case plugins/front-compaction/skills/front-compaction-claude/tests/claude/front-compaction.e2e.json
+bash scripts/claude-skill-e2e/test-claude-skills.sh --case plugins/front-compaction/skills/cc-front-compaction/tests/claude/front-compaction.e2e.json
 ```
 
 ## Case placement convention

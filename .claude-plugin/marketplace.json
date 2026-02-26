@@ -39,8 +39,8 @@
       "source": "plugins/cc-dev-hooks"
     },
     {
-      "name": "front-compaction-claude",
-      "description": "Manual front-only partial compaction workflow for Claude with hard tail replay semantics",
+      "name": "cc-front-compaction",
+      "description": "Claude lifecycle wrapper for manual front-only partial compaction with hard tail replay semantics",
       "source": "plugins/front-compaction"
     },
     {

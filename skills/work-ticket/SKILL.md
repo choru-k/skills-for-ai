@@ -10,100 +10,57 @@ allowed-tools: Read, Write, Bash, Glob, AskUserQuestion, Skill
 Manage work Jira tickets and implementation plans in the Obsidian vault.
 This skill owns ticket-folder lifecycle and is the preferred ticket entry point for planning via `/superplan`.
 
+## Progressive Loading Contract (Skill Graph)
+
+For each invocation, load in order:
+
+1. `graph/index.md`
+2. One MOC: `graph/mocs/intake.md`, `graph/mocs/planning.md`, or `graph/mocs/lifecycle.md`
+3. Only required node files under `graph/nodes/`
+4. Deep reference only when needed: `references/folder-structure.md`
+
 ## Hard Rules
 
 1. When delegating to `superplan`, always pass explicit ticket context and `target_directory`.
 2. `superplan` must receive explicit `target_directory`.
 3. All generated plan files must stay in that ticket folder.
+4. If invoked with `resolve_target_only: true`, resolve and return target metadata, then stop.
 
-## Workflow
+## Route by Intent
 
-This skill may be invoked directly by the user or selected by `/superplan` when user chooses work ticket storage.
+| Intent | MOC |
+|------|------|
+| Find/create ticket context | `graph/mocs/intake.md` |
+| Create/recreate plan | `graph/mocs/planning.md` |
+| Status/archive/reopen actions | `graph/mocs/lifecycle.md` |
 
-### 1. Extract Ticket Number
+## Core Flows
 
-Try branch first:
+### Intake Flow
 
-```bash
-git branch --show-current
-```
+| Stage | Load |
+|------|------|
+| Extract ticket | `graph/nodes/extract-ticket-number.md` |
+| Fetch Jira details (new ticket) | `graph/nodes/fetch-jira-details.md` |
+| Resolve folder | `graph/nodes/resolve-ticket-folder.md` |
+| Handle resolve-only mode | `graph/nodes/handle-resolve-target-only.md` |
+| Return summary | `graph/nodes/return-summary.md` |
 
-Extract `CENG-\d+` (e.g., `feature/CENG-1234-description` → `CENG-1234`).
-If not found, ask user for ticket number.
+### Planning Flow
 
-### 2. Fetch Jira Details (New Tickets)
+| Stage | Load |
+|------|------|
+| Resolve folder | `graph/nodes/resolve-ticket-folder.md` |
+| Delegate `/superplan` | `graph/nodes/delegate-superplan.md` |
+| Return summary | `graph/nodes/return-summary.md` |
 
-For new tickets not yet in vault:
+### Lifecycle Flow
 
-```bash
-jira issue view CENG-XXXX --plain --comments 3
-```
-
-Use summary/description/acceptance criteria/comments to inform planning.
-
-### 3. Folder Structure
-
-```
-~/Desktop/choru/choru-notes/
-├── 1-projects/
-│   └── work/
-│       └── CENG-XXXX/
-└── 4-archive/
-    └── work/
-        └── CENG-XXXX/
-```
-
-### 4. Find or Create Folder
-
-Check active first, then archive:
-
-```bash
-ls -d ~/Desktop/choru/choru-notes/1-projects/work/CENG-XXXX 2>/dev/null
-ls -d ~/Desktop/choru/choru-notes/4-archive/work/CENG-XXXX 2>/dev/null
-```
-
-- If found in `1-projects/work/`: read `main.md`, list `.md` files, summarize status, ask next action.
-- If found in `4-archive/work/`: summarize and ask whether to reopen.
-- If new: create `~/Desktop/choru/choru-notes/1-projects/work/CENG-XXXX/`.
-
-### 5. Delegate Planning (Ticket-Scoped)
-
-When user asks to create/recreate a plan, invoke:
-
-```
-Skill: superplan
-```
-
-Pass explicit context:
-- `target_directory`: `~/Desktop/choru/choru-notes/1-projects/work/CENG-XXXX/`
-- `ticket_type`: `work`
-- `ticket_name`: `CENG-XXXX`
-- Jira details (summary, acceptance criteria, constraints)
-- Requested tier from user if present (`small|medium|big`)
-- Full user goal/context
-
-**Important:** Never call `superplan` without `target_directory`.
-
-### 6. Direct Call Support from /superplan
-
-If invoked by `/superplan` with `resolve_target_only: true`:
-1. Resolve/create ticket folder
-2. Return `target_directory` and ticket metadata
-3. **Stop** (do not call `/superplan` again)
-
-This prevents delegation loops.
-
-### 7. Status Management Actions
-
-Based on request, you may:
-1. **Review status**
-2. **Update plans** or re-run `/superplan` with same `target_directory`
-3. **Add notes/task files** as needed
-4. **Archive ticket** when complete:
-   ```bash
-   mv ~/Desktop/choru/choru-notes/1-projects/work/CENG-XXXX ~/Desktop/choru/choru-notes/4-archive/work/
-   ```
-5. **Reopen ticket** by moving it back to `1-projects/work/`
+| Stage | Load |
+|------|------|
+| Resolve folder | `graph/nodes/resolve-ticket-folder.md` |
+| Apply lifecycle action | `graph/nodes/status-management-actions.md` |
+| Return summary | `graph/nodes/return-summary.md` |
 
 ## Integration Notes
 

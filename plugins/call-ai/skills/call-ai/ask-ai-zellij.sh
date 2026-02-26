@@ -11,9 +11,12 @@
 #   model: the model name (e.g., gpt-5.3-codex, gemini-3-pro-preview, sonnet)
 #
 # Environment variables:
-#   ZELLIJ_AI_MAX_TIMEOUT      - Max wall-clock seconds before killing pane (default: 1800)
-#   ZELLIJ_AI_PANE_HOLD        - Pane hold time after success in seconds (default: 30)
+#   ZELLIJ_AI_MAX_TIMEOUT        - Max wall-clock seconds before killing pane (default: 1800)
+#   ZELLIJ_AI_PANE_HOLD          - Pane hold time after success in seconds (default: 30)
 #   ZELLIJ_AI_PANE_HOLD_ON_ERROR - Pane hold time after failure in seconds (default: 60)
+#   ZELLIJ_AI_STACKED            - 1/true to launch stacked pane (default: 1)
+#   ZELLIJ_AI_DIRECTION          - Optional pane split direction for zellij run (eg: right, down)
+#   ZELLIJ_AI_PANE_NAME          - Optional pane name
 
 set -euo pipefail
 
@@ -58,6 +61,9 @@ POLL_INTERVAL=2
 MAX_TIMEOUT="${ZELLIJ_AI_MAX_TIMEOUT:-1800}"
 PANE_HOLD="${ZELLIJ_AI_PANE_HOLD:-30}"
 PANE_HOLD_ERROR="${ZELLIJ_AI_PANE_HOLD_ON_ERROR:-60}"
+PANE_STACKED="${ZELLIJ_AI_STACKED:-1}"
+PANE_DIRECTION="${ZELLIJ_AI_DIRECTION:-}"
+PANE_NAME="${ZELLIJ_AI_PANE_NAME:-}"
 
 # Setup output directory and files (same naming as ask-ai.sh)
 # RESPONSES_DIR is set by common.sh
@@ -96,10 +102,24 @@ if [[ ! -x "$PANE_SCRIPT" ]]; then
   exec "$SCRIPT_DIR/ask-ai.sh" "$@"
 fi
 
-# Launch the pane script in a stacked pane.
+# Launch the pane script.
 # `zellij run` is fire-and-forget — it exits immediately.
 # The pane script writes its PID to PID_FILE so we can track the real process.
-zellij run --stacked --close-on-exit -- \
+ZELLIJ_RUN_ARGS=(run --close-on-exit)
+
+if [[ "$PANE_STACKED" == "1" || "$PANE_STACKED" == "true" ]]; then
+  ZELLIJ_RUN_ARGS+=(--stacked)
+fi
+
+if [[ -n "$PANE_DIRECTION" ]]; then
+  ZELLIJ_RUN_ARGS+=(--direction "$PANE_DIRECTION")
+fi
+
+if [[ -n "$PANE_NAME" ]]; then
+  ZELLIJ_RUN_ARGS+=(--name "$PANE_NAME")
+fi
+
+zellij "${ZELLIJ_RUN_ARGS[@]}" -- \
   "$PANE_SCRIPT" \
   "$AI" "$MODEL" \
   "$PROMPT_FILE" "$RAW_FILE" "$ERR_FILE" "$DONE_SENTINEL" \

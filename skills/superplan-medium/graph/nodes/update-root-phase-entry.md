@@ -10,7 +10,7 @@ links:
 # Update Root Phase Entry
 
 Update root `phase-<N>.md` to include:
-- link to `[[phase-<N>/main]]`
+- link to `phase-<N>/main.md`
 - item count
 - status (`expanded` or `in-progress`)
 

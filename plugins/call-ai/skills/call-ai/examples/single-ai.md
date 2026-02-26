@@ -11,7 +11,7 @@ Examples of invoking `/call-ai` with a single AI provider.
 
 **What happens:**
 1. Spawns one sub-agent for Codex thorough (gpt-5.2-codex)
-2. Runs `ask-ai.sh codex gpt-5.2-codex "..."`
+2. Runs `ask-ai-runner.sh codex gpt-5.2-codex "..."`
 3. Returns single response
 
 ### Gemini Only

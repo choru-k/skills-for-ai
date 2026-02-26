@@ -12,7 +12,7 @@ Examples of the default `/call-ai` behavior: Codex + Gemini thorough models.
 1. Spawns 2 sub-agents in parallel:
    - Codex thorough (gpt-5.2-codex)
    - Gemini thorough (gemini-3-pro-preview)
-2. Both run concurrently via `ask-ai.sh`
+2. Both run concurrently via `ask-ai-runner.sh`
 3. Returns both responses (no synthesis)
 
 ## Via /second-opinion (Recommended)

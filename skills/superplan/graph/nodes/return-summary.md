@@ -3,7 +3,8 @@ id: return-summary
 description: Return concise routing result after one-time delegation.
 status: active
 tags: [node, output]
-links: []
+links:
+  - "../../../skill-commons/graph/nodes/shared-return-summary-contract.md"
 ---
 
 # Return Summary

@@ -9,169 +9,87 @@ allowed-tools: Read, Write, Bash, Glob, AskUserQuestion
 
 Manage git worktrees across work repositories for parallel development on multiple tickets.
 
-## Directory Structure
+## Progressive Loading Contract (Skill Graph)
 
-```
-~/Desktop/clumio/
-├── jenkins-lib/
-│   ├── main/           # Git source (cloned from GitHub)
-│   └── CENG-xxxx/      # Worktrees for tickets
-├── infra-kubernetes/
-│   ├── main/
-│   └── CENG-xxxx/
-├── infra-charts/
-│   ├── main/
-│   └── CENG-xxxx/
-└── cdf/
-    ├── main/
-    └── CENG-xxxx/
-```
+For each invocation, load in order:
 
-## Workflow
+1. `graph/index.md`
+2. one MOC: `graph/mocs/routing.md`, `graph/mocs/worktree-ops.md`, or `graph/mocs/maintenance.md`
+3. only required node files under `graph/nodes/`
+4. deep reference only when needed: `references/repos.md`
 
-### 1. Determine Action
+## Hard Rules
 
-Use AskUserQuestion to ask what action the user wants:
+1. Keep repository roots under `~/Desktop/clumio/<repo>/` with source clone in `main/`.
+2. Never treat `main/` as ticket worktree.
+3. Run `git fetch origin` from `~/Desktop/clumio/<repo>/main` before creating new worktrees.
+4. Create branches from `origin/<target_branch>` (never from current local HEAD by default).
+5. Worktree folder names must be ticket-based: `CENG-####` or `CENG-####-<suffix>` when parallel efforts are needed.
+6. Use explicit confirmation before destructive cleanup actions.
 
-- **Setup** - Clone a repo to `~/Desktop/clumio/REPO/main/`
-- **Create** - Add a worktree for a ticket (CENG-xxxx)
-- **Switch** - Navigate to an existing worktree
-- **List** - Show all worktrees for a repo
-- **Cleanup** - Remove merged/stale worktrees
+## Route by Intent
 
-### 2. Select Repository
+| Intent | MOC |
+|------|------|
+| Decide action/repo/ticket | `graph/mocs/routing.md` |
+| Setup/create/switch/list | `graph/mocs/worktree-ops.md` |
+| Cleanup/stale maintenance | `graph/mocs/maintenance.md` |
 
-If action requires a repo, ask which one using AskUserQuestion with options:
-- jenkins-lib
-- infra-kubernetes
-- infra-charts
-- cdf
+## Core Flows
 
-See `references/repos.md` for full repo URLs.
+### Routing Flow
 
-### 3. Extract Ticket Number (for create/switch)
+| Stage | Load |
+|------|------|
+| Determine action | `graph/nodes/determine-action.md` |
+| Select repository | `graph/nodes/select-repository.md` |
+| Extract ticket (when needed) | `graph/nodes/extract-ticket-number.md` |
 
-First, try to extract from current git branch:
+### Worktree Ops Flow
 
-```bash
-git branch --show-current 2>/dev/null || echo ""
-```
+| Stage | Load |
+|------|------|
+| Setup repository | `graph/nodes/setup-repository.md` |
+| Create worktree | `graph/nodes/create-worktree.md` |
+| Switch worktree | `graph/nodes/switch-worktree.md` |
+| List worktrees | `graph/nodes/list-worktrees.md` |
+| Post-create integration | `graph/nodes/post-create-integration.md` |
+| Return summary | `graph/nodes/return-summary.md` |
 
-Look for pattern `CENG-\d+` in the branch name.
+### Maintenance Flow
 
-If not found, use AskUserQuestion:
-- Question: "What is the ticket number (e.g., CENG-1234)?"
-- Header: "Ticket"
+| Stage | Load |
+|------|------|
+| List worktrees | `graph/nodes/list-worktrees.md` |
+| Cleanup worktrees | `graph/nodes/cleanup-worktrees.md` |
+| Return summary | `graph/nodes/return-summary.md` |
 
-### 4. Execute Action
+## Supported Repositories
 
-#### Setup (Clone Repo)
+- `argocd-deployments`
+- `argocd-dev`
+- `cdf`
+- `infra-charts`
+- `infra-kubernetes`
+- `infra-terraform`
+- `jenkins-ci-lib`
+- `jenkins-lib`
+- `jenkins-system`
+- `jenkins_publish`
+- `jobutil`
+- `terraform-provider-clumio-internal`
+- `tf-aws-sso-permissionsets`
 
-```bash
-CLUMIO_DIR=~/Desktop/clumio
-REPO=jenkins-lib  # or selected repo
-
-mkdir -p "$CLUMIO_DIR/$REPO"
-gh repo clone "clumio/$REPO" "$CLUMIO_DIR/$REPO/main"
-```
-
-#### Create Worktree
-
-Before creating, ask for branch details using AskUserQuestion:
-- Target branch (default: main)
-- Brief summary for branch name (2-3 words, will be slugified)
-
-Branch naming pattern: `user/choru/${TICKET}_${SUMMARY}/${TARGET_BRANCH}`
-
-Example: `user/choru/CENG-1234_add-retry-logic/main`
-
-```bash
-CLUMIO_DIR=~/Desktop/clumio
-REPO=jenkins-lib
-TICKET=CENG-1234
-SUMMARY="add-retry-logic"
-TARGET_BRANCH="main"
-
-cd "$CLUMIO_DIR/$REPO/main"
-git fetch origin
-git worktree add "../$TICKET" -b "user/choru/${TICKET}_${SUMMARY}/${TARGET_BRANCH}" "origin/${TARGET_BRANCH}"
-```
-
-After creating worktree, offer to:
-1. Change to the new worktree directory
-2. Open ticket planning with `/work-ticket` (or `/wt`)
-
-#### Switch to Worktree
-
-```bash
-CLUMIO_DIR=~/Desktop/clumio
-REPO=jenkins-lib
-TICKET=CENG-1234
-
-cd "$CLUMIO_DIR/$REPO/$TICKET"
-```
-
-Inform user of the directory change.
-
-#### List Worktrees
-
-```bash
-CLUMIO_DIR=~/Desktop/clumio
-REPO=jenkins-lib
-
-cd "$CLUMIO_DIR/$REPO/main"
-git worktree list
-```
-
-Also list directories in the repo folder:
-```bash
-ls -la "$CLUMIO_DIR/$REPO/"
-```
-
-#### Cleanup Worktrees
-
-List worktrees first, then ask which to remove:
-
-```bash
-cd "$CLUMIO_DIR/$REPO/main"
-git worktree list
-```
-
-Use AskUserQuestion to confirm which worktree to remove.
-
-```bash
-TICKET=CENG-1234
-git worktree remove "../$TICKET"
-```
-
-For merged branches, also delete the remote branch if desired:
-```bash
-git push origin --delete "user/choru/${TICKET}_${SUMMARY}/${TARGET_BRANCH}"
-```
+Canonical mapping and examples: `references/repos.md`.
 
 ## Integration with work-ticket
 
-The `/work-ticket` (or `/wt`) skill manages ticket plans in Obsidian.
-
-Obsidian ticket structure:
-```
-~/Desktop/choru/choru-notes/clumio/
-├── CENG-1234/
-│   ├── main.md           # Main plan file with status
-│   ├── api-design.md     # Task-specific notes
-│   └── testing-plan.md
-└── CENG-5678/
-    └── main.md
-```
-
-After creating a worktree, suggest using `/wt` to:
-- Create or update the ticket plan in Obsidian
-- Track implementation progress with checklists
-- Document design decisions and notes
+After creating a worktree, offer:
+- switch to new worktree path
+- open `/work-ticket` (or `/wt`) for planning and progress tracking
 
 ## Important Notes
 
-- Always use `git fetch origin` before creating worktrees to ensure latest refs
-- Worktree directories are named by ticket number for easy identification
-- The main directory should never be modified directly for ticket work
-- Use `git worktree prune` to clean up stale worktree references
+- Worktree directories should be ticket-based and may include a suffix (example: `CENG-5721-ce`).
+- Existing legacy branches/directories may not follow the latest naming convention; do not rename automatically.
+- Use `git worktree prune` to clean stale references when needed.
