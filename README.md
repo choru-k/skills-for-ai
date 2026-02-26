@@ -129,7 +129,7 @@ just skills-index-check
 # Public-output drift checks (index + manifest paths)
 just drift-check
 
-# Private-ID leak checks for public outputs
+# Private-ID leak checks for public outputs (includes npm pack dry-run artifact scan)
 just private-leak-check
 ```
 

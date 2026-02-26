@@ -51,4 +51,43 @@ done < <(find skills -maxdepth 1 -type l | sort)
 # Keep denylist aligned with catalog private assertions.
 rg -n "id: (choru-ticket|work-lessons|work-ticket|work-workspace)|visibility: private" catalog/skills.yaml >/dev/null
 
+if ! command -v npm >/dev/null 2>&1; then
+  echo "ERROR: npm is required to verify publish artifact private-leak policy" >&2
+  exit 1
+fi
+
+PACK_JSON="$(mktemp)"
+trap 'rm -f "${PACK_JSON}"' EXIT
+npm pack --dry-run --json >"${PACK_JSON}"
+
+python3 - "${PACK_JSON}" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+pack_json = Path(sys.argv[1])
+data = json.loads(pack_json.read_text(encoding="utf-8"))
+if not isinstance(data, list) or not data:
+    raise SystemExit("ERROR: npm pack --dry-run --json returned unexpected payload")
+
+files = data[0].get("files")
+if not isinstance(files, list):
+    raise SystemExit("ERROR: npm pack payload missing files list")
+
+paths = [entry.get("path") for entry in files if isinstance(entry, dict)]
+private_prefixes = (
+    "skills/choru-ticket/",
+    "skills/work-lessons/",
+    "skills/work-ticket/",
+    "skills/work-workspace/",
+)
+
+leaks = [path for path in paths if isinstance(path, str) and path.startswith(private_prefixes)]
+if leaks:
+    preview = "\n".join(f"  - {path}" for path in leaks)
+    raise SystemExit(f"ERROR: private paths leaked into npm pack output:\n{preview}")
+
+print(f"validated npm pack private-leak policy: files={len(paths)}")
+PY
+
 echo "private-leak checks passed"

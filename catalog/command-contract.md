@@ -99,7 +99,7 @@ just skills-index-check
 
 Contracts:
 - `check-public-output-drift.sh` must be non-mutating and fail on index/manifest drift.
-- `check-private-leaks.sh` must fail on private-ID leakage in public distribution outputs.
+- `check-private-leaks.sh` must fail on private-ID leakage in public distribution outputs, including `npm pack --dry-run --json` artifact paths.
 - `skills-index-check` remains non-mutating and fails non-zero when symlink index drift exists.
 
 ## Compatibility Notes
