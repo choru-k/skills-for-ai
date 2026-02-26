@@ -36,10 +36,9 @@
       "plugins/call-ai/skills/call-ai/SKILL.md",
       "plugins/clarify/skills/clarify/SKILL.md",
       "plugins/complete-prompt/skills/complete-prompt/SKILL.md",
-      "plugins/front-compaction/pi/skills/front-compaction-pi/SKILL.md",
+      "plugins/front-compaction/pi/skills/pi-front-compaction/SKILL.md",
       "plugins/second-opinion/skills/second-opinion/SKILL.md",
       "plugins/skill-playbook/skills/skill-playbook/SKILL.md",
-      "skills/choru-ticket/SKILL.md",
       "skills/feature-spec/SKILL.md",
       "skills/jira/SKILL.md",
       "skills/skill-commons/SKILL.md",
@@ -48,10 +47,7 @@
       "skills/superplan/SKILL.md",
       "skills/superplan-big/SKILL.md",
       "skills/superplan-medium/SKILL.md",
-      "skills/superplan-small/SKILL.md",
-      "skills/work-lessons/SKILL.md",
-      "skills/work-ticket/SKILL.md",
-      "skills/work-workspace/SKILL.md"
+      "skills/superplan-small/SKILL.md"
     ]
   },
   "peerDependencies": {

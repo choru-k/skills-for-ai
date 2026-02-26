@@ -1,0 +1,36 @@
+version: 1
+entries:
+  # Claude public lane (included in .claude-plugin outputs)
+  - id: cc-front-compaction
+    kind: skill
+    visibility: public
+    target: claude
+    path: plugins/front-compaction/skills/cc-front-compaction/SKILL.md
+
+  # Pi public lane (included in package.json#pi.skills)
+  - id: pi-front-compaction
+    kind: skill
+    visibility: public
+    target: pi
+    path: plugins/front-compaction/pi/skills/pi-front-compaction/SKILL.md
+
+  # Shared public lane (eligible for both Claude and Pi skill outputs)
+  - id: call-ai
+    kind: skill
+    visibility: public
+    target: common
+    path: plugins/call-ai/skills/call-ai/SKILL.md
+
+  # Shared private lane (local/private only; never in public manifests)
+  - id: work-ticket
+    kind: skill
+    visibility: private
+    target: common
+    path: skills/work-ticket/SKILL.md
+
+  # Pi extension lane (included in package.json#pi.extensions)
+  - id: front-compaction-extension
+    kind: extension
+    visibility: public
+    target: pi
+    path: plugins/front-compaction/pi/extensions/front-compaction.ts

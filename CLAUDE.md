@@ -25,6 +25,7 @@ plugins/
         templates/                # XML/markdown templates (complete-prompt)
         assets/                   # Output files not loaded into context
 skills/                           # Shared cross-harness skill index (phase-1 bridge)
+catalog/                          # Phase-1 metadata contracts (schema/mapping/validation/handoff)
 .claude-plugin/marketplace.json   # Claude-only marketplace registry listing all plugins
 package.json                      # Pi package manifest (`pi` key: extensions/skills)
 ```
@@ -52,6 +53,10 @@ Each plugin is self-contained under `plugins/<name>/` with its own `plugin.json`
 - **`ai-registry.yaml`** (`plugins/call-ai/skills/call-ai/`): Single source of truth for all AI provider/model definitions. Update models here only. Parsed at runtime with a section-aware Python3 parser.
 - **`marketplace.json`** (`.claude-plugin/`): Claude-only registry of plugins with `source` paths pointing to plugin directories.
 - **`package.json`** (root): Pi package manifest. `pi.extensions` and `pi.skills` define what `pi install` loads.
+- **`catalog/skills.yaml`** (root `catalog/`): canonical inventory classification (`id`, `kind`, `visibility`, `target`, `path`).
+- **`catalog/*.md`** (root `catalog/`): source-of-truth contracts for schema, mapping, validation, sync/check behavior, migration staging, verification, rollback, runtime gates, and publish/operations runbooks.
+- **`scripts/check-public-output-drift.sh`**: deterministic index/manifest drift checks (CI + local).
+- **`scripts/check-private-leaks.sh`**: fail-closed private-ID leak checks for public outputs (CI + local).
 - **`plugin.json`** (per-plugin `.claude-plugin/`): Plugin metadata — name, version, description, author.
 
 ## SKILL.md Conventions
@@ -85,6 +90,24 @@ Scripts in `call-ai` use bash with:
 - Add Pi extensions as TypeScript files (for example `plugins/<name>/pi/extensions/*.ts`)
 - Update `package.json#pi.skills` and/or `package.json#pi.extensions` so `pi install` can load them
 - Run `just skills-index-sync` to regenerate plugin-backed symlinks under `skills/` from `package.json#pi.skills`
+
+## Phase-4 Guardrail Command Flow
+
+Run these before merge/release changes touching skills/manifests/catalog:
+
+```bash
+just drift-check
+just private-leak-check
+bash skills/skill-playbook/scripts/graph-qa.sh
+just pi-pack-dry-run
+```
+
+Related docs:
+- `catalog/runtime-wiring-matrix.md`
+- `catalog/publish-checklist.md`
+- `catalog/operations-runbook.md`
+- `catalog/migration-verification-checklist.md`
+- `catalog/migration-rollback.md`
 
 ## Installation Methods
 

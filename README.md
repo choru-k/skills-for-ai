@@ -10,13 +10,18 @@ Custom AI-agent skills with **both Claude and Pi distribution support** — mult
 | **complete-prompt** | Generate structured XML context prompts for AI-to-AI handoffs (9 modes + `--refs`) |
 | **cc-context-fork** | Fork the current session to Haiku, Sonnet, or Opus with full conversation context preserved |
 | **second-opinion** | Get second opinions from external AIs on programming questions with parallel execution and synthesis |
-| **front-compaction-claude** | Claude wrapper for manual front-only compaction with hard tail replay semantics |
-| **front-compaction-pi** | Pi-facing manual front-only compaction workflow plus extension command |
+| **cc-front-compaction** | Claude lifecycle wrapper: prepare + compact-start replay flow for front-only compaction |
+| **pi-front-compaction** | Pi lifecycle workflow: extension command + session compaction boundary handling |
 | **skill-playbook** | Evaluate external ideas, validate claims, track lifecycle status, and maintain best-practice notes |
 | **clarify** | Turn ambiguous requests into clean, actionable specifications with structured clarification |
 | **cc-dev-skills** | Guide for creating effective Claude Code skills with SKILL.md templates and validation scripts |
 | **cc-dev-agents** | Comprehensive guide for creating Claude Code subagents with frontmatter, permissions, and hooks |
 | **cc-dev-hooks** | Comprehensive guide for creating Claude Code hooks with command, prompt, and agent hook types |
+
+## Prefix Convention
+
+- `cc-*` skills integrate with Claude lifecycle behaviors (hooks, session events, Claude-specific orchestration).
+- `pi-*` skills integrate with Pi lifecycle behaviors (Pi extension commands, Pi session compaction pipeline).
 
 ## Shared Skill Index
 
@@ -29,6 +34,26 @@ Custom AI-agent skills with **both Claude and Pi distribution support** — mult
 
 - `.claude-plugin/marketplace.json` is **Claude-only** plugin marketplace metadata.
 - `package.json#pi` is **Pi-only** package metadata (skills/extensions for `pi install`).
+
+## Catalog Contracts (Phase 1–2)
+
+Architecture contracts and migration planning artifacts live under `catalog/`:
+
+- `catalog/skills.schema.md` — canonical entry schema (`id`, `visibility`, `target`, `path`, `kind`)
+- `catalog/skills.yaml` — current inventory classification (public/private + target)
+- `catalog/generation-mapping.md` — deterministic mapping rules for Claude/Pi public outputs
+- `catalog/schema-validation.md` — validation and leak-prevention rules
+- `catalog/command-contract.md` — sync/check command behavior contract
+- `catalog/phase-1-handoff.md` — phase-1 acceptance and migration handoff notes
+- `catalog/private-boundary-decision.md` — private-lane repository boundary decision
+- `catalog/private-skill-placement.md` — private skill placement and local consumption contract
+- `catalog/migration-map.md` — source→target migration matrix
+- `catalog/migration-stages.md` — staged migration order + public output deltas
+- `catalog/migration-verification-checklist.md` — cutover verification checklist
+- `catalog/migration-rollback.md` — deterministic rollback runbook
+- `catalog/runtime-wiring-matrix.md` — implemented runtime wiring matrix + phase-3 runtime pass/fail gates
+- `catalog/publish-checklist.md` — deterministic preflight/publish/postflight checklist
+- `catalog/operations-runbook.md` — ongoing maintenance and incident-response command flow
 
 ## Installation
 
@@ -43,7 +68,7 @@ claude plugin install call-ai
 claude plugin install complete-prompt
 claude plugin install context-fork   # provides /cc-context-fork
 claude plugin install second-opinion
-claude plugin install front-compaction-claude
+claude plugin install cc-front-compaction
 claude plugin install skill-playbook
 claude plugin install clarify
 claude plugin install cc-dev-skills
@@ -61,7 +86,7 @@ cp -r /tmp/skills-for-ai/plugins/call-ai/skills/call-ai ~/.claude/skills/call-ai
 cp -r /tmp/skills-for-ai/plugins/complete-prompt/skills/complete-prompt ~/.claude/skills/complete-prompt
 cp -r /tmp/skills-for-ai/plugins/context-fork/skills/context-fork ~/.claude/skills/cc-context-fork
 cp -r /tmp/skills-for-ai/plugins/second-opinion/skills/second-opinion ~/.claude/skills/second-opinion
-cp -r /tmp/skills-for-ai/plugins/front-compaction/skills/front-compaction-claude ~/.claude/skills/front-compaction-claude
+cp -r /tmp/skills-for-ai/plugins/front-compaction/skills/cc-front-compaction ~/.claude/skills/cc-front-compaction
 cp -r /tmp/skills-for-ai/plugins/skill-playbook/skills/skill-playbook ~/.claude/skills/skill-playbook
 cp -r /tmp/skills-for-ai/plugins/clarify/skills/clarify ~/.claude/skills/clarify
 cp -r /tmp/skills-for-ai/plugins/cc-dev-skills/skills/cc-dev-skills ~/.claude/skills/cc-dev-skills
@@ -84,7 +109,7 @@ pi install /absolute/path/to/skills-for-ai
 
 Pi uses `package.json#pi` in this repo to discover:
 - skills (shared skill set)
-- extensions (currently `front-compaction-pi` command, with `/front-compaction` alias)
+- extensions (currently `pi-front-compaction` command, with `/front-compaction` and `/front-compaction-pi` aliases)
 
 ### Just shortcuts
 
@@ -98,8 +123,14 @@ just pi-pack-dry-run
 # Sync generated skills/ symlink index
 just skills-index-sync
 
-# CI-style drift check (no writes)
+# CI-style index drift check (no writes)
 just skills-index-check
+
+# Public-output drift checks (index + manifest paths)
+just drift-check
+
+# Private-ID leak checks for public outputs
+just private-leak-check
 ```
 
 ## Development Hook (Graph QA)
@@ -117,7 +148,22 @@ bash skills/skill-playbook/scripts/graph-qa.sh
 The hook runs automatically on commit once `core.hooksPath` is set.
 
 CI also enforces this on GitHub Actions:
-- `.github/workflows/graph-qa.yml` runs on PRs/pushes that touch `skills/**` or `plugins/**/skills/**`.
+- `.github/workflows/graph-qa.yml` runs drift checks, private-leak checks, and graph QA on PR/push updates to skills/manifests/catalog/workflow-relevant files.
+
+## Operations (Phase 4)
+
+Operator runbooks:
+- `catalog/publish-checklist.md`
+- `catalog/operations-runbook.md`
+
+Recommended acceptance command set:
+
+```bash
+just drift-check
+just private-leak-check
+bash skills/skill-playbook/scripts/graph-qa.sh
+just pi-pack-dry-run
+```
 
 ## Usage
 
@@ -134,7 +180,7 @@ After installation, skills appear as slash commands in Claude Code:
 /cc-context-fork opus "deep analysis of this module"
 /so "Redis or Memcached for session storage?"
 /so :all "Review this architecture decision"
-/front-compaction-claude 30
+/cc-front-compaction 30
 /skill-playbook list
 /clarify "Build a better onboarding experience"
 /cc-dev-skills
@@ -148,9 +194,10 @@ After `pi install ...`, Pi loads skills/extensions from `package.json#pi`.
 Example:
 
 ```
-/front-compaction-pi 30
-# alias still supported:
+/pi-front-compaction 30
+# aliases still supported:
 /front-compaction 30
+/front-compaction-pi 30
 ```
 
 ## Prerequisites
@@ -159,7 +206,7 @@ Example:
 - **complete-prompt** has no external dependencies
 - **cc-context-fork** requires `claude` CLI
 - **second-opinion** requires `call-ai` + `complete-prompt` (install all three)
-- **front-compaction-claude**, **front-compaction-pi**, **skill-playbook**, **clarify** have no external dependencies
+- **cc-front-compaction**, **pi-front-compaction**, **skill-playbook**, **clarify** have no external dependencies
 - **cc-dev-skills**, **cc-dev-agents**, **cc-dev-hooks** have no external dependencies
 
 ## License

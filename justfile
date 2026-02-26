@@ -18,3 +18,11 @@ skills-index-sync:
 # Check that skills/ symlink index matches package.json#pi.skills.
 skills-index-check:
     python3 scripts/sync-skills-index.py --check
+
+# CI/local guardrail: detect public-output drift.
+drift-check:
+    bash scripts/check-public-output-drift.sh
+
+# CI/local guardrail: detect private-ID leakage into public outputs.
+private-leak-check:
+    bash scripts/check-private-leaks.sh
