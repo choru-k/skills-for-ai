@@ -4,7 +4,6 @@
 Managed artifacts:
 - package.json (pi.skills, pi.extensions)
 - .claude-plugin/marketplace.json (plugins list)
-- skills/ plugin-backed symlink index
 
 Exit codes (aligned with docs/contracts/operator-failure-semantics.md):
 - 2: lane-mismatch
@@ -18,7 +17,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
 import sys
 from dataclasses import dataclass
@@ -41,7 +39,6 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 CATALOG_FILE = REPO_ROOT / "catalog" / "skills.yaml"
 PACKAGE_FILE = REPO_ROOT / "package.json"
 MARKETPLACE_FILE = REPO_ROOT / ".claude-plugin" / "marketplace.json"
-SKILLS_DIR = REPO_ROOT / "skills"
 PLUGINS_DIR = REPO_ROOT / "plugins"
 
 VALID_VISIBILITY = {"public", "private"}
@@ -49,6 +46,9 @@ VALID_TARGET = {"claude", "pi", "common"}
 VALID_KIND = {"skill", "extension"}
 ID_PATTERN = re.compile(r"^[a-z0-9][a-z0-9-]*$")
 PRIVATE_IDS = {"choru-ticket", "work-lessons", "work-ticket", "work-workspace"}
+SKILL_PLUGIN_NAME_OVERRIDES = {
+    "cc-context-fork": "context-fork",
+}
 
 
 @dataclass(frozen=True)
@@ -58,13 +58,6 @@ class CatalogEntry:
     target: str
     kind: str
     path: str
-
-
-@dataclass(frozen=True)
-class SymlinkAction:
-    kind: str  # "upsert" | "remove"
-    link_path: Path
-    link_target: str = ""
 
 
 class ContractError(RuntimeError):
@@ -186,27 +179,12 @@ def expected_pi_lists(entries: list[CatalogEntry]) -> tuple[list[str], list[str]
     return skill_paths, extension_paths
 
 
-def expected_marketplace_plugins(entries: list[CatalogEntry]) -> list[dict[str, str]]:
-    plugin_roots: dict[str, dict[str, str]] = {}
+def load_plugin_metadata_index() -> dict[str, dict[str, str]]:
+    mapping: dict[str, dict[str, str]] = {}
 
-    for entry in entries:
-        if entry.visibility != "public" or entry.kind != "skill" or entry.target not in {"claude", "common"}:
-            continue
-
-        path_obj = Path(entry.path)
-        if not path_obj.parts or path_obj.parts[0] != "plugins" or len(path_obj.parts) < 3:
-            # Public common skills in skills/* are valid for Pi package, but not marketplace plugins.
-            continue
-
-        plugin_root = Path(path_obj.parts[0]) / path_obj.parts[1]
-        plugin_json = REPO_ROOT / plugin_root / ".claude-plugin" / "plugin.json"
-        if not plugin_json.is_file():
-            raise ContractError(
-                f"missing-generated-file: missing plugin metadata at {rel(plugin_json)}",
-                MISSING_GENERATED_FILE,
-            )
-
+    for plugin_json in sorted(PLUGINS_DIR.glob("*/.claude-plugin/plugin.json")):
         data = load_json(plugin_json)
+
         name = data.get("name")
         description = data.get("description")
         if not isinstance(name, str) or not name:
@@ -214,18 +192,45 @@ def expected_marketplace_plugins(entries: list[CatalogEntry]) -> list[dict[str, 
         if not isinstance(description, str):
             raise ContractError(f"invalid-contract-input: plugin description missing at {rel(plugin_json)}")
 
-        source = plugin_root.as_posix()
-        existing = plugin_roots.get(source)
+        existing = mapping.get(name)
         candidate = {
             "name": name,
             "description": description,
-            "source": source,
         }
         if existing and existing != candidate:
-            raise ContractError(f"invalid-contract-input: conflicting plugin metadata for source '{source}'")
-        plugin_roots[source] = candidate
+            raise ContractError(f"invalid-contract-input: conflicting plugin metadata for name '{name}'")
+        mapping[name] = candidate
 
-    plugins = sorted(plugin_roots.values(), key=lambda plugin: plugin["name"])
+    return mapping
+
+
+def expected_marketplace_plugins(entries: list[CatalogEntry]) -> list[dict[str, str]]:
+    plugin_meta_index = load_plugin_metadata_index()
+    plugin_records: dict[str, dict[str, str]] = {}
+
+    for entry in entries:
+        if entry.visibility != "public" or entry.kind != "skill" or entry.target not in {"claude", "common"}:
+            continue
+
+        plugin_name = SKILL_PLUGIN_NAME_OVERRIDES.get(entry.id, entry.id)
+        plugin_meta = plugin_meta_index.get(plugin_name)
+        if not plugin_meta:
+            # skill may be intentionally non-plugin-managed for marketplace.
+            continue
+
+        source = Path(entry.path).parent.as_posix()
+        candidate = {
+            "name": plugin_meta["name"],
+            "description": plugin_meta["description"],
+            "source": source,
+        }
+
+        existing = plugin_records.get(plugin_name)
+        if existing and existing != candidate:
+            raise ContractError(f"invalid-contract-input: conflicting marketplace source for plugin '{plugin_name}'")
+        plugin_records[plugin_name] = candidate
+
+    plugins = sorted(plugin_records.values(), key=lambda plugin: plugin["name"])
 
     leak_names = [plugin["name"] for plugin in plugins if plugin["name"] in PRIVATE_IDS]
     if leak_names:
@@ -235,67 +240,6 @@ def expected_marketplace_plugins(entries: list[CatalogEntry]) -> list[dict[str, 
         )
 
     return plugins
-
-
-def is_plugin_backed_symlink(path: Path) -> bool:
-    if not path.is_symlink():
-        return False
-    target = (path.parent / os.readlink(path)).resolve()
-    try:
-        target.relative_to(PLUGINS_DIR)
-        return True
-    except ValueError:
-        return False
-
-
-def expected_skills_symlink_actions(pi_skills: list[str]) -> list[SymlinkAction]:
-    expected_links: dict[str, Path] = {}
-
-    for raw in pi_skills:
-        path_obj = Path(raw)
-        if not path_obj.parts or path_obj.parts[0] != "plugins":
-            continue
-
-        skill_dir = (REPO_ROOT / path_obj).parent
-        skill_name = skill_dir.name
-        existing = expected_links.get(skill_name)
-        if existing and existing.resolve() != skill_dir.resolve():
-            raise ContractError(
-                f"invalid-contract-input: duplicate plugin-backed skill '{skill_name}' in pi.skills",
-            )
-        expected_links[skill_name] = skill_dir
-
-    actions: list[SymlinkAction] = []
-
-    if not SKILLS_DIR.is_dir():
-        raise ContractError(f"missing-generated-file: missing {rel(SKILLS_DIR)}", MISSING_GENERATED_FILE)
-
-    for skill_name, target_dir in sorted(expected_links.items()):
-        link_path = SKILLS_DIR / skill_name
-        link_target = os.path.relpath(target_dir, SKILLS_DIR)
-        target_resolved = target_dir.resolve()
-
-        if link_path.exists() or link_path.is_symlink():
-            if link_path.is_symlink():
-                current_raw = os.readlink(link_path)
-                current_resolved = (link_path.parent / current_raw).resolve()
-                if current_resolved != target_resolved or current_raw != link_target:
-                    actions.append(SymlinkAction(kind="upsert", link_path=link_path, link_target=link_target))
-            else:
-                raise ContractError(
-                    f"invalid-contract-input: expected symlink at {rel(link_path)} for plugin-backed skill",
-                )
-        else:
-            actions.append(SymlinkAction(kind="upsert", link_path=link_path, link_target=link_target))
-
-    expected_names = set(expected_links.keys())
-    for entry in sorted(SKILLS_DIR.iterdir()):
-        if not is_plugin_backed_symlink(entry):
-            continue
-        if entry.name not in expected_names:
-            actions.append(SymlinkAction(kind="remove", link_path=entry))
-
-    return actions
 
 
 def compare_list(current: list[Any], expected: list[Any], artifact: str, field: str) -> list[str]:
@@ -314,18 +258,6 @@ def compare_list(current: list[Any], expected: list[Any], artifact: str, field: 
     return lines
 
 
-def apply_symlink_actions(actions: list[SymlinkAction]) -> None:
-    for action in actions:
-        if action.kind == "upsert":
-            if action.link_path.exists() or action.link_path.is_symlink():
-                action.link_path.unlink()
-            action.link_path.symlink_to(action.link_target)
-            print(f"synced skills-index: {rel(action.link_path)} -> {action.link_target}")
-        elif action.kind == "remove":
-            action.link_path.unlink()
-            print(f"synced skills-index: removed {rel(action.link_path)}")
-
-
 def run(args: argparse.Namespace) -> int:
     if args.lane != "public":
         raise ContractError(
@@ -335,8 +267,8 @@ def run(args: argparse.Namespace) -> int:
 
     entries = load_catalog_entries()
 
-    enabled = set(args.only.split(",")) if args.only else {"pi", "marketplace", "skills-index"}
-    valid_enabled = {"pi", "marketplace", "skills-index"}
+    enabled = set(args.only.split(",")) if args.only else {"pi", "marketplace"}
+    valid_enabled = {"pi", "marketplace"}
     invalid = sorted(enabled - valid_enabled)
     if invalid:
         raise ContractError(f"invalid-contract-input: unsupported --only target(s): {', '.join(invalid)}")
@@ -349,7 +281,6 @@ def run(args: argparse.Namespace) -> int:
         raise ContractError("invalid-contract-input: package.json missing object field pi")
 
     expected_pi_skills, expected_pi_extensions = expected_pi_lists(entries)
-    skills_actions = expected_skills_symlink_actions(expected_pi_skills)
 
     drift_lines: list[str] = []
 
@@ -374,15 +305,6 @@ def run(args: argparse.Namespace) -> int:
             raise ContractError("invalid-contract-input: marketplace.json missing plugins array")
         drift_lines.extend(compare_list(current_plugins, expected_plugins, ".claude-plugin/marketplace.json", "plugins"))
 
-    if "skills-index" in enabled:
-        for action in skills_actions:
-            if action.kind == "upsert":
-                drift_lines.append(
-                    f"DRIFT skills-index symlink mismatch {rel(action.link_path)} -> {action.link_target}"
-                )
-            else:
-                drift_lines.append(f"DRIFT skills-index symlink stale {rel(action.link_path)}")
-
     if drift_lines and args.check:
         for line in drift_lines:
             print(line)
@@ -404,11 +326,6 @@ def run(args: argparse.Namespace) -> int:
         save_json(MARKETPLACE_FILE, marketplace)
         print("synced .claude-plugin/marketplace.json plugins")
 
-    if "skills-index" in enabled:
-        apply_symlink_actions(skills_actions)
-        if not skills_actions:
-            print("skills-index already in sync")
-
     print("catalog artifact sync complete")
     return 0
 
@@ -424,7 +341,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--only",
-        help="Comma-separated subset: pi,marketplace,skills-index",
+        help="Comma-separated subset: pi,marketplace",
     )
     return parser
 

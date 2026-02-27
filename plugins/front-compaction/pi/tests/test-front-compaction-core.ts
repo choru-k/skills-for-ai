@@ -5,7 +5,7 @@ import {
   minimumTurnsRequired,
   parseCommandArgs,
   parseInstructions,
-} from "../extensions/front-compaction-core";
+} from "../../../../pi/extensions/front-compaction-core";
 
 function assert(condition: boolean, message: string): void {
   if (!condition) {

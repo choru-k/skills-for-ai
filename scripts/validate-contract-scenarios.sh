@@ -6,12 +6,12 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 cd "${REPO_ROOT}"
 
-echo "[1/3] Baseline public contract check"
-python3 scripts/sync-catalog-artifacts.py --check --lane public >/dev/null
+echo "[1/4] Baseline public contract check"
+bash scripts/check-public-output-drift.sh >/dev/null
 
-echo "[2/3] Drift scenario (expected failure with exit code 4)"
+echo "[2/4] Drift scenario (expected failure with exit code 4)"
 DRIFT_REPO="$(mktemp -d)"
-trap 'rm -rf "${DRIFT_REPO}" "${LEAK_REPO:-}"' EXIT
+trap 'rm -rf "${DRIFT_REPO}" "${LEAK_REPO:-}" "${LEGACY_REPO:-}"' EXIT
 cp -a "${REPO_ROOT}/." "${DRIFT_REPO}/"
 
 cd "${DRIFT_REPO}"
@@ -52,7 +52,7 @@ fi
 rm -f "${DRIFT_OUTPUT}"
 
 
-echo "[3/3] Private leak scenario (expected failure)"
+echo "[3/4] Private leak scenario (expected failure)"
 LEAK_REPO="$(mktemp -d)"
 cp -a "${REPO_ROOT}/." "${LEAK_REPO}/"
 
@@ -66,8 +66,8 @@ data = json.loads(path.read_text(encoding="utf-8"))
 skills = data.get("pi", {}).get("skills")
 if not isinstance(skills, list):
     raise SystemExit("pi.skills must be an array")
-if "skills/work-ticket/SKILL.md" not in skills:
-    skills.append("skills/work-ticket/SKILL.md")
+if "common/work-ticket/SKILL.md" not in skills:
+    skills.append("common/work-ticket/SKILL.md")
 path.write_text(f"{json.dumps(data, indent=2, ensure_ascii=False)}\n", encoding="utf-8")
 PY
 
@@ -88,5 +88,32 @@ if ! grep -Eq 'private skill paths leaked|private ID leaked' "${LEAK_OUTPUT}"; t
 fi
 
 rm -f "${LEAK_OUTPUT}"
+
+
+echo "[4/4] Legacy bridge scenario (expected failure)"
+LEGACY_REPO="$(mktemp -d)"
+cp -a "${REPO_ROOT}/." "${LEGACY_REPO}/"
+
+cd "${LEGACY_REPO}"
+mkdir -p skills
+ln -s ../common/call-ai skills/call-ai
+
+LEGACY_OUTPUT="$(mktemp)"
+set +e
+bash scripts/check-public-output-drift.sh >"${LEGACY_OUTPUT}" 2>&1
+LEGACY_RC=$?
+set -e
+if [[ "${LEGACY_RC}" -eq 0 ]]; then
+  echo "ERROR: legacy bridge scenario unexpectedly passed" >&2
+  cat "${LEGACY_OUTPUT}" >&2
+  exit 1
+fi
+if ! grep -q 'legacy compatibility bridge paths detected' "${LEGACY_OUTPUT}"; then
+  echo "ERROR: expected legacy-bridge failure output" >&2
+  cat "${LEGACY_OUTPUT}" >&2
+  exit 1
+fi
+
+rm -f "${LEGACY_OUTPUT}"
 
 echo "contract scenario validation passed"

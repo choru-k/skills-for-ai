@@ -32,8 +32,8 @@ Usage:
 Modes:
   --case <file>   Run one explicit case file
   --skill <name>  Run all cases under:
-                  - skills/<name>/tests/claude/*.json
-                  - plugins/*/skills/<name>/tests/claude/*.json
+                  - common/<name>/tests/claude/*.json
+                  - claude/<name>/tests/claude/*.json
   --dir <dir>     Run all cases in one directory (default mode)
 
 Defaults:
@@ -104,17 +104,14 @@ fi
 CASES=()
 
 if [[ -n "$SKILL_NAME" ]]; then
-  collect_cases_from_dir "$REPO_ROOT/skills/$SKILL_NAME/tests/claude"
-
-  while IFS= read -r plugin_cases_dir; do
-    collect_cases_from_dir "$plugin_cases_dir"
-  done < <(find "$REPO_ROOT/plugins" -type d -path "*/skills/$SKILL_NAME/tests/claude" | sort)
+  collect_cases_from_dir "$REPO_ROOT/common/$SKILL_NAME/tests/claude"
+  collect_cases_from_dir "$REPO_ROOT/claude/$SKILL_NAME/tests/claude"
 
   if [[ ${#CASES[@]} -eq 0 ]]; then
     echo "Error: No .json case files found for skill '$SKILL_NAME'" >&2
     echo "Checked:" >&2
-    echo "  $REPO_ROOT/skills/$SKILL_NAME/tests/claude" >&2
-    echo "  $REPO_ROOT/plugins/*/skills/$SKILL_NAME/tests/claude" >&2
+    echo "  $REPO_ROOT/common/$SKILL_NAME/tests/claude" >&2
+    echo "  $REPO_ROOT/claude/$SKILL_NAME/tests/claude" >&2
     exit 1
   fi
 else

@@ -19,13 +19,9 @@ catalog-sync:
 catalog-check:
     python3 scripts/sync-catalog-artifacts.py --check --lane public
 
-# Sync skills/ symlink index from catalog-managed pi.skills output.
-skills-index-sync:
-    python3 scripts/sync-catalog-artifacts.py --lane public --only skills-index
-
-# Check that skills/ symlink index matches catalog-managed pi.skills output.
-skills-index-check:
-    python3 scripts/sync-catalog-artifacts.py --check --lane public --only skills-index
+# Guardrail: fail if legacy compatibility bridge paths exist.
+legacy-bridge-check:
+    bash scripts/check-legacy-bridges.sh
 
 # CI/local guardrail: detect public-output drift.
 drift-check:
@@ -35,6 +31,6 @@ drift-check:
 private-leak-check:
     bash scripts/check-private-leaks.sh
 
-# Validate negative drift/leak scenarios in isolated temp copies.
+# Validate negative drift/leak/legacy scenarios in isolated temp copies.
 contract-scenario-check:
     bash scripts/validate-contract-scenarios.sh

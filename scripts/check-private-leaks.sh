@@ -6,8 +6,10 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 cd "${REPO_ROOT}"
 
+bash scripts/check-legacy-bridges.sh
+
 PRIVATE_IDS_REGEX='choru-ticket|work-lessons|work-ticket|work-workspace'
-PRIVATE_SKILL_PATHS_REGEX='skills/(choru-ticket|work-lessons|work-ticket|work-workspace)/SKILL\.md'
+PRIVATE_SKILL_PATHS_REGEX='(skills|common)/(choru-ticket|work-lessons|work-ticket|work-workspace)/SKILL\.md'
 
 if rg -n "${PRIVATE_IDS_REGEX}" .claude-plugin/marketplace.json; then
   echo "ERROR: private IDs leaked into .claude-plugin/marketplace.json" >&2
@@ -37,16 +39,6 @@ for raw in skills:
 
 print(f"validated pi.skills private-leak policy: {len(skills)} entries")
 PY
-
-while IFS= read -r link; do
-  name="$(basename "$link")"
-  case "${name}" in
-    choru-ticket|work-lessons|work-ticket|work-workspace)
-      echo "ERROR: private ID leaked as plugin-backed shared-index symlink: skills/${name}" >&2
-      exit 1
-      ;;
-  esac
-done < <(find skills -maxdepth 1 -type l | sort)
 
 # Keep denylist aligned with catalog private assertions.
 rg -n "id: (choru-ticket|work-lessons|work-ticket|work-workspace)|visibility: private" catalog/skills.yaml >/dev/null
@@ -80,6 +72,10 @@ private_prefixes = (
     "skills/work-lessons/",
     "skills/work-ticket/",
     "skills/work-workspace/",
+    "common/choru-ticket/",
+    "common/work-lessons/",
+    "common/work-ticket/",
+    "common/work-workspace/",
 )
 
 leaks = [path for path in paths if isinstance(path, str) and path.startswith(private_prefixes)]

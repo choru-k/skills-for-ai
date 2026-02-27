@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "skills/**"
-      - "plugins/**/skills/**"
+      - "common/**"
+      - "claude/**"
+      - "pi/**"
       - "plugins/**/.claude-plugin/**"
       - "catalog/**"
       - "scripts/**"
@@ -17,8 +18,9 @@ on:
     branches:
       - main
     paths:
-      - "skills/**"
-      - "plugins/**/skills/**"
+      - "common/**"
+      - "claude/**"
+      - "pi/**"
       - "plugins/**/.claude-plugin/**"
       - "catalog/**"
       - "scripts/**"
@@ -57,4 +59,4 @@ jobs:
         run: bash scripts/check-private-leaks.sh
 
       - name: Run graph QA
-        run: bash skills/skill-playbook/scripts/graph-qa.sh
+        run: bash common/skill-playbook/scripts/graph-qa.sh
