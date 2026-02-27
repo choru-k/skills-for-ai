@@ -2,7 +2,7 @@
 
 This contract defines expected behavior for catalog-driven artifact generation commands.
 
-## Command Interface (v1)
+## Command Interface (v2, breaking)
 
 Primary command shape:
 
@@ -10,10 +10,10 @@ Primary command shape:
 python3 scripts/sync-catalog-artifacts.py [--check]
 ```
 
-Optional scope flags (if implemented):
+Optional scope flags:
 
 ```bash
-python3 scripts/sync-catalog-artifacts.py [--check] --only marketplace,pi,skills-index
+python3 scripts/sync-catalog-artifacts.py [--check] --only marketplace,pi
 ```
 
 - Default mode: `sync` (mutating)
@@ -23,33 +23,15 @@ python3 scripts/sync-catalog-artifacts.py [--check] --only marketplace,pi,skills
 
 - `.claude-plugin/marketplace.json`
 - `package.json` (`pi.skills`, `pi.extensions` only)
-- `skills/` plugin-backed symlink index
+
+> Breaking change: `skills/` shared-index sync is no longer a managed output.
 
 ## Behavior Matrix
 
-| Mode | Writes files | Removes stale generated entries | Reports drift | Exit on drift |
-|------|--------------|----------------------------------|---------------|---------------|
-| `sync` | yes | yes | optional summary | no |
-| `check` | no | no | required | yes (non-zero) |
-
-## Sync Contract (mutating)
-
-1. Load and validate catalog.
-2. Generate expected output for each managed artifact.
-3. Apply deterministic writes only when content differs.
-4. Remove stale generated entries no longer represented in catalog.
-5. Print concise per-artifact summary.
-
-### Idempotency
-Running `sync` repeatedly with unchanged inputs must produce no further diffs.
-
-## Check Contract (non-mutating)
-
-1. Load and validate catalog.
-2. Compute expected outputs exactly as `sync` does.
-3. Compare expected vs current without writing.
-4. Emit readable drift report.
-5. Exit non-zero if drift exists.
+| Mode | Writes files | Reports drift | Exit on drift |
+|------|--------------|---------------|---------------|
+| `sync` | yes | optional summary | no |
+| `check` | no | required | yes (non-zero) |
 
 ## Drift Report Format
 
@@ -60,18 +42,8 @@ DRIFT <artifact> <change-type> <identifier> <detail>
 ```
 
 Examples:
-- `DRIFT package.json pi.skills missing plugins/call-ai/skills/call-ai/SKILL.md`
-- `DRIFT marketplace.json plugin stale cc-dev-hooks`
-- `DRIFT skills-index symlink mismatch skills/pi-front-compaction`
-
-## Error Handling Contract
-
-Hard-fail (non-zero) when:
-- catalog validation fails
-- required files are missing/unreadable
-- generated mapping has conflicts or ambiguity
-
-The command must not partially write files in `check` mode.
+- `DRIFT package.json pi.skills index=0 current="..." expected="..."`
+- `DRIFT .claude-plugin/marketplace.json plugins index=2 current={...} expected={...}`
 
 ## Determinism Requirements
 
@@ -79,35 +51,43 @@ The command must not partially write files in `check` mode.
 - Emit normalized POSIX relative paths.
 - Emit stable JSON formatting for generated JSON artifacts.
 
-## Implemented Guardrail Commands (Phase 4)
+## Human-First Source-of-Truth (breaking)
 
-Current enforced command set:
+- Catalog paths are canonical under:
+  - `common/*`
+  - `claude/*`
+  - `pi/*`
+  - `pi/extensions/*`
+- `package.json#pi.skills` / `pi.extensions` emit canonical paths.
+- Marketplace records are resolved from canonical skill entries and plugin metadata (`plugins/*/.claude-plugin/plugin.json`), with source paths emitted as canonical skill roots.
+
+## Legacy Bridge Retirement Contract
+
+The following legacy compatibility surfaces are retired and must not exist:
+- `skills/*`
+- `plugins/*/skills/*`
+- `plugins/*/pi/skills/*`
+- `plugins/*/pi/extensions/*`
+
+Guardrail command:
 
 ```bash
-python3 scripts/sync-catalog-artifacts.py --check --lane public
-bash scripts/check-public-output-drift.sh
-bash scripts/check-private-leaks.sh
-bash scripts/validate-contract-scenarios.sh
+bash scripts/check-legacy-bridges.sh
 ```
 
-Local shortcuts:
+## Guardrail Commands
 
 ```bash
 just catalog-check
+just legacy-bridge-check
 just drift-check
 just private-leak-check
 just contract-scenario-check
-just skills-index-check
 ```
 
-Contracts:
+## Failure Contracts
+
 - `sync-catalog-artifacts.py --check --lane public` is the canonical non-mutating public-lane contract check.
-- `check-public-output-drift.sh` is a wrapper around the canonical check and must fail non-zero on drift.
-- `check-private-leaks.sh` must fail on private-ID leakage in public distribution outputs, including `npm pack --dry-run --json` artifact paths.
-- `validate-contract-scenarios.sh` must prove reproducible detection for at least one drift and one private-leak negative scenario in isolated temp copies.
-- `skills-index-check` remains a scoped non-mutating check over `skills/` symlink index (`--only skills-index`).
-
-## Compatibility Notes
-
-- `scripts/sync-skills-index.py` remains available as a legacy narrow utility.
-- `scripts/sync-catalog-artifacts.py` is the canonical sync/check entrypoint for catalog-managed public artifacts.
+- `check-public-output-drift.sh` wraps drift + legacy bridge retirement checks and fails non-zero on any violation.
+- `check-private-leaks.sh` fails on private-ID leakage in public distribution outputs, including `npm pack --dry-run --json` artifact paths.
+- `validate-contract-scenarios.sh` proves reproducible detection for drift, private-leak, and legacy-bridge negative scenarios.

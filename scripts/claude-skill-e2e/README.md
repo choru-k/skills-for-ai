@@ -21,15 +21,10 @@ bash scripts/claude-skill-e2e/test-claude-skills.sh --skill cc-front-compaction
 Run one explicit case:
 
 ```bash
-bash scripts/claude-skill-e2e/test-claude-skills.sh --case plugins/front-compaction/skills/cc-front-compaction/tests/claude/front-compaction.e2e.json
+bash scripts/claude-skill-e2e/test-claude-skills.sh --case claude/cc-front-compaction/tests/claude/front-compaction.e2e.json
 ```
 
 ## Case placement convention
 
-- shared skills: `skills/<skill-name>/tests/claude/*.json`
-- plugin skills: `plugins/*/skills/<skill-name>/tests/claude/*.json`
-
-Compatibility wrappers remain at:
-- `plugins/call-ai/skills/call-ai/scripts/claude-skill-harness.py`
-- `plugins/call-ai/skills/call-ai/scripts/test-claude-skills.sh`
-- `plugins/call-ai/skills/call-ai/scripts/test-claude-skill-harness.sh`
+- common skills: `common/<skill-name>/tests/claude/*.json`
+- Claude-only skills: `claude/<skill-name>/tests/claude/*.json`

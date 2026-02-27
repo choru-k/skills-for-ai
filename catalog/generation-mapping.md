@@ -1,20 +1,19 @@
-# Catalog Generation Mapping (v1)
+# Catalog Generation Mapping (v2)
 
 This document defines deterministic mapping from catalog entries to public distribution artifacts.
 
 ## Inputs
 
-- Canonical catalog entries defined by `catalog/skills.schema.md`
-- Source metadata:
-  - plugin metadata at `plugins/<plugin>/.claude-plugin/plugin.json`
-  - package metadata at root `package.json`
+- Canonical catalog entries (`catalog/skills.yaml`)
+- Plugin metadata (`plugins/*/.claude-plugin/plugin.json`) for marketplace name/description
+- Package metadata (`package.json`) for `pi` payload shape
 
 ## Global Rules
 
-1. Process entries sorted by `id` (ascending) for deterministic outputs.
+1. Process entries sorted by `id` ascending.
 2. Public outputs consume only `visibility: public` entries.
 3. `visibility: private` entries are excluded from all public outputs.
-4. Any mapping ambiguity is a hard error (no silent fallback).
+4. Any mapping ambiguity is a hard error.
 
 ## Mapping to `.claude-plugin/marketplace.json`
 
@@ -23,68 +22,52 @@ An entry is eligible for Claude marketplace mapping when:
 - `visibility: public`
 - `kind: skill`
 - `target: claude` or `target: common`
+- entry maps to a known plugin metadata name
 
-### Source Resolution
-- Eligible entries MUST have `path` under `plugins/<plugin-name>/...`.
-- Resolve plugin root as `plugins/<plugin-name>`.
-- Read plugin metadata from `plugins/<plugin-name>/.claude-plugin/plugin.json`.
+### Plugin metadata resolution
+- Read all plugin metadata from `plugins/*/.claude-plugin/plugin.json`.
+- Match eligible skill IDs to plugin names:
+  - default: `plugin_name = skill_id`
+  - override map: `cc-context-fork -> context-fork`
 
-### Emitted Plugin Record
-For each unique plugin root, emit one record:
-- `name`: plugin metadata name
-- `description`: plugin metadata description
-- `source`: `plugins/<plugin-name>`
+### Emitted plugin record
+For each matched skill/plugin pair, emit:
+- `name`: plugin metadata `name`
+- `description`: plugin metadata `description`
+- `source`: canonical skill root (`dirname(path)`), e.g. `common/call-ai`, `claude/cc-dev-hooks`
 
-### De-duplication and Ordering
-- Multiple eligible skills from the same plugin collapse into one plugin record.
+### De-duplication and ordering
+- One record per plugin name.
 - Sort output plugins by `name` ascending.
 
-### Conflict Handling
+### Conflict handling
 Fail mapping when:
 - plugin metadata file is missing/invalid
-- same plugin `name` resolves to different `source` values
-- eligible entry is not under `plugins/` (unmappable for Claude marketplace)
+- same plugin name resolves to conflicting metadata or source values
 
 ## Mapping to `package.json#pi`
 
 ### `pi.skills`
-Include entry `path` in `pi.skills` when:
+Include entry `path` when:
 - `visibility: public`
 - `kind: skill`
 - `target: pi` or `target: common`
 
 ### `pi.extensions`
-Include entry `path` in `pi.extensions` when:
+Include entry `path` when:
 - `visibility: public`
 - `kind: extension`
-- `target: pi` or `target: common`
+- `target: pi`
 
-### Ordering and De-duplication
-- Sort `pi.skills` and `pi.extensions` by entry `id` ascending.
-- Emit normalized POSIX relative paths.
-- Duplicate emitted paths are a hard error.
+### Ordering
+- Sort by entry `id` ascending.
+- Emit normalized POSIX repository-relative paths.
 
-### Conflict Handling
-Fail mapping when:
-- any emitted path does not exist
-- emitted path is outside repository root
-- an entry qualifies for both `pi.skills` and `pi.extensions`
+## Private exclusion rule
 
-## Private Entry Exclusion Rule
-
-Private entries (`visibility: private`) are never emitted into:
+Private entries (`visibility: private`) must never be emitted into:
 - `.claude-plugin/marketplace.json`
 - `package.json#pi.skills`
 - `package.json#pi.extensions`
 
-Any private ID found in public outputs is a contract violation.
-
-## Example Mapping Matrix
-
-| id | visibility | kind | target | public Claude output | public Pi output |
-|----|------------|------|--------|----------------------|------------------|
-| `cc-front-compaction` | public | skill | claude | included via plugin record | excluded |
-| `pi-front-compaction` | public | skill | pi | excluded | included in `pi.skills` |
-| `call-ai` | public | skill | common | included via plugin record | included in `pi.skills` |
-| `work-ticket` | private | skill | common | excluded | excluded |
-| `front-compaction-extension` | public | extension | pi | excluded | included in `pi.extensions` |
+Any private ID in public outputs is a contract violation.

@@ -39,7 +39,7 @@ Expected:
 
 ```bash
 # generated index should be in sync
-python3 scripts/sync-skills-index.py --check
+python3 scripts/sync-catalog-artifacts.py --check --lane public
 
 # public index should not contain private skill names post-cutover
 rg -n "choru-ticket|work-lessons|work-ticket|work-workspace" skills
@@ -102,6 +102,6 @@ All of the following must be true:
 ## Fail
 Any of the following is a fail-stop trigger:
 1. Private ID appears in any public output.
-2. `scripts/sync-skills-index.py --check` fails unexpectedly.
+2. `scripts/sync-catalog-artifacts.py --check --lane public` fails unexpectedly.
 3. Runtime cannot resolve required private skills through `private-skills` bridge or canonical wrappers drift.
 4. Output drift cannot be explained by intended migration changes.

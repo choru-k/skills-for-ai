@@ -79,7 +79,7 @@ Stop and review before continuing if:
 Suggested checks:
 
 ```bash
-python3 scripts/sync-skills-index.py --check
+python3 scripts/sync-catalog-artifacts.py --check --lane public
 rg -n "choru-ticket|work-lessons|work-ticket|work-workspace" .claude-plugin/marketplace.json package.json skills
 rg -n "visibility: private" catalog/skills.yaml
 ```

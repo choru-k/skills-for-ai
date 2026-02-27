@@ -23,12 +23,11 @@ Custom AI-agent skills with **both Claude and Pi distribution support** — mult
 - `cc-*` skills integrate with Claude lifecycle behaviors (hooks, session events, Claude-specific orchestration).
 - `pi-*` skills integrate with Pi lifecycle behaviors (Pi extension commands, Pi session compaction pipeline).
 
-## Shared Skill Index
+## Human-First Source Layout (breaking change)
 
-- `skills/` provides a cross-harness shared skill index (Agent Skills style).
-- This is used by Pi via `~/.share-ai/skills` in your dotfiles setup.
-- Shared index entries may be regular directories or symlinks to plugin-owned skill folders (for example `plugins/*/skills/*` or `plugins/*/pi/skills/*`).
-- Plugin-backed symlinks are generated from `package.json#pi.skills` via `just skills-index-sync`.
+- `common/`, `claude/`, and `pi/` are now the canonical source-of-truth layout.
+- `package.json#pi.skills` and `package.json#pi.extensions` emit canonical human-first paths.
+- `.claude-plugin/marketplace.json` plugin sources now resolve directly to canonical skill roots.
 
 ## Distribution Metadata
 
@@ -82,16 +81,16 @@ claude plugin install cc-dev-hooks
 git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
 
 # Copy whichever skills you want
-cp -r /tmp/skills-for-ai/plugins/call-ai/skills/call-ai ~/.claude/skills/call-ai
-cp -r /tmp/skills-for-ai/plugins/complete-prompt/skills/complete-prompt ~/.claude/skills/complete-prompt
-cp -r /tmp/skills-for-ai/plugins/context-fork/skills/context-fork ~/.claude/skills/cc-context-fork
-cp -r /tmp/skills-for-ai/plugins/second-opinion/skills/second-opinion ~/.claude/skills/second-opinion
-cp -r /tmp/skills-for-ai/plugins/front-compaction/skills/cc-front-compaction ~/.claude/skills/cc-front-compaction
-cp -r /tmp/skills-for-ai/plugins/skill-playbook/skills/skill-playbook ~/.claude/skills/skill-playbook
-cp -r /tmp/skills-for-ai/plugins/clarify/skills/clarify ~/.claude/skills/clarify
-cp -r /tmp/skills-for-ai/plugins/cc-dev-skills/skills/cc-dev-skills ~/.claude/skills/cc-dev-skills
-cp -r /tmp/skills-for-ai/plugins/cc-dev-agents/skills/cc-dev-agents ~/.claude/skills/cc-dev-agents
-cp -r /tmp/skills-for-ai/plugins/cc-dev-hooks/skills/cc-dev-hooks ~/.claude/skills/cc-dev-hooks
+cp -r /tmp/skills-for-ai/common/call-ai ~/.claude/skills/call-ai
+cp -r /tmp/skills-for-ai/common/complete-prompt ~/.claude/skills/complete-prompt
+cp -r /tmp/skills-for-ai/claude/cc-context-fork ~/.claude/skills/cc-context-fork
+cp -r /tmp/skills-for-ai/common/second-opinion ~/.claude/skills/second-opinion
+cp -r /tmp/skills-for-ai/claude/cc-front-compaction ~/.claude/skills/cc-front-compaction
+cp -r /tmp/skills-for-ai/common/skill-playbook ~/.claude/skills/skill-playbook
+cp -r /tmp/skills-for-ai/common/clarify ~/.claude/skills/clarify
+cp -r /tmp/skills-for-ai/claude/cc-dev-skills ~/.claude/skills/cc-dev-skills
+cp -r /tmp/skills-for-ai/claude/cc-dev-agents ~/.claude/skills/cc-dev-agents
+cp -r /tmp/skills-for-ai/claude/cc-dev-hooks ~/.claude/skills/cc-dev-hooks
 ```
 
 ### Pi (single package install)
@@ -123,14 +122,11 @@ just pi-pack-dry-run
 # Sync all catalog-managed public artifacts
 just catalog-sync
 
-# Non-mutating contract check for catalog-managed public artifacts
+# Non-mutating contract checks for catalog-managed public artifacts
 just catalog-check
 
-# Sync generated skills/ symlink index only
-just skills-index-sync
-
-# CI-style index drift check (no writes)
-just skills-index-check
+# Guardrail: fail if legacy compatibility bridges are reintroduced
+just legacy-bridge-check
 
 # Public-output drift checks (catalog + generated outputs)
 just drift-check
@@ -151,13 +147,13 @@ This repo includes a pre-commit hook that validates skill-graph metadata and wik
 git config core.hooksPath .githooks
 
 # run manually anytime
-bash skills/skill-playbook/scripts/graph-qa.sh
+bash common/skill-playbook/scripts/graph-qa.sh
 ```
 
 The hook runs automatically on commit once `core.hooksPath` is set.
 
 CI also enforces this on GitHub Actions:
-- `.github/workflows/graph-qa.yml` runs drift checks, private-leak checks, and graph QA on PR/push updates to skills/manifests/catalog/workflow-relevant files.
+- `.github/workflows/graph-qa.yml` runs drift checks, private-leak checks, and graph QA on PR/push updates to canonical sources (`common/`, `claude/`, `pi/`) and contract/workflow files.
 
 ## Operations (Phase 4)
 
@@ -172,7 +168,7 @@ just catalog-check
 just drift-check
 just private-leak-check
 just contract-scenario-check
-bash skills/skill-playbook/scripts/graph-qa.sh
+bash common/skill-playbook/scripts/graph-qa.sh
 just pi-pack-dry-run
 ```
 

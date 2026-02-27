@@ -7,8 +7,7 @@ Run from repository root:
 ```bash
 bash scripts/check-public-output-drift.sh
 bash scripts/check-private-leaks.sh
-bash skills/skill-playbook/scripts/graph-qa.sh
-python3 scripts/sync-skills-index.py --check
+bash common/skill-playbook/scripts/graph-qa.sh
 ```
 
 Use these checks before opening/merging PRs that touch skills, manifests, catalog contracts, or workflow scripts.
@@ -37,25 +36,21 @@ When any guardrail fails in CI or local release flow:
 ```bash
 bash scripts/check-public-output-drift.sh
 bash scripts/check-private-leaks.sh
-python3 scripts/sync-skills-index.py --check
 ```
 
 5. Confirm runtime gate status via `catalog/runtime-wiring-matrix.md` pass/fail criteria.
 
 ## Acceptance Command Set
 
-The acceptance baseline for Phase 4 is:
-
 ```bash
 bash scripts/check-public-output-drift.sh
 bash scripts/check-private-leaks.sh
-bash skills/skill-playbook/scripts/graph-qa.sh
-python3 scripts/sync-skills-index.py --check
+bash common/skill-playbook/scripts/graph-qa.sh
 npm pack --dry-run
 ```
 
 Expected:
 - all commands exit 0
 - no private-ID leakage in public outputs
-- no index/manifest drift
+- no artifact drift
 - package dry-run succeeds

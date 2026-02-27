@@ -63,7 +63,7 @@ Phase 2 must produce:
 If Phase 2/3 migration causes regressions:
 
 1. Restore previous generated manifests and symlink indexes from git.
-2. Re-run current stable sync flow (`scripts/sync-skills-index.py`) to restore known-good skills index state.
+2. Re-run current stable sync flow (`scripts/sync-catalog-artifacts.py --lane public`) to restore known-good artifact state.
 3. Re-enable compatibility outputs before retrying migration.
 4. Log root cause and mitigation in plan artifacts before next attempt.
 

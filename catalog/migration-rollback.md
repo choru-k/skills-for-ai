@@ -31,7 +31,7 @@ git restore --source <KNOWN_GOOD_COMMIT> .claude-plugin/marketplace.json package
 
 ```bash
 git restore --source <KNOWN_GOOD_COMMIT> skills
-python3 scripts/sync-skills-index.py --check
+python3 scripts/sync-catalog-artifacts.py --check --lane public
 ```
 
 4. **Restore catalog/runtime contracts if partially edited**
@@ -62,7 +62,7 @@ done
 Run:
 
 ```bash
-python3 scripts/sync-skills-index.py --check
+python3 scripts/sync-catalog-artifacts.py --check --lane public
 rg -n "choru-ticket|work-lessons|work-ticket|work-workspace" .claude-plugin/marketplace.json package.json
 rg -n "id: (choru-ticket|work-lessons|work-ticket|work-workspace)|visibility: private" catalog/skills.yaml
 python3 - <<'PY'

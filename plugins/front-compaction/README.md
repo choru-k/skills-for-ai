@@ -1,23 +1,18 @@
-# front-compaction plugin
+# front-compaction plugin assets
 
-This plugin contains both Pi and Claude front-compaction implementations.
+This folder now contains plugin-specific operational assets for front-compaction.
+Canonical skill/extension sources are outside this folder:
 
-Naming convention:
-- `cc-*` means Claude lifecycle integration (session hooks, `/compact` replay flow).
-- `pi-*` means Pi lifecycle integration (extension command + `session_before_compact` handling).
+- Claude skill source: `claude/cc-front-compaction/SKILL.md`
+- Pi skill source: `pi/pi-front-compaction/SKILL.md`
+- Pi extension source: `pi/extensions/front-compaction.ts`
+- Pi extension core helpers: `pi/extensions/front-compaction-core.ts`
 
-## Layout
+Local plugin assets kept here:
 
-- `skills/cc-front-compaction/` - Claude marketplace-facing skill entry
-- `claude/skills/cc-front-compaction/SKILL.md` - Claude wrapper source (same behavior)
-- `claude/hooks/front-compaction/` - Claude prepare/reinject/validate scripts
-- `pi/skills/pi-front-compaction/` - Pi-facing shared skill entry
-- `pi/extensions/front-compaction.ts` - Pi extension command implementation (`/pi-front-compaction`, aliases: `/front-compaction`, `/front-compaction-pi`)
-- `pi/extensions/front-compaction-core.ts` - pure helper logic for Pi extension
-- `pi/tests/` - Pi extension helper tests
-
-Shared index note:
-- `skills/pi-front-compaction` at repo root points to `plugins/front-compaction/pi/skills/pi-front-compaction` for Pi shared-skill loading.
+- Claude hook scripts: `claude/hooks/front-compaction/`
+- Pi helper tests: `pi/tests/`
+- Plugin metadata: `.claude-plugin/plugin.json`
 
 ## Tests
 
