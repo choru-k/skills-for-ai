@@ -15,6 +15,11 @@ for path in skills skills/*; do
   [[ -e "${path}" ]] && legacy_paths+=("${path}")
 done
 
+# Pre-lane canonical roots are retired after lane-root cutover.
+for path in common common/* claude claude/* pi pi/*; do
+  [[ -e "${path}" ]] && legacy_paths+=("${path}")
+done
+
 # Legacy plugin bridge roots are retired.
 for path in plugins/*/skills plugins/*/skills/* plugins/*/*/skills plugins/*/*/skills/*; do
   [[ -e "${path}" ]] && legacy_paths+=("${path}")

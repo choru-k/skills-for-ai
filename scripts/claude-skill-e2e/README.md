@@ -21,10 +21,11 @@ bash scripts/claude-skill-e2e/test-claude-skills.sh --skill cc-front-compaction
 Run one explicit case:
 
 ```bash
-bash scripts/claude-skill-e2e/test-claude-skills.sh --case claude/cc-front-compaction/tests/claude/front-compaction.e2e.json
+bash scripts/claude-skill-e2e/test-claude-skills.sh --case public/claude/cc-front-compaction/tests/claude/front-compaction.e2e.json
 ```
 
 ## Case placement convention
 
-- common skills: `common/<skill-name>/tests/claude/*.json`
-- Claude-only skills: `claude/<skill-name>/tests/claude/*.json`
+- public common skills: `public/common/<skill-name>/tests/claude/*.json`
+- public Claude-only skills: `public/claude/<skill-name>/tests/claude/*.json`
+- private lane (optional): `private/common/<skill-name>/tests/claude/*.json`, `private/claude/<skill-name>/tests/claude/*.json`

@@ -138,6 +138,23 @@ def load_catalog_entries() -> list[CatalogEntry]:
         if path_obj.is_absolute() or path.startswith("./"):
             raise ContractError(f"invalid-contract-input: path must be repository-relative for id '{entry_id}'")
 
+        path_parts = path_obj.parts
+        if len(path_parts) < 3:
+            raise ContractError(f"invalid-contract-input: path must use lane-root layout for id '{entry_id}': {path}")
+
+        lane = path_parts[0]
+        path_target = path_parts[1]
+        if lane not in {"public", "private"}:
+            raise ContractError(f"invalid-contract-input: path lane must be public/private for id '{entry_id}': {path}")
+        if path_target not in VALID_TARGET:
+            raise ContractError(f"invalid-contract-input: path target must be common/claude/pi for id '{entry_id}': {path}")
+        if visibility != lane:
+            raise ContractError(
+                f"invalid-contract-input: visibility/path lane mismatch for id '{entry_id}' ({visibility} vs {lane})"
+            )
+        if target != path_target:
+            raise ContractError(f"invalid-contract-input: target/path mismatch for id '{entry_id}' ({target} vs {path_target})")
+
         abs_path = REPO_ROOT / path_obj
         if not abs_path.exists():
             raise ContractError(f"invalid-contract-input: path does not exist for id '{entry_id}': {path}")

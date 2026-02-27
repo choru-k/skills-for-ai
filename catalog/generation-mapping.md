@@ -1,73 +1,59 @@
-# Catalog Generation Mapping (v2)
+# Catalog Generation Mapping (v3)
 
-This document defines deterministic mapping from catalog entries to public distribution artifacts.
+Deterministic mapping from `catalog/skills.yaml` to public artifacts.
 
 ## Inputs
 
-- Canonical catalog entries (`catalog/skills.yaml`)
-- Plugin metadata (`plugins/*/.claude-plugin/plugin.json`) for marketplace name/description
-- Package metadata (`package.json`) for `pi` payload shape
+- Catalog entries (`id`, `visibility`, `target`, `kind`, `path`)
+- Plugin metadata (`plugins/*/.claude-plugin/plugin.json`)
 
-## Global Rules
+## Source path contract
 
-1. Process entries sorted by `id` ascending.
-2. Public outputs consume only `visibility: public` entries.
-3. `visibility: private` entries are excluded from all public outputs.
-4. Any mapping ambiguity is a hard error.
+Catalog paths are lane-rooted:
+- `public/common/*`, `public/claude/*`, `public/pi/*`
+- `private/common/*`, `private/claude/*`, `private/pi/*`
 
-## Mapping to `.claude-plugin/marketplace.json`
+## Global rules
 
-### Eligibility
-An entry is eligible for Claude marketplace mapping when:
+1. Sort entries by `id` ascending.
+2. Public outputs include only `visibility: public`.
+3. `visibility: private` entries are excluded from all public artifacts.
+4. Mapping ambiguity is a hard error.
+
+## `.claude-plugin/marketplace.json`
+
+Eligibility:
 - `visibility: public`
 - `kind: skill`
 - `target: claude` or `target: common`
-- entry maps to a known plugin metadata name
 
-### Plugin metadata resolution
-- Read all plugin metadata from `plugins/*/.claude-plugin/plugin.json`.
-- Match eligible skill IDs to plugin names:
-  - default: `plugin_name = skill_id`
-  - override map: `cc-context-fork -> context-fork`
+Mapping:
+- Match skill id to plugin metadata name (`cc-context-fork -> context-fork` override)
+- Emit:
+  - `name`
+  - `description`
+  - `source = dirname(path)` (lane-rooted, e.g. `public/common/call-ai`)
 
-### Emitted plugin record
-For each matched skill/plugin pair, emit:
-- `name`: plugin metadata `name`
-- `description`: plugin metadata `description`
-- `source`: canonical skill root (`dirname(path)`), e.g. `common/call-ai`, `claude/cc-dev-hooks`
-
-### De-duplication and ordering
-- One record per plugin name.
-- Sort output plugins by `name` ascending.
-
-### Conflict handling
-Fail mapping when:
-- plugin metadata file is missing/invalid
-- same plugin name resolves to conflicting metadata or source values
-
-## Mapping to `package.json#pi`
+## `package.json#pi`
 
 ### `pi.skills`
-Include entry `path` when:
+Include when:
 - `visibility: public`
 - `kind: skill`
 - `target: pi` or `target: common`
 
 ### `pi.extensions`
-Include entry `path` when:
+Include when:
 - `visibility: public`
 - `kind: extension`
 - `target: pi`
 
-### Ordering
-- Sort by entry `id` ascending.
-- Emit normalized POSIX repository-relative paths.
+Emit repository-relative POSIX paths from catalog.
 
-## Private exclusion rule
+## Private exclusion
 
-Private entries (`visibility: private`) must never be emitted into:
+Private paths/IDs must not appear in:
 - `.claude-plugin/marketplace.json`
 - `package.json#pi.skills`
 - `package.json#pi.extensions`
-
-Any private ID in public outputs is a contract violation.
+- npm pack file list

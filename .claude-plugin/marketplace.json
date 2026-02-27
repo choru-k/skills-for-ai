@@ -6,52 +6,52 @@
     {
       "name": "call-ai",
       "description": "Run prompts against external AIs (Codex, Gemini, Claude) with parallel execution, retries, and Zellij pane streaming",
-      "source": "common/call-ai"
+      "source": "public/common/call-ai"
     },
     {
       "name": "cc-dev-agents",
       "description": "Comprehensive guide for creating Claude Code subagents with frontmatter, permissions, storage, and hooks",
-      "source": "claude/cc-dev-agents"
+      "source": "public/claude/cc-dev-agents"
     },
     {
       "name": "cc-dev-hooks",
       "description": "Comprehensive guide for creating Claude Code hooks with command, prompt, and agent hook types",
-      "source": "claude/cc-dev-hooks"
+      "source": "public/claude/cc-dev-hooks"
     },
     {
       "name": "cc-dev-skills",
       "description": "Guide for creating effective Claude Code skills with SKILL.md templates, validation scripts, and best practices",
-      "source": "claude/cc-dev-skills"
+      "source": "public/claude/cc-dev-skills"
     },
     {
       "name": "cc-front-compaction",
       "description": "Claude lifecycle wrapper for manual front-only partial compaction with hard tail replay semantics",
-      "source": "claude/cc-front-compaction"
+      "source": "public/claude/cc-front-compaction"
     },
     {
       "name": "clarify",
       "description": "Turn ambiguous requests into clean, actionable specifications with structured clarification",
-      "source": "common/clarify"
+      "source": "public/common/clarify"
     },
     {
       "name": "complete-prompt",
       "description": "Generate structured XML context prompts for AI-to-AI handoffs with 9 specialized modes",
-      "source": "common/complete-prompt"
+      "source": "public/common/complete-prompt"
     },
     {
       "name": "context-fork",
       "description": "Fork the current session to Haiku, Sonnet, or Opus with full conversation context preserved",
-      "source": "claude/cc-context-fork"
+      "source": "public/claude/cc-context-fork"
     },
     {
       "name": "second-opinion",
       "description": "Get second opinions from external AIs (Codex, Gemini, Claude) on programming questions with parallel execution and synthesis",
-      "source": "common/second-opinion"
+      "source": "public/common/second-opinion"
     },
     {
       "name": "skill-playbook",
       "description": "Analyze external ideas, validate claims, track lifecycle status, and maintain a best-practice playbook",
-      "source": "common/skill-playbook"
+      "source": "public/common/skill-playbook"
     }
   ]
 }

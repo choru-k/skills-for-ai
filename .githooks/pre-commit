@@ -5,7 +5,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-GRAPH_QA_SCRIPT="$REPO_ROOT/common/skill-playbook/scripts/graph-qa.sh"
+GRAPH_QA_SCRIPT="$REPO_ROOT/public/common/skill-playbook/scripts/graph-qa.sh"
 
 if [[ ! -f "$GRAPH_QA_SCRIPT" ]]; then
   echo "✗ Missing graph QA script: $GRAPH_QA_SCRIPT" >&2

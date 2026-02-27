@@ -4,124 +4,124 @@ entries:
   kind: skill
   visibility: public
   target: common
-  path: common/call-ai/SKILL.md
+  path: public/common/call-ai/SKILL.md
 - id: cc-context-fork
   kind: skill
   visibility: public
   target: claude
-  path: claude/cc-context-fork/SKILL.md
+  path: public/claude/cc-context-fork/SKILL.md
 - id: cc-dev-agents
   kind: skill
   visibility: public
   target: claude
-  path: claude/cc-dev-agents/SKILL.md
+  path: public/claude/cc-dev-agents/SKILL.md
 - id: cc-dev-hooks
   kind: skill
   visibility: public
   target: claude
-  path: claude/cc-dev-hooks/SKILL.md
+  path: public/claude/cc-dev-hooks/SKILL.md
 - id: cc-dev-skills
   kind: skill
   visibility: public
   target: claude
-  path: claude/cc-dev-skills/SKILL.md
+  path: public/claude/cc-dev-skills/SKILL.md
 - id: cc-front-compaction
   kind: skill
   visibility: public
   target: claude
-  path: claude/cc-front-compaction/SKILL.md
+  path: public/claude/cc-front-compaction/SKILL.md
 - id: choru-ticket
   kind: skill
   visibility: private
   target: common
-  path: common/choru-ticket/SKILL.md
+  path: private/common/choru-ticket/SKILL.md
 - id: clarify
   kind: skill
   visibility: public
   target: common
-  path: common/clarify/SKILL.md
+  path: public/common/clarify/SKILL.md
 - id: complete-prompt
   kind: skill
   visibility: public
   target: common
-  path: common/complete-prompt/SKILL.md
+  path: public/common/complete-prompt/SKILL.md
 - id: feature-spec
   kind: skill
   visibility: public
   target: common
-  path: common/feature-spec/SKILL.md
+  path: public/common/feature-spec/SKILL.md
 - id: front-compaction-extension
   kind: extension
   visibility: public
   target: pi
-  path: pi/extensions/front-compaction.ts
+  path: public/pi/extensions/front-compaction.ts
 - id: jira
   kind: skill
   visibility: public
   target: common
-  path: common/jira/SKILL.md
+  path: public/common/jira/SKILL.md
 - id: pi-front-compaction
   kind: skill
   visibility: public
   target: pi
-  path: pi/pi-front-compaction/SKILL.md
+  path: public/pi/pi-front-compaction/SKILL.md
 - id: second-opinion
   kind: skill
   visibility: public
   target: common
-  path: common/second-opinion/SKILL.md
+  path: public/common/second-opinion/SKILL.md
 - id: skill-commons
   kind: skill
   visibility: public
   target: common
-  path: common/skill-commons/SKILL.md
+  path: public/common/skill-commons/SKILL.md
 - id: skill-playbook
   kind: skill
   visibility: public
   target: common
-  path: common/skill-playbook/SKILL.md
+  path: public/common/skill-playbook/SKILL.md
 - id: study
   kind: skill
   visibility: public
   target: common
-  path: common/study/SKILL.md
+  path: public/common/study/SKILL.md
 - id: subagent-trace-debug
   kind: skill
   visibility: public
   target: common
-  path: common/subagent-trace-debug/SKILL.md
+  path: public/common/subagent-trace-debug/SKILL.md
 - id: superplan
   kind: skill
   visibility: public
   target: common
-  path: common/superplan/SKILL.md
+  path: public/common/superplan/SKILL.md
 - id: superplan-big
   kind: skill
   visibility: public
   target: common
-  path: common/superplan-big/SKILL.md
+  path: public/common/superplan-big/SKILL.md
 - id: superplan-medium
   kind: skill
   visibility: public
   target: common
-  path: common/superplan-medium/SKILL.md
+  path: public/common/superplan-medium/SKILL.md
 - id: superplan-small
   kind: skill
   visibility: public
   target: common
-  path: common/superplan-small/SKILL.md
+  path: public/common/superplan-small/SKILL.md
 - id: work-lessons
   kind: skill
   visibility: private
   target: common
-  path: common/work-lessons/SKILL.md
+  path: private/common/work-lessons/SKILL.md
 - id: work-ticket
   kind: skill
   visibility: private
   target: common
-  path: common/work-ticket/SKILL.md
+  path: private/common/work-ticket/SKILL.md
 - id: work-workspace
   kind: skill
   visibility: private
   target: common
-  path: common/work-workspace/SKILL.md
+  path: private/common/work-workspace/SKILL.md

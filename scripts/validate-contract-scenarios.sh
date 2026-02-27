@@ -66,8 +66,8 @@ data = json.loads(path.read_text(encoding="utf-8"))
 skills = data.get("pi", {}).get("skills")
 if not isinstance(skills, list):
     raise SystemExit("pi.skills must be an array")
-if "common/work-ticket/SKILL.md" not in skills:
-    skills.append("common/work-ticket/SKILL.md")
+if "private/common/work-ticket/SKILL.md" not in skills:
+    skills.append("private/common/work-ticket/SKILL.md")
 path.write_text(f"{json.dumps(data, indent=2, ensure_ascii=False)}\n", encoding="utf-8")
 PY
 

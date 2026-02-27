@@ -13,7 +13,7 @@ Run from repository root:
 ```bash
 bash scripts/check-public-output-drift.sh
 bash scripts/check-private-leaks.sh
-bash common/skill-playbook/scripts/graph-qa.sh
+bash public/common/skill-playbook/scripts/graph-qa.sh
 ```
 
 Expected:

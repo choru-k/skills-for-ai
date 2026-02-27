@@ -3,10 +3,10 @@
 This folder now contains plugin-specific operational assets for front-compaction.
 Canonical skill/extension sources are outside this folder:
 
-- Claude skill source: `claude/cc-front-compaction/SKILL.md`
-- Pi skill source: `pi/pi-front-compaction/SKILL.md`
-- Pi extension source: `pi/extensions/front-compaction.ts`
-- Pi extension core helpers: `pi/extensions/front-compaction-core.ts`
+- Claude skill source: `public/claude/cc-front-compaction/SKILL.md`
+- Pi skill source: `public/pi/pi-front-compaction/SKILL.md`
+- Pi extension source: `public/pi/extensions/front-compaction.ts`
+- Pi extension core helpers: `public/pi/extensions/front-compaction-core.ts`
 
 Local plugin assets kept here:
 

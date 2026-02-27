@@ -9,15 +9,9 @@ cd "${REPO_ROOT}"
 bash scripts/check-legacy-bridges.sh
 
 PRIVATE_IDS_REGEX='choru-ticket|work-lessons|work-ticket|work-workspace'
-PRIVATE_SKILL_PATHS_REGEX='(skills|common)/(choru-ticket|work-lessons|work-ticket|work-workspace)/SKILL\.md'
 
 if rg -n "${PRIVATE_IDS_REGEX}" .claude-plugin/marketplace.json; then
   echo "ERROR: private IDs leaked into .claude-plugin/marketplace.json" >&2
-  exit 1
-fi
-
-if rg -n "${PRIVATE_SKILL_PATHS_REGEX}" package.json; then
-  echo "ERROR: private skill paths leaked into package.json#pi.skills" >&2
   exit 1
 fi
 
@@ -68,6 +62,13 @@ if not isinstance(files, list):
 
 paths = [entry.get("path") for entry in files if isinstance(entry, dict)]
 private_prefixes = (
+    "private/common/choru-ticket/",
+    "private/common/work-lessons/",
+    "private/common/work-ticket/",
+    "private/common/work-workspace/",
+    "private/claude/",
+    "private/pi/",
+    # legacy root prefixes retained as defense-in-depth
     "skills/choru-ticket/",
     "skills/work-lessons/",
     "skills/work-ticket/",

@@ -7,7 +7,7 @@ Run from repository root:
 ```bash
 bash scripts/check-public-output-drift.sh
 bash scripts/check-private-leaks.sh
-bash common/skill-playbook/scripts/graph-qa.sh
+bash public/common/skill-playbook/scripts/graph-qa.sh
 ```
 
 Use these checks before opening/merging PRs that touch skills, manifests, catalog contracts, or workflow scripts.
@@ -45,7 +45,7 @@ bash scripts/check-private-leaks.sh
 ```bash
 bash scripts/check-public-output-drift.sh
 bash scripts/check-private-leaks.sh
-bash common/skill-playbook/scripts/graph-qa.sh
+bash public/common/skill-playbook/scripts/graph-qa.sh
 npm pack --dry-run
 ```
 

@@ -6,8 +6,9 @@ Case files are JSON documents consumed by:
 - `scripts/claude-skill-e2e/claude-skill-harness.py case`
 
 Recommended placement for reusable tests:
-- common skills: `common/<skill-name>/tests/claude/*.json`
-- Claude-only skills: `claude/<skill-name>/tests/claude/*.json`
+- public common skills: `public/common/<skill-name>/tests/claude/*.json`
+- public Claude-only skills: `public/claude/<skill-name>/tests/claude/*.json`
+- private lane (optional): `private/common/<skill-name>/tests/claude/*.json`, `private/claude/<skill-name>/tests/claude/*.json`
 
 Use `--skill <skill-name>` to run all colocated tests for one skill.
 

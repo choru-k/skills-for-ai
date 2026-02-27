@@ -32,8 +32,10 @@ Usage:
 Modes:
   --case <file>   Run one explicit case file
   --skill <name>  Run all cases under:
-                  - common/<name>/tests/claude/*.json
-                  - claude/<name>/tests/claude/*.json
+                  - public/common/<name>/tests/claude/*.json
+                  - public/claude/<name>/tests/claude/*.json
+                  - private/common/<name>/tests/claude/*.json
+                  - private/claude/<name>/tests/claude/*.json
   --dir <dir>     Run all cases in one directory (default mode)
 
 Defaults:
@@ -104,14 +106,18 @@ fi
 CASES=()
 
 if [[ -n "$SKILL_NAME" ]]; then
-  collect_cases_from_dir "$REPO_ROOT/common/$SKILL_NAME/tests/claude"
-  collect_cases_from_dir "$REPO_ROOT/claude/$SKILL_NAME/tests/claude"
+  collect_cases_from_dir "$REPO_ROOT/public/common/$SKILL_NAME/tests/claude"
+  collect_cases_from_dir "$REPO_ROOT/public/claude/$SKILL_NAME/tests/claude"
+  collect_cases_from_dir "$REPO_ROOT/private/common/$SKILL_NAME/tests/claude"
+  collect_cases_from_dir "$REPO_ROOT/private/claude/$SKILL_NAME/tests/claude"
 
   if [[ ${#CASES[@]} -eq 0 ]]; then
     echo "Error: No .json case files found for skill '$SKILL_NAME'" >&2
     echo "Checked:" >&2
-    echo "  $REPO_ROOT/common/$SKILL_NAME/tests/claude" >&2
-    echo "  $REPO_ROOT/claude/$SKILL_NAME/tests/claude" >&2
+    echo "  $REPO_ROOT/public/common/$SKILL_NAME/tests/claude" >&2
+    echo "  $REPO_ROOT/public/claude/$SKILL_NAME/tests/claude" >&2
+    echo "  $REPO_ROOT/private/common/$SKILL_NAME/tests/claude" >&2
+    echo "  $REPO_ROOT/private/claude/$SKILL_NAME/tests/claude" >&2
     exit 1
   fi
 else
