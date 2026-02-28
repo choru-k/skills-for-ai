@@ -21,6 +21,7 @@ Important:
 - `private/*` in this **public** repository is lane semantics, not security.
 - Secret material must stay outside this repo.
 - Public distribution artifacts are generated from discovered `public/*` lane-root paths only.
+- Pi capabilities are Claude-style directories: `public/pi/<id>/SKILL.md` with optional colocated extension entrypoint `public/pi/<id>/extension.ts`.
 
 ## Distribution metadata
 

@@ -15,6 +15,10 @@ Canonical source-of-truth is lane-rooted:
 
 Legacy root compatibility paths are not supported.
 
+Pi contract:
+- Skills live at `public/pi/<id>/SKILL.md`.
+- Pi extension entrypoints are colocated at `public/pi/<id>/extension.ts`.
+
 ## Key files
 
 - `scripts/sync-catalog-artifacts.py`: sync/check public artifacts from lane-root paths

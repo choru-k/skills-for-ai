@@ -5,8 +5,8 @@ Canonical skill/extension sources are outside this folder:
 
 - Claude skill source: `public/claude/cc-front-compaction/SKILL.md`
 - Pi skill source: `public/pi/pi-front-compaction/SKILL.md`
-- Pi extension source: `public/pi/extensions/front-compaction.ts`
-- Pi extension core helpers: `public/pi/extensions/front-compaction-core.ts`
+- Pi extension source: `public/pi/pi-front-compaction/extension.ts`
+- Pi extension core helpers: `public/pi/pi-front-compaction/front-compaction-core.ts`
 
 Local plugin assets kept here:
 

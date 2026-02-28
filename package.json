@@ -44,14 +44,12 @@
     "public/claude/cc-dev-skills",
     "public/claude/cc-front-compaction",
     "public/pi/pi-front-compaction",
-    "public/pi/extensions/front-compaction.ts",
-    "public/pi/extensions/front-compaction-core.ts",
     "scripts",
     "package.json"
   ],
   "pi": {
     "extensions": [
-      "public/pi/extensions/front-compaction.ts"
+      "public/pi/pi-front-compaction/extension.ts"
     ],
     "skills": [
       "public/common/call-ai/SKILL.md",

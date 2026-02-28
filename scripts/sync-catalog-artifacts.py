@@ -124,16 +124,39 @@ def discover_extension_entries() -> list[CatalogEntry]:
     entries: list[CatalogEntry] = []
 
     for lane in VALID_LANES:
-        extensions_root = REPO_ROOT / lane / "pi" / "extensions"
-        if not extensions_root.is_dir():
+        pi_root = REPO_ROOT / lane / "pi"
+        if not pi_root.is_dir():
             continue
 
-        for file in sorted(extensions_root.iterdir(), key=lambda item: item.name):
-            if not file.is_file():
-                continue
-            if file.suffix not in VALID_EXTENSION_SUFFIXES:
+        for capability_dir in sorted(pi_root.iterdir(), key=lambda item: item.name):
+            if not capability_dir.is_dir():
                 continue
 
+            entry_id = capability_dir.name
+            validate_entry_id(entry_id, rel(capability_dir))
+
+            extension_candidates = [
+                capability_dir / f"extension{suffix}"
+                for suffix in sorted(VALID_EXTENSION_SUFFIXES)
+                if (capability_dir / f"extension{suffix}").is_file()
+            ]
+
+            if not extension_candidates:
+                continue
+
+            if len(extension_candidates) > 1:
+                preview = ", ".join(rel(path) for path in extension_candidates)
+                raise ContractError(
+                    f"invalid-contract-input: multiple extension entrypoints in {rel(capability_dir)}: {preview}"
+                )
+
+            skill_file = capability_dir / "SKILL.md"
+            if not skill_file.is_file():
+                raise ContractError(
+                    f"invalid-contract-input: pi extension entrypoint requires colocated SKILL.md ({rel(capability_dir)})"
+                )
+
+            file = extension_candidates[0]
             path = rel(file)
 
             try:
@@ -144,11 +167,9 @@ def discover_extension_entries() -> list[CatalogEntry]:
                 ) from exc
 
             if not EXTENSION_ENTRYPOINT_PATTERN.search(source):
-                # Helper modules under extensions/ are allowed but are not runtime entrypoints.
-                continue
-
-            entry_id = file.stem
-            validate_entry_id(entry_id, path)
+                raise ContractError(
+                    f"invalid-contract-input: extension entrypoint must export default ({path})"
+                )
 
             entries.append(
                 CatalogEntry(
