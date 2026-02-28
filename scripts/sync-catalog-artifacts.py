@@ -151,7 +151,7 @@ def discover_extension_entries() -> list[CatalogEntry]:
                 )
 
             skill_file = capability_dir / "SKILL.md"
-            if not skill_file.is_file():
+            if lane == "public" and not skill_file.is_file():
                 raise ContractError(
                     f"invalid-contract-input: pi extension entrypoint requires colocated SKILL.md ({rel(capability_dir)})"
                 )
