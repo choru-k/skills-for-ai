@@ -70,7 +70,6 @@ pi install npm:@choru-k/skills-for-ai
 ```bash
 just catalog-sync
 just catalog-check
-just legacy-bridge-check
 just drift-check
 just private-leak-check
 just contract-scenario-check

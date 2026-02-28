@@ -19,18 +19,14 @@ catalog-sync:
 catalog-check:
     python3 scripts/sync-catalog-artifacts.py --check --lane public
 
-# Guardrail: fail if legacy compatibility bridge paths exist.
-legacy-bridge-check:
-    bash scripts/check-legacy-bridges.sh
-
 # CI/local guardrail: detect public-output drift.
 drift-check:
     bash scripts/check-public-output-drift.sh
 
-# CI/local guardrail: detect private-ID leakage into public outputs.
+# CI/local guardrail: detect non-public path leakage into public outputs.
 private-leak-check:
     bash scripts/check-private-leaks.sh
 
-# Validate negative drift/leak/legacy scenarios in isolated temp copies.
+# Validate negative drift/leak scenarios in isolated temp copies.
 contract-scenario-check:
     bash scripts/validate-contract-scenarios.sh

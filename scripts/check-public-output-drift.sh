@@ -6,7 +6,6 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 cd "${REPO_ROOT}"
 
-bash scripts/check-legacy-bridges.sh
 python3 scripts/sync-catalog-artifacts.py --check --lane public
 
 echo "public-output drift checks passed"

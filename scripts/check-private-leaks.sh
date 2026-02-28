@@ -6,8 +6,6 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 cd "${REPO_ROOT}"
 
-bash scripts/check-legacy-bridges.sh
-
 python3 - <<'PY'
 import json
 from pathlib import Path
@@ -75,11 +73,6 @@ if not isinstance(files, list):
 paths = [entry.get("path") for entry in files if isinstance(entry, dict)]
 forbidden_prefixes = (
     "private/",
-    # legacy root prefixes retained as defense-in-depth
-    "skills/",
-    "common/",
-    "claude/",
-    "pi/",
 )
 
 leaks = [path for path in paths if isinstance(path, str) and path.startswith(forbidden_prefixes)]

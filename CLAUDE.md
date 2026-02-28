@@ -13,17 +13,11 @@ Canonical source-of-truth is lane-rooted:
 - `private/claude/*`
 - `private/pi/*`
 
-Legacy roots are retired and guarded:
-- `skills/*`
-- `common/*`, `claude/*`, `pi/*` (pre-lane roots)
-- `plugins/*/skills/*`
-- `plugins/*/pi/skills/*`
-- `plugins/*/pi/extensions/*`
+Legacy root compatibility paths are not supported.
 
 ## Key files
 
 - `scripts/sync-catalog-artifacts.py`: sync/check public artifacts from lane-root paths
-- `scripts/check-legacy-bridges.sh`: fail if retired path surfaces reappear
 - `scripts/check-public-output-drift.sh`: drift guard wrapper
 - `scripts/check-private-leaks.sh`: private leak guard
 - `public/common/call-ai/ai-registry.yaml`: call-ai registry
@@ -37,7 +31,6 @@ Legacy roots are retired and guarded:
 
 ```bash
 just catalog-check
-just legacy-bridge-check
 just drift-check
 just private-leak-check
 bash public/common/skill-playbook/scripts/graph-qa.sh
