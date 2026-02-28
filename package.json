@@ -43,6 +43,7 @@
   ],
   "pi": {
     "extensions": [
+      "public/pi/lsp-lite/extension.ts",
       "public/pi/pi-front-compaction/extension.ts",
       "public/pi/web-search-fetch/extension.ts"
     ],
@@ -55,6 +56,7 @@
       "public/common/skill-commons/SKILL.md",
       "public/common/skill-playbook/SKILL.md",
       "public/common/superplan/SKILL.md",
+      "public/pi/lsp-lite/SKILL.md",
       "public/pi/pi-front-compaction/SKILL.md",
       "public/pi/web-search-fetch/SKILL.md"
     ]
