@@ -31,7 +31,7 @@
 
 ## Inputs
 - Lane-root source discovery under `public/*` and `private/*`.
-- Mapping and policy contracts under `catalog/*.md`.
+- Mapping and policy contracts under `docs/contracts/*.md`.
 - Existing generated artifacts for drift comparison.
 
 ## Outputs
@@ -58,7 +58,7 @@
 - The normative mapping table is defined in `operator-failure-semantics.md`.
 
 ## Operator Commands
-- `just catalog-sync` — sync public catalog-managed artifacts.
+- `just catalog-sync` — sync public lane-root-discovered artifacts.
 - `just catalog-check` — non-mutating public contract check.
 - `just drift-check` — guardrail wrapper around public contract checks.
 - `just private-leak-check` — fail on private ID leakage into public outputs.
