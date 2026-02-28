@@ -43,7 +43,8 @@
   ],
   "pi": {
     "extensions": [
-      "public/pi/pi-front-compaction/extension.ts"
+      "public/pi/pi-front-compaction/extension.ts",
+      "public/pi/web-search-fetch/extension.ts"
     ],
     "skills": [
       "public/common/call-ai/SKILL.md",
@@ -54,7 +55,8 @@
       "public/common/skill-commons/SKILL.md",
       "public/common/skill-playbook/SKILL.md",
       "public/common/superplan/SKILL.md",
-      "public/pi/pi-front-compaction/SKILL.md"
+      "public/pi/pi-front-compaction/SKILL.md",
+      "public/pi/web-search-fetch/SKILL.md"
     ]
   },
   "peerDependencies": {
