@@ -1,33 +1,36 @@
 ---
 name: superplan
 description: |
-  Hierarchical planning router for big/medium/small tiers.
-  Resolves save location, selects tier, and delegates one tier per run.
+  Hierarchical planner for big/medium/small tiers.
+  Resolves save location, selects one tier, and executes that tier directly.
   Supports root→phase→item expansion workflow.
 user-invocable: true
 argument-hint: "[small|medium|big] [phase-<N>] [item-<N>]"
-allowed-tools: Read, Write, Bash, Glob, AskUserQuestion, Skill
+allowed-tools: Read, Write, Bash, Glob, AskUserQuestion
 ---
 
-# Superplan (Hierarchical Router)
+# Superplan (Single-Skill Hierarchical Planner)
 
-Router-only skill. It must not generate plan artifacts directly.
+Single-skill planner. `/superplan` executes the selected tier directly in one invocation.
 
 ## Progressive Loading Contract (Skill Graph)
 
 For each invocation, load in order:
 1. `graph/index.md`
 2. `graph/mocs/router-flow.md`
-3. Only required nodes under `graph/nodes/`
-4. Delegate to exactly one child tier skill
+3. Required nodes under `graph/nodes/`
+4. Tier playbook docs only after tier selection:
+   - big: `../superplan-big/graph/index.md`
+   - medium: `../superplan-medium/graph/index.md`
+   - small: `../superplan-small/graph/index.md`
 
 ## Hard Rules
 
-1. Resolve valid `target_directory` before delegation.
-2. Delegate exactly one tier (`big` or `medium` or `small`) per invocation.
+1. Resolve valid `target_directory` before tier work.
+2. Execute exactly one tier (`big` or `medium` or `small`) per invocation.
 3. Keep all generated files inside the ticket/project folder tree.
-4. Do not auto-run child planners in the same invocation.
-5. Router does not write tier artifacts itself.
+4. Do not chain-run another tier automatically in the same invocation.
+5. Preserve existing files via read/update (no blind overwrite).
 
 ## Hierarchy Model
 
@@ -37,7 +40,7 @@ For each invocation, load in order:
 
 Use lazy expansion: only selected phase/item is expanded.
 
-## Router Flow
+## Flow
 
 | Stage | Load |
 |------|------|
@@ -45,16 +48,16 @@ Use lazy expansion: only selected phase/item is expanded.
 | Validate target | `graph/nodes/validate-target-directory.md` |
 | Determine tier | `graph/nodes/determine-tier.md` |
 | Resolve context | `graph/nodes/resolve-expansion-context.md` |
-| Delegate once | `graph/nodes/delegate-once.md` |
+| Execute selected tier once | `graph/nodes/delegate-once.md` |
 | Return summary | `graph/nodes/return-summary.md` |
 
-## Delegation Targets
+## Tier Execution Mapping
 
-- `big` -> `superplan-big`
-- `medium` -> `superplan-medium`
-- `small` -> `superplan-small`
+- `big` -> execute big-tier playbook (former `superplan-big` flow)
+- `medium` -> execute medium-tier playbook (former `superplan-medium` flow)
+- `small` -> execute small-tier playbook (former `superplan-small` flow)
 
-Always pass:
+Always pass/use:
 - `target_directory`
 - selected tier
 - ticket/project metadata
@@ -66,7 +69,6 @@ Always pass:
 Return:
 - selected tier
 - target directory
-- delegated planner
-- expansion context passed (`phase_file`, `item_file` when present)
-
-Do not claim artifact creation by router itself.
+- created/updated artifact paths
+- expansion context used (`phase_file`, `item_file` when present)
+- recommended next `/superplan ...` command when useful

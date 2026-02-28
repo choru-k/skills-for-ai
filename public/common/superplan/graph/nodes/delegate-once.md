@@ -1,31 +1,32 @@
 ---
 id: delegate-once
-description: Delegate exactly one child planner for the selected tier.
+description: Execute exactly one tier workflow for the selected tier.
 status: active
-tags: [node, delegation]
+tags: [node, execution]
 links:
   - [[return-summary]]
 ---
 
-# Delegate Once
+# Execute Tier Once
 
 ## Hard Rule
 
-Delegate exactly one tier per invocation.
+Execute exactly one tier per invocation.
 
 ## Mapping
 
-- `big` -> `superplan-big`
-- `medium` -> `superplan-medium`
-- `small` -> `superplan-small`
+- `big` -> run big-tier workflow docs under `../superplan-big/graph/`
+- `medium` -> run medium-tier workflow docs under `../superplan-medium/graph/`
+- `small` -> run small-tier workflow docs under `../superplan-small/graph/`
 
-## Payload
+## Payload / Context
 
-Include:
+Use:
 - `target_directory`
 - selected tier
 - ticket/project metadata
 - user goals/constraints
 - `phase_file` / `item_file` when available
 
-Do not auto-run additional planners in same invocation.
+Do not invoke another skill. Perform the selected tier work directly in `/superplan`.
+Do not auto-run additional tiers in the same invocation.

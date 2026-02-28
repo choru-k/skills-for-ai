@@ -1,6 +1,6 @@
 ---
 id: router-flow
-description: Router flow for resolving location, tier, context, and one-time delegation.
+description: Flow for resolving location, tier, context, and one-time tier execution.
 status: active
 tags: [moc, router]
 links:

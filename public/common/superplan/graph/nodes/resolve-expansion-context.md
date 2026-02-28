@@ -1,6 +1,6 @@
 ---
 id: resolve-expansion-context
-description: Resolve phase/item context payload before delegating child planner.
+description: Resolve phase/item context payload before selected tier execution.
 status: active
 tags: [node, context]
 links:
@@ -9,7 +9,7 @@ links:
 
 # Resolve Expansion Context
 
-Build most specific payload based on tier.
+Build most specific context payload based on tier.
 
 ## Big
 
@@ -26,4 +26,4 @@ Build most specific payload based on tier.
 - `item_file` when user selected `item-<N>`
 - `phase_file` when available
 
-If context is incomplete, child planner should ask user to choose phase/item.
+If context is incomplete, ask user to choose the missing phase/item before execution.
