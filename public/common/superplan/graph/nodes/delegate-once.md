@@ -15,9 +15,9 @@ Execute exactly one tier per invocation.
 
 ## Mapping
 
-- `big` -> run big-tier workflow docs under `../superplan-big/graph/`
-- `medium` -> run medium-tier workflow docs under `../superplan-medium/graph/`
-- `small` -> run small-tier workflow docs under `../superplan-small/graph/`
+- `big` -> run big-tier workflow docs under `tiers/big/graph/`
+- `medium` -> run medium-tier workflow docs under `tiers/medium/graph/`
+- `small` -> run small-tier workflow docs under `tiers/small/graph/`
 
 ## Payload / Context
 

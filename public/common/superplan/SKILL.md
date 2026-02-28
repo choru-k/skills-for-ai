@@ -20,9 +20,9 @@ For each invocation, load in order:
 2. `graph/mocs/router-flow.md`
 3. Required nodes under `graph/nodes/`
 4. Tier playbook docs only after tier selection:
-   - big: `../superplan-big/graph/index.md`
-   - medium: `../superplan-medium/graph/index.md`
-   - small: `../superplan-small/graph/index.md`
+   - big: `tiers/big/graph/index.md`
+   - medium: `tiers/medium/graph/index.md`
+   - small: `tiers/small/graph/index.md`
 
 ## Hard Rules
 
@@ -53,9 +53,9 @@ Use lazy expansion: only selected phase/item is expanded.
 
 ## Tier Execution Mapping
 
-- `big` -> execute big-tier playbook (former `superplan-big` flow)
-- `medium` -> execute medium-tier playbook (former `superplan-medium` flow)
-- `small` -> execute small-tier playbook (former `superplan-small` flow)
+- `big` -> execute big-tier playbook (`tiers/big`)
+- `medium` -> execute medium-tier playbook (`tiers/medium`)
+- `small` -> execute small-tier playbook (`tiers/small`)
 
 Always pass/use:
 - `target_directory`

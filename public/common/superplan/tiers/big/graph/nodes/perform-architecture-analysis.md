@@ -16,4 +16,4 @@ Before writing artifacts:
 - identify major risks + mitigations
 - split work into clear executable phases
 
-Use references as needed: `references/architecture-template.md`.
+Use references as needed: `tiers/big/references/architecture-template.md`.

@@ -1,6 +1,6 @@
 # TDD 5-Step Workflow Reference
 
-This is the canonical task file format for superplan-small. Every task file must follow this structure.
+This is the canonical task file format for `/superplan small`. Every task file must follow this structure.
 
 ## Task File Template
 

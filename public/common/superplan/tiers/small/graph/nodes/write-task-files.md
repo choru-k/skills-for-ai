@@ -9,7 +9,7 @@ links:
 
 # Write Task Files
 
-Before generation, read `references/tdd-workflow.md`.
+Before generation, read `tiers/small/references/tdd-workflow.md`.
 
 Create `task-*.md` files where each task includes:
 1. Overview

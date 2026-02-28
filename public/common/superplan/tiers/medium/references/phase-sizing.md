@@ -12,8 +12,8 @@ A medium plan typically fits:
 | Estimated effort | ~2-8 hours |
 | Number of phases | 2-6 |
 
-If scope is smaller than this, prefer `superplan-small`.
-If architecture decisions dominate, prefer `superplan-big`.
+If scope is smaller than this, prefer `/superplan small`.
+If architecture decisions dominate, prefer `/superplan big`.
 
 ## Phase Design Rules
 

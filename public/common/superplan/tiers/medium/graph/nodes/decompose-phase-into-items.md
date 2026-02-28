@@ -16,4 +16,4 @@ Before writing:
 - order by dependency
 
 Ask up to 2 clarifying questions only if needed.
-Use `references/phase-sizing.md` if sizing is unclear.
+Use `tiers/medium/references/phase-sizing.md` if sizing is unclear.

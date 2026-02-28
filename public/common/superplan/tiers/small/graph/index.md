@@ -16,7 +16,7 @@ Use this graph to expand one `item-*.md` into `item-<N>/main.md`, `task-*.md`, a
 1. `graph/index.md`
 2. `graph/mocs/small-execution.md`
 3. Required nodes only
-4. Deep reference required before task generation: `references/tdd-workflow.md`
+4. Deep reference required before task generation: `tiers/small/references/tdd-workflow.md`
 
 ## MOCs
 

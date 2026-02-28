@@ -16,7 +16,7 @@ Use this graph to execute big-tier planning at ticket root.
 1. `graph/index.md`
 2. `graph/mocs/big-execution.md`
 3. Required nodes only
-4. Deep reference only as needed: `references/architecture-template.md`
+4. Deep reference only as needed: `tiers/big/references/architecture-template.md`
 
 ## MOCs
 
