@@ -33,14 +33,14 @@ jq --unbuffered -r '
   select(type == "object" or (type == "string" and startswith("{"))) |
   if type == "string" then (try fromjson catch null) else . end |
   select(. != null) |
-  [.type, .content, .tool_name, .status, .item.type, .item.text, .item.command, .item.exit_code, .item.query] |
+  [.type, .role, .content, .tool_name, .status, .item.type, .item.text, .item.command, .item.exit_code, .item.query] |
   map(
     if . == null then ""
     elif type == "number" then tostring
     else gsub("\n"; "\\n") | gsub("\r"; "\\r")
     end
   ) | join("\u001e")
-' | while IFS="$RS" read -r type content tool_name status item_type item_text item_cmd item_exit item_query; do
+' | while IFS="$RS" read -r type role content tool_name status item_type item_text item_cmd item_exit item_query; do
   case "$AI" in
     gemini)
       case "$type" in
@@ -51,11 +51,13 @@ jq --unbuffered -r '
           [[ -n "$status" && "$status" != "null" ]] && printf "${DIM}   ✓ %s${RESET}\n" "$status"
           ;;
         message)
-          if [[ -n "$content" && "$content" != "null" ]]; then
-            # Unescape TSV-escaped content (handles \n, \t, etc.)
-            content=$(printf '%b' "$content")
-            printf "%s" "$content"
-            printf "%s" "$content" >> "$RAW_FILE"
+          if [[ "$role" == "assistant" || -z "$role" ]]; then
+            if [[ -n "$content" && "$content" != "null" ]]; then
+              # Unescape TSV-escaped content (handles \n, \t, etc.)
+              content=$(printf '%b' "$content")
+              printf "%s" "$content"
+              printf "%s" "$content" >> "$RAW_FILE"
+            fi
           fi
           ;;
       esac

@@ -1,11 +1,11 @@
 # Example: All Mode with Consensus
 
-Demonstrates `/so :all "question"` — getting 6 responses from all 3 AIs with both thorough and fast variants.
+Demonstrates `:all` mode — getting 6 responses from all 3 AIs with both thorough and fast variants.
 
 ## Input
 
 ```
-/so :all "Is it worth migrating from REST to GraphQL for our public API?"
+:all "Is it worth migrating from REST to GraphQL for our public API?"
 ```
 
 ## Workflow
@@ -19,15 +19,12 @@ Demonstrates `/so :all "question"` — getting 6 responses from all 3 AIs with b
    - Codebase context would help understand current API structure
    - Mode: `architect`
 
-3. **Invoke /complete-prompt**
-   ```
-   Skill tool: complete-prompt
-   Args: "architect"
-   ```
-   Output: `.prompts/20260205-160512-architect.xml`
+3. **Run complete-prompt workflow**
+   - Args: `architect --refs`
+   - Output: `.prompts/20260205-160512-architect.xml`
 
-4. **Spawn Coordinator**
-   Six parallel sub-agents:
+4. **Execute AI calls via coordinator (or direct fallback)**
+   Six parallel calls:
    - Codex thorough + fast
    - Gemini thorough + fast
    - Claude thorough + fast

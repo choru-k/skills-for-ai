@@ -3,7 +3,7 @@
   Coordinator Sub-Agent Template for /second-opinion
 
   Placeholders:
-  - {{AI_SPEC}} — The AI specification (e.g., :all, codex, gemini, claude, or empty for default)
+  - {{AI_SPEC}} — The AI specification (e.g., gemini+claude, :trio, :all, codex, gemini, claude, or empty for default)
   - {{PROMPT_FILE_PATH}} — Full path to the XML prompt file from /complete-prompt
 
   See coordinator-prompt.md for documentation.
@@ -26,6 +26,10 @@ You are a coordinator agent. Execute the following AI calls and return raw respo
 
 <parsing-rules>
 <rule ai-spec="default" action="Codex + Gemini thorough" responses="2"/>
+<rule ai-spec="codex+gemini|:cg" action="Codex + Gemini thorough" responses="2"/>
+<rule ai-spec="codex+claude|:cc" action="Codex + Claude thorough" responses="2"/>
+<rule ai-spec="gemini+claude|:gc" action="Gemini + Claude thorough" responses="2"/>
+<rule ai-spec=":trio" action="Codex + Gemini + Claude thorough" responses="3"/>
 <rule ai-spec=":all" action="All 3 AIs × both variants" responses="6"/>
 <rule ai-spec="codex" action="Codex thorough only" responses="1"/>
 <rule ai-spec="gemini" action="Gemini thorough only" responses="1"/>
@@ -35,19 +39,22 @@ You are a coordinator agent. Execute the following AI calls and return raw respo
 <execution>
   <instructions>
     1. Read ai-registry.yaml to get current model names.
-    2. Based on AI_SPEC, determine which ai/model pairs to call.
-    3. Run a single bash command using run-parallel.sh:
+    2. Determine AI_SPEC_OR_DEFAULT:
+       - If AI_SPEC is empty, use "default".
+       - Otherwise use AI_SPEC as provided.
+    3. Run a single bash command using run-parallel.sh spec mode:
 
-       {{CALL_AI_DIR}}/scripts/run-parallel.sh "{{PROMPT_FILE_PATH}}" {ai1} {model1} [{ai2} {model2} ...]
+       {{CALL_AI_DIR}}/scripts/run-parallel.sh --spec "<AI_SPEC_OR_DEFAULT>" "{{PROMPT_FILE_PATH}}"
 
-       This launches all AIs in parallel (each in its own Zellij pane when available).
+       This launches selected AIs in parallel (each in its own Zellij pane when available).
     4. Parse the delimited output blocks (=== RESULT / === END) and format with standard headers.
   </instructions>
 
   <examples>
-    <example spec="default">run-parallel.sh prompt.xml codex gpt-5.3-codex gemini gemini-3-pro-preview</example>
-    <example spec=":all">run-parallel.sh prompt.xml codex gpt-5.3-codex codex gpt-5.2-codex gemini gemini-3-pro-preview gemini gemini-3-flash-preview claude sonnet claude haiku</example>
-    <example spec="codex">run-parallel.sh prompt.xml codex gpt-5.3-codex</example>
+    <example spec="default">run-parallel.sh --spec default prompt.xml</example>
+    <example spec="gemini+claude">run-parallel.sh --spec gemini+claude prompt.xml</example>
+    <example spec=":trio">run-parallel.sh --spec :trio prompt.xml</example>
+    <example spec=":all">run-parallel.sh --spec :all prompt.xml</example>
   </examples>
 </execution>
 

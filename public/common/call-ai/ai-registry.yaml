@@ -3,7 +3,7 @@
 # All model definitions for /call-ai and /second-opinion skills.
 # Update models HERE only. Other files reference this registry.
 #
-# Last updated: 2026-02-05
+# Last updated: 2026-02-18
 
 providers:
   codex:
@@ -40,6 +40,39 @@ parsing_rules:
     providers: [codex, gemini, claude]
     variant: [thorough, fast]
     response_count: 6
+
+  ":trio":
+    action: "All 3 AIs thorough only"
+    providers: [codex, gemini, claude]
+    variant: thorough
+    response_count: 3
+
+  "codex+gemini":
+    action: "Codex + Gemini thorough"
+    providers: [codex, gemini]
+    variant: thorough
+    response_count: 2
+
+  "codex+claude":
+    action: "Codex + Claude thorough"
+    providers: [codex, claude]
+    variant: thorough
+    response_count: 2
+
+  "gemini+claude":
+    action: "Gemini + Claude thorough"
+    providers: [gemini, claude]
+    variant: thorough
+    response_count: 2
+
+  ":cg":
+    alias_for: "codex+gemini"
+
+  ":cc":
+    alias_for: "codex+claude"
+
+  ":gc":
+    alias_for: "gemini+claude"
 
   "codex":
     action: "Codex thorough only"

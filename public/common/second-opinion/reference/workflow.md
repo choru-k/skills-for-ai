@@ -1,11 +1,14 @@
 # Workflow Details
 
-Detailed step-by-step instructions for executing `/second-opinion`.
+Detailed step-by-step instructions for executing the `second-opinion` workflow.
 
 ## Step 1: Parse Arguments
 
 Extract from user input:
-- **AI_SPEC**: First word if it's `codex`, `gemini`, `claude`, or `:all`
+- **AI_SPEC**: First word if it matches any supported spec:
+  - singles: `codex`, `gemini`, `claude`
+  - pairs: `codex+gemini`, `codex+claude`, `gemini+claude` (or aliases `:cg`, `:cc`, `:gc`)
+  - `:trio`, `:all`
 - **QUESTION**: Everything else (the user's actual question)
 
 ## Step 2: Pre-flight Evaluation
@@ -15,9 +18,9 @@ Ask yourself:
 - Does it need codebase context?
 - Are there ambiguities to clarify?
 
-If unclear, use AskUserQuestion to clarify.
+If unclear, use structured questions to clarify.
 
-## Step 3: Build Context Using /complete-prompt
+## Step 3: Build Context Using complete-prompt
 
 > **CRITICAL**: This step is MANDATORY. External AIs have ZERO context about this conversation.
 
@@ -35,23 +38,20 @@ If unclear, use AskUserQuestion to clarify.
 | Career/job search | `career` | Resume, interview prep |
 | Learning/study | `learning` | Study plans, tutoring |
 
-### 3.2 Invoke /complete-prompt
+### 3.2 Run complete-prompt workflow
 
-Use the Skill tool to delegate context generation:
+Run `complete-prompt` with `{MODE} --refs`:
 
-```
-Skill tool with:
-- skill: "complete-prompt"
-- args: "{MODE} --refs"
-```
+- **Preferred:** invoke through your harness' native skill mechanism.
+- **Fallback:** load `complete-prompt/SKILL.md` with `read` and execute the same workflow directly.
 
 The `--refs` flag tells complete-prompt to include file references (paths + key blocks) instead of
 full file contents, since the external AIs have codebase access.
 
-Example: `args: "debug --refs"` or `args: "brief --refs"` or `args: "--refs"` (full mode default)
+Example args: `debug --refs`, `brief --refs`, or `--refs` (full mode default)
 
 **What happens:**
-1. `/complete-prompt` reads its templates
+1. `complete-prompt` reads its templates
 2. Extracts context from this conversation
 3. Fills the template with proper XML+CDATA structure
 4. Saves to `.prompts/{timestamp}-{mode}.xml`
@@ -59,14 +59,14 @@ Example: `args: "debug --refs"` or `args: "brief --refs"` or `args: "--refs"` (f
 
 ### 3.3 Capture the output
 
-After `/complete-prompt` completes, you'll have:
+After `complete-prompt` completes, you'll have:
 - `PROMPT_FILE_PATH`: Path to the saved XML file (e.g., `.prompts/20260204-210532-debug.xml`)
 
-**DO NOT proceed to Step 4 until /complete-prompt has returned a file path.**
+**DO NOT proceed to Step 4 until `complete-prompt` has returned a file path.**
 
-## Step 4: Spawn Sonnet Coordinator
+## Step 4: Execute AI Calls (Coordinator Preferred)
 
-Spawn a Sonnet coordinator sub-agent that handles the mechanical orchestration work.
+Use a coordinator agent for mechanical orchestration when available.
 
 ### 4.1 Read the template
 
@@ -78,18 +78,19 @@ Read tool: templates/coordinator-prompt.md
 
 - Replace `{{AI_SPEC}}` with the parsed AI specification
 - Replace `{{PROMPT_FILE_PATH}}` with the file path from Step 3
+- Replace `{{CALL_AI_DIR}}` with the resolved absolute path to `call-ai`
+  - Check in order: `../call-ai/`, `~/.share-ai/skills/call-ai/`, `~/.claude/skills/call-ai/`
+  - Use the first path containing `ai-registry.yaml`
 
-### 4.3 Spawn coordinator
+### 4.3 Execute
 
-```
-Task tool with:
-- subagent_type: "general-purpose"
-- model: "sonnet"
-- description: "Coordinate AI calls"
-- prompt: (filled template content)
-```
+Preferred path:
+- Delegate to a coordinator agent using your harness' subagent mechanism
 
-Wait for the coordinator to return all raw responses.
+Fallback path:
+- Run `{{CALL_AI_DIR}}/scripts/run-parallel.sh --spec "<AI_SPEC-or-default>" "{{PROMPT_FILE_PATH}}"` directly in the main agent.
+
+Wait until all raw responses are collected.
 
 ## Step 5: Verify Responses
 
@@ -97,7 +98,11 @@ Before synthesizing, verify response quality.
 
 ### Completeness check
 - All expected responses received?
-- Expected count: 2 (default), 6 (`:all`), or 1 (single AI)
+- Expected count by spec:
+  - 1 (single AI)
+  - 2 (default or pair specs)
+  - 3 (`:trio`)
+  - 6 (`:all`)
 
 ### Quality check
 - Any suspiciously short responses (<100 chars)?

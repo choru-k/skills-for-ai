@@ -18,8 +18,12 @@ Shared reference for AI models used by `/call-ai` and `/second-opinion`.
 
 | Input | Action | # Responses |
 |-------|--------|-------------|
-| (none) | Codex + Gemini thorough | 2 |
-| `:all` | All 3 AIs × both variants | 6 |
+| (none) / `default` | Codex + Gemini thorough | 2 |
+| `codex+gemini` / `:cg` | Codex + Gemini thorough | 2 |
+| `codex+claude` / `:cc` | Codex + Claude thorough | 2 |
+| `gemini+claude` / `:gc` | Gemini + Claude thorough | 2 |
+| `:trio` | Codex + Gemini + Claude thorough | 3 |
+| `:all` | All 3 AIs × thorough+fast variants | 6 |
 | `codex` | Codex thorough only | 1 |
 | `gemini` | Gemini thorough only | 1 |
 | `claude` | Claude thorough only | 1 |

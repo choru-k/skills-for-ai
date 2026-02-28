@@ -3,6 +3,16 @@
 #
 # Usage:
 #   run-parallel.sh <prompt-file> <ai1> <model1> [<ai2> <model2> ...]
+#   run-parallel.sh --spec <ai-spec> <prompt-file>
+#   run-parallel.sh --list-specs
+#
+# Supported --spec values:
+#   default (or empty)          -> codex+gemini (thorough)
+#   codex | gemini | claude     -> single thorough
+#   codex+gemini | codex+claude | gemini+claude (any order; + , / separators)
+#   :trio                       -> codex+gemini+claude (thorough)
+#   :all                        -> all 3 providers x thorough+fast
+#   aliases                     -> :cg, :cc, :gc
 #
 # Each ai/model pair is launched as a background process via ask-ai-runner.sh
 # (which selects zellij/tmux/ghostty/headless by environment and availability).
@@ -26,10 +36,280 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Source common.sh for config (sets SKILL_DIR, METRICS_CSV, etc.)
 source "$SCRIPT_DIR/common.sh"
 
+usage() {
+  cat >&2 <<'EOF'
+Usage:
+  run-parallel.sh <prompt-file> <ai1> <model1> [<ai2> <model2> ...]
+  run-parallel.sh --spec <ai-spec> <prompt-file>
+  run-parallel.sh --list-specs
+
+Examples:
+  run-parallel.sh prompt.xml codex gpt-5.3-codex gemini gemini-3-pro-preview
+  run-parallel.sh --spec gemini+claude prompt.xml
+  run-parallel.sh --spec :all prompt.xml
+
+Supported ai-spec values:
+  default (or empty), codex, gemini, claude,
+  codex+gemini, codex+claude, gemini+claude,
+  :trio, :all, :cg, :cc, :gc
+EOF
+}
+
+list_specs() {
+  cat <<'EOF'
+default
+codex
+gemini
+claude
+codex+gemini
+codex+claude
+gemini+claude
+:trio
+:all
+:cg
+:cc
+:gc
+EOF
+}
+
+load_models_from_registry() {
+  local registry="$SKILL_DIR/ai-registry.yaml"
+  if [[ ! -f "$registry" ]]; then
+    echo "Error: ai-registry.yaml not found at $registry" >&2
+    exit 1
+  fi
+
+  eval "$(python3 - "$registry" <<'PY'
+import shlex
+import sys
+
+path = sys.argv[1]
+providers = {"codex": {}, "gemini": {}, "claude": {}}
+in_providers = False
+current = None
+in_models = False
+
+with open(path, "r", encoding="utf-8") as f:
+    for raw in f:
+        line = raw.rstrip("\n")
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+
+        indent = len(line) - len(line.lstrip(" "))
+
+        if indent == 0 and stripped == "providers:":
+            in_providers = True
+            current = None
+            in_models = False
+            continue
+
+        if not in_providers:
+            continue
+
+        if indent == 0 and stripped.endswith(":") and stripped != "providers:":
+            # End of providers section
+            in_providers = False
+            current = None
+            in_models = False
+            continue
+
+        if indent == 2 and stripped.endswith(":"):
+            key = stripped[:-1]
+            current = key if key in providers else None
+            in_models = False
+            continue
+
+        if current is None:
+            continue
+
+        if indent == 4 and stripped == "models:":
+            in_models = True
+            continue
+
+        if in_models and indent == 6 and ":" in stripped:
+            k, v = stripped.split(":", 1)
+            k = k.strip()
+            v = v.strip().strip('"').strip("'")
+            if k in ("thorough", "fast"):
+                providers[current][k] = v
+            continue
+
+required = [
+    ("CODEX_THOROUGH", providers["codex"].get("thorough", "")),
+    ("CODEX_FAST", providers["codex"].get("fast", "")),
+    ("GEMINI_THOROUGH", providers["gemini"].get("thorough", "")),
+    ("GEMINI_FAST", providers["gemini"].get("fast", "")),
+    ("CLAUDE_THOROUGH", providers["claude"].get("thorough", "")),
+    ("CLAUDE_FAST", providers["claude"].get("fast", "")),
+]
+
+for k, v in required:
+    print(f"{k}={shlex.quote(v)}")
+PY
+)"
+
+  for var in CODEX_THOROUGH CODEX_FAST GEMINI_THOROUGH GEMINI_FAST CLAUDE_THOROUGH CLAUDE_FAST; do
+    if [[ -z "${!var:-}" ]]; then
+      echo "Error: Missing $var in ai-registry.yaml" >&2
+      exit 1
+    fi
+  done
+}
+
+declare -a SPEC_PAIRS=()
+
+resolve_spec_pairs() {
+  local raw_spec="${1:-}"
+  local spec="${raw_spec,,}"
+  spec="${spec// /}"
+
+  # Aliases
+  case "$spec" in
+    ":cg"|"cg") spec="codex+gemini" ;;
+    ":cc"|"cc") spec="codex+claude" ;;
+    ":gc"|"gc") spec="gemini+claude" ;;
+  esac
+
+  # Simple specs
+  case "$spec" in
+    ""|"default"|":default")
+      SPEC_PAIRS=(codex "$CODEX_THOROUGH" gemini "$GEMINI_THOROUGH")
+      return 0
+      ;;
+    ":all"|"all")
+      SPEC_PAIRS=(
+        codex "$CODEX_THOROUGH"
+        codex "$CODEX_FAST"
+        gemini "$GEMINI_THOROUGH"
+        gemini "$GEMINI_FAST"
+        claude "$CLAUDE_THOROUGH"
+        claude "$CLAUDE_FAST"
+      )
+      return 0
+      ;;
+    ":trio"|"trio")
+      SPEC_PAIRS=(
+        codex "$CODEX_THOROUGH"
+        gemini "$GEMINI_THOROUGH"
+        claude "$CLAUDE_THOROUGH"
+      )
+      return 0
+      ;;
+    "codex")
+      SPEC_PAIRS=(codex "$CODEX_THOROUGH")
+      return 0
+      ;;
+    "gemini")
+      SPEC_PAIRS=(gemini "$GEMINI_THOROUGH")
+      return 0
+      ;;
+    "claude")
+      SPEC_PAIRS=(claude "$CLAUDE_THOROUGH")
+      return 0
+      ;;
+  esac
+
+  # Combination forms: + , /
+  local combo="$spec"
+  combo="${combo//,/+}"
+  combo="${combo//\//+}"
+
+  if [[ "$combo" == *"+"* ]]; then
+    local codex_on=0
+    local gemini_on=0
+    local claude_on=0
+
+    IFS='+' read -r -a parts <<< "$combo"
+    for part in "${parts[@]}"; do
+      [[ -z "$part" ]] && continue
+      case "$part" in
+        codex) codex_on=1 ;;
+        gemini) gemini_on=1 ;;
+        claude) claude_on=1 ;;
+        *)
+          echo "Error: Unknown provider in ai-spec: $part" >&2
+          return 1
+          ;;
+      esac
+    done
+
+    local count=$((codex_on + gemini_on + claude_on))
+
+    if (( count == 3 )); then
+      SPEC_PAIRS=(
+        codex "$CODEX_THOROUGH"
+        gemini "$GEMINI_THOROUGH"
+        claude "$CLAUDE_THOROUGH"
+      )
+      return 0
+    fi
+
+    if (( count == 2 )); then
+      SPEC_PAIRS=()
+      (( codex_on )) && SPEC_PAIRS+=(codex "$CODEX_THOROUGH")
+      (( gemini_on )) && SPEC_PAIRS+=(gemini "$GEMINI_THOROUGH")
+      (( claude_on )) && SPEC_PAIRS+=(claude "$CLAUDE_THOROUGH")
+      return 0
+    fi
+
+    if (( count == 1 )); then
+      if (( codex_on )); then
+        SPEC_PAIRS=(codex "$CODEX_THOROUGH")
+      elif (( gemini_on )); then
+        SPEC_PAIRS=(gemini "$GEMINI_THOROUGH")
+      else
+        SPEC_PAIRS=(claude "$CLAUDE_THOROUGH")
+      fi
+      return 0
+    fi
+  fi
+
+  echo "Error: Unsupported ai-spec '$raw_spec'" >&2
+  echo "Tip: run --list-specs to view supported values" >&2
+  return 1
+}
+
 # ─── Arguments ─────────────────────────────────────────────────────────────────
 
-PROMPT_FILE="${1:?Usage: run-parallel.sh <prompt-file> <ai1> <model1> [<ai2> <model2> ...]}"
-shift
+if (( $# == 0 )); then
+  usage
+  exit 1
+fi
+
+case "${1:-}" in
+  --help|-h)
+    usage
+    exit 0
+    ;;
+  --list-specs)
+    list_specs
+    exit 0
+    ;;
+  --spec)
+    if (( $# < 3 )); then
+      usage
+      exit 1
+    fi
+    SPEC="$2"
+    PROMPT_FILE="$3"
+    shift 3
+
+    if (( $# > 0 )); then
+      echo "Error: --spec mode does not accept extra ai/model arguments" >&2
+      usage
+      exit 1
+    fi
+
+    load_models_from_registry
+    resolve_spec_pairs "$SPEC" || exit 1
+    set -- "${SPEC_PAIRS[@]}"
+    ;;
+  *)
+    PROMPT_FILE="$1"
+    shift
+    ;;
+esac
 
 if [[ ! -f "$PROMPT_FILE" ]]; then
   echo "Error: Prompt file not found: $PROMPT_FILE" >&2
@@ -38,7 +318,7 @@ fi
 
 if (( $# < 2 )) || (( $# % 2 != 0 )); then
   echo "Error: Expected ai/model pairs after prompt file" >&2
-  echo "Usage: run-parallel.sh <prompt-file> <ai1> <model1> [<ai2> <model2> ...]" >&2
+  usage
   exit 1
 fi
 
@@ -53,6 +333,12 @@ LAYOUT_SETTLE_SECS="${ZELLIJ_AI_LAYOUT_SETTLE_SECS:-0.2}"
 
 WORK_DIR=$(mktemp -d "${TMPDIR:-/tmp}/run-parallel.XXXXXX")
 
+declare -a AI_NAMES=()
+declare -a MODEL_NAMES=()
+declare -a PIDS=()
+declare -a EXIT_CODES=()
+declare -a OUT_FILES=()
+
 cleanup() {
   # Kill any remaining children
   for pid in "${PIDS[@]:-}"; do
@@ -64,12 +350,6 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 # ─── Parse ai/model pairs ─────────────────────────────────────────────────────
-
-declare -a AI_NAMES=()
-declare -a MODEL_NAMES=()
-declare -a PIDS=()
-declare -a EXIT_CODES=()
-declare -a OUT_FILES=()
 
 while (( $# >= 2 )); do
   AI_NAMES+=("$1")

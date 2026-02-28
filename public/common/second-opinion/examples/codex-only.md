@@ -1,11 +1,11 @@
 # Example: Single AI (Codex Only)
 
-Demonstrates `/so codex "question"` — getting one response from Codex.
+Demonstrates codex-only mode — getting one response from Codex.
 
 ## Input
 
 ```
-/so codex "What's the best approach for implementing a rate limiter in Go?"
+codex "What's the best approach for implementing a rate limiter in Go?"
 ```
 
 ## Workflow
@@ -19,15 +19,12 @@ Demonstrates `/so codex "question"` — getting one response from Codex.
    - No codebase context needed (general programming)
    - Mode: `general`
 
-3. **Invoke /complete-prompt**
-   ```
-   Skill tool: complete-prompt
-   Args: "general"
-   ```
-   Output: `.prompts/20260205-143022-general.xml`
+3. **Run complete-prompt workflow**
+   - Args: `general --refs`
+   - Output: `.prompts/20260205-143022-general.xml`
 
-4. **Spawn Coordinator**
-   Single sub-agent for Codex thorough model.
+4. **Execute AI calls via coordinator (or direct fallback)**
+   Single call for Codex thorough model.
 
 5. **Raw Response**
 
@@ -74,5 +71,5 @@ The tradeoff analysis is helpful — token bucket is the pragmatic default.
 ## Key Points
 
 - Single AI mode is useful for quick questions or when you want a specific AI's perspective
-- Synthesis is still provided even with one response (adds Claude's analysis)
+- Synthesis is still provided even with one response (adds main-agent analysis)
 - Response is saved for later reference

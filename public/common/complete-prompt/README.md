@@ -2,19 +2,26 @@
 
 A Claude Code skill for generating self-contained AI-to-AI context handoff prompts. Capture your current conversation context in structured XML and seamlessly continue work in a fresh session or hand off to another LLM.
 
+## Command Mapping
+
+| Harness | Command |
+|---------|---------|
+| Claude Code | `/cp [mode] [--refs]` (alias: `/complete-prompt [mode] [--refs]`) |
+| Pi Agent | `/skill:complete-prompt [mode] [--refs]` |
+
 ## Modes
 
-| Mode | Command | Use Case |
-|------|---------|----------|
-| **Full** | `/cp` | Default. Complete context for implementation |
-| **Brief** | `/cp brief` | Quick questions, minimal context |
-| **Debug** | `/cp debug` | Troubleshooting errors, fresh diagnosis |
-| **Architect** | `/cp architect` | Design discussion, no implementation |
-| **Diff** | `/cp diff` | Code review, comparing changes |
-| **General** | `/cp general` | Non-technical catch-all |
-| **Research** | `/cp research` | Literature review, fact-finding |
-| **Career** | `/cp career` | Resume, job search, interview prep |
-| **Learning** | `/cp learning` | Study plans, tutoring, skill acquisition |
+| Mode | Argument | Use Case |
+|------|----------|----------|
+| **Full** | *(default)* | Complete context for implementation |
+| **Brief** | `brief` | Quick questions, minimal context |
+| **Debug** | `debug` | Troubleshooting errors, fresh diagnosis |
+| **Architect** | `architect` | Design discussion, no implementation |
+| **Diff** | `diff` | Code review, comparing changes |
+| **General** | `general` | Non-technical catch-all |
+| **Research** | `research` | Literature review, fact-finding |
+| **Career** | `career` | Resume, job search, interview prep |
+| **Learning** | `learning` | Study plans, tutoring, skill acquisition |
 
 Add `--refs` to any mode (e.g., `/cp debug --refs`) for token-efficient reference-only output when the receiving AI has codebase access.
 
@@ -38,7 +45,7 @@ Claude Code discovers skills in `~/.claude/skills/` automatically.
 
 ## How It Works
 
-1. **Invoke** — Type `/cp [mode]` in Claude Code (e.g., `/cp debug`)
+1. **Invoke** — Use `/cp [mode]` (or `/complete-prompt [mode]`) in Claude Code, or `/skill:complete-prompt [mode]` in Pi
 2. **Route** — The skill graph entrypoint (`graph/index.md`) selects the minimal nodes needed
 3. **Review** — The agent analyzes your conversation history, extracting project context, files, decisions, and status
 4. **Template** — Loads the matching XML template from `templates/`
@@ -63,6 +70,11 @@ See the `examples/` directory for sample outputs across modes:
 - `examples/debug.md` — 3 debug handoff examples
 - `examples/architect.md` — 3 architect handoff examples
 - `examples/diff.md` — 3 diff handoff examples
+- `examples/refs.md` — reference-only (`--refs`) example
+- `examples/general.md` — non-technical catch-all example
+- `examples/research.md` — research/fact-finding example
+- `examples/career.md` — career/job-search example
+- `examples/learning.md` — learning/study-plan example
 
 Mode-specific routing and generation rules are in the skill graph (`graph/`) and `templates/*.xml`.
 

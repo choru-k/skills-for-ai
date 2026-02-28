@@ -6,7 +6,7 @@ Error handling and recovery for `/second-opinion`.
 
 | Error | Cause | Recovery |
 |-------|-------|----------|
-| `/complete-prompt` fails | Template error, context issue | Report error, abort workflow |
+| `complete-prompt` workflow fails | Template error, context issue | Report error, abort workflow |
 | Single AI fails | API timeout, rate limit | See partial results policy |
 | All AIs fail | Network outage, key issues | Show troubleshooting steps |
 | Empty/short response | API error, truncation | Flag in verification step |

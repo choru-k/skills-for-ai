@@ -1,11 +1,11 @@
 # Example: Default Mode (Codex + Gemini)
 
-Demonstrates `/so "question"` — the default mode with 2 responses from Codex and Gemini thorough models.
+Demonstrates default mode with 2 responses from Codex and Gemini thorough models.
 
 ## Input
 
 ```
-/so "Should we use Prisma or Drizzle ORM for our new TypeScript project?"
+"Should we use Prisma or Drizzle ORM for our new TypeScript project?"
 ```
 
 ## Workflow
@@ -19,15 +19,12 @@ Demonstrates `/so "question"` — the default mode with 2 responses from Codex a
    - May benefit from codebase context if there are existing patterns
    - Mode: `architect` (design decision)
 
-3. **Invoke /complete-prompt**
-   ```
-   Skill tool: complete-prompt
-   Args: "architect"
-   ```
-   Output: `.prompts/20260205-150132-architect.xml`
+3. **Run complete-prompt workflow**
+   - Args: `architect --refs`
+   - Output: `.prompts/20260205-150132-architect.xml`
 
-4. **Spawn Coordinator**
-   Two parallel sub-agents for Codex and Gemini thorough models.
+4. **Execute AI calls via coordinator (or direct fallback)**
+   Two parallel calls for Codex and Gemini thorough models.
 
 5. **Raw Responses**
 
@@ -116,4 +113,4 @@ closing quickly.
 - Default mode gets two perspectives to triangulate recommendations
 - Synthesis highlights both consensus and divergence
 - The merging rules identified that responses were similar in structure, so they were grouped under "CONSENSUS"
-- My synthesis adds Claude's perspective as a tiebreaker
+- Main-agent synthesis adds a tiebreaker perspective
