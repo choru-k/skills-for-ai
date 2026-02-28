@@ -1,69 +1,67 @@
 # Unified Sync/Check Contract
 
 ## Version
-- Contract version: v1
-- Status: Draft for ratification
-- Last updated: 2026-02-26
+- Contract version: v2
+- Status: Active
+- Last updated: 2026-02-27
 
-## Terminology
-- **Lane**: public or private generation/check context.
-- **Sync**: generation/update workflow for lane outputs.
-- **Check**: validation workflow that enforces contract compliance.
-- **Drift**: generated outputs differ from canonical source inputs.
-- **Canonical input**: source artifact(s) that define expected generated outputs.
+## Scope
 
-## Scope Boundaries
+Defines how sync/check commands generate and validate public distribution artifacts from lane-root source paths.
 
-### In scope
-- Canonical sync/check behavior definitions.
-- Lane-aware validation expectations.
-- Operator-visible failure semantics references.
+In scope:
+- Source discovery rules
+- Public output mapping rules
+- Drift/leak validation expectations
 
-### Out of scope
-- Implementation code changes.
-- CI wiring changes.
-- Runtime loader refactors.
+Out of scope:
+- Runtime loader behavior in external repos
+- CI ownership/process policy
 
-## Lane Model
-- **Public lane**: includes only public artifacts approved for distribution.
-- **Private lane**: includes private artifacts and local-only compatibility wiring.
-- **Common target artifacts**: may be shared by both lanes, but policy and leak guards remain lane-specific.
+## Source model
 
-## Inputs
-- Lane-root source discovery under `public/*` and `private/*`.
-- Mapping and policy contracts under `docs/contracts/*.md`.
-- Existing generated artifacts for drift comparison.
+There is no catalog manifest file.
 
-## Outputs
-- Lane-aware sync/check expectations for generated artifacts, including:
-  - `.claude-plugin/marketplace.json`
-  - `package.json` (`pi.skills`, `pi.extensions`)
-  - shared `skills/` index state
+Source discovery reads lane-root paths directly:
+- `public/common/*`
+- `public/claude/*`
+- `public/pi/*`
+- `private/common/*`
+- `private/claude/*`
+- `private/pi/*`
 
-## Sync Semantics
-- Sync MUST generate lane outputs from canonical source inputs only.
-- Public lane MUST exclude private-only content and private identifiers.
-- Private lane MAY include public + private content but MUST preserve lane markers and boundaries.
-- Sync SHOULD be deterministic for unchanged canonical inputs.
+Discovery rules:
+- Skills: `<lane>/<target>/<skill-id>/SKILL.md`
+- Pi extensions: `<lane>/pi/extensions/*.{ts,js,mjs,cjs}` with `export default`
 
-## Check Semantics
-- Check MUST fail on any lane leakage or artifact drift.
-- Check MUST compare generated artifacts to canonical expectations for the active lane.
-- Check MUST return deterministic pass/fail outcomes for unchanged inputs.
-- Check MUST remain non-mutating in check mode.
+## Managed outputs
 
-## Failure Semantics
-- Contract violations map to explicit exit codes and operator-facing messages.
-- Failures MUST clearly identify condition class (lane mismatch, drift, missing artifact, invalid input, leak).
-- The normative mapping table is defined in `operator-failure-semantics.md`.
+- `.claude-plugin/marketplace.json`
+- `package.json` (`pi.skills`, `pi.extensions`)
 
-## Operator Commands
-- `just catalog-sync` — sync public lane-root-discovered artifacts.
-- `just catalog-check` — non-mutating public contract check.
-- `just drift-check` — guardrail wrapper around public contract checks.
-- `just private-leak-check` — fail on private ID leakage into public outputs.
+## Sync semantics
 
-## Non-Goals
-- Defining implementation-level script internals.
-- Defining CI workflow ownership details.
-- Executing migration/cutover changes directly.
+- Sync is deterministic for unchanged inputs.
+- Entries are ordered by discovered path.
+- Public outputs include only `public/*` entries.
+- Any `private/*` path in public outputs is a contract violation.
+
+## Check semantics
+
+- Check mode is non-mutating.
+- Check fails on:
+  - drift between generated artifacts and expected state
+  - private leakage into public outputs
+  - invalid source layout/input constraints
+
+## Failure semantics
+
+Normative mapping table: `docs/contracts/operator-failure-semantics.md`
+
+## Operator commands
+
+- `just catalog-sync` — sync public artifacts from lane-root discovery
+- `just catalog-check` — non-mutating public contract check
+- `just drift-check` — guardrail wrapper around public contract check
+- `just private-leak-check` — fail on non-public path leakage into public outputs
+- `just contract-scenario-check` — validate negative drift/leak/legacy scenarios

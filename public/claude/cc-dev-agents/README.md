@@ -37,7 +37,7 @@ claude plugin install cc-dev-agents
 
 ```bash
 git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
-cp -r /tmp/skills-for-ai/plugins/cc-dev-agents/skills/cc-dev-agents ~/.claude/skills/cc-dev-agents
+cp -r /tmp/skills-for-ai/public/claude/cc-dev-agents ~/.claude/skills/cc-dev-agents
 ```
 
 ## License

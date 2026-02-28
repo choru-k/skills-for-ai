@@ -35,7 +35,7 @@ claude plugin install cc-dev-hooks
 
 ```bash
 git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
-cp -r /tmp/skills-for-ai/plugins/cc-dev-hooks/skills/cc-dev-hooks ~/.claude/skills/cc-dev-hooks
+cp -r /tmp/skills-for-ai/public/claude/cc-dev-hooks ~/.claude/skills/cc-dev-hooks
 ```
 
 ## License

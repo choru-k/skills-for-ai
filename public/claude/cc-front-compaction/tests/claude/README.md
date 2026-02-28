@@ -12,5 +12,5 @@ bash scripts/claude-skill-e2e/test-claude-skills.sh --skill cc-front-compaction
 Run a single case:
 
 ```bash
-bash scripts/claude-skill-e2e/test-claude-skills.sh --case /Users/cheol/Desktop/choru/skills-for-ai/plugins/front-compaction/skills/cc-front-compaction/tests/claude/front-compaction.e2e.json
+bash scripts/claude-skill-e2e/test-claude-skills.sh --case /Users/cheol/Desktop/choru/skills-for-ai/public/claude/cc-front-compaction/tests/claude/front-compaction.e2e.json
 ```

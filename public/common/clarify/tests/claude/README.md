@@ -12,5 +12,5 @@ bash scripts/claude-skill-e2e/test-claude-skills.sh --skill clarify
 Run one case:
 
 ```bash
-bash scripts/claude-skill-e2e/test-claude-skills.sh --case skills/clarify/tests/claude/clarify.smoke.e2e.json
+bash scripts/claude-skill-e2e/test-claude-skills.sh --case public/common/clarify/tests/claude/clarify.smoke.e2e.json
 ```

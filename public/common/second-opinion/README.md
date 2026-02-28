@@ -34,9 +34,9 @@ claude plugin install complete-prompt  # required dependency
 
 ```bash
 git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
-cp -r /tmp/skills-for-ai/plugins/second-opinion/skills/second-opinion ~/.claude/skills/second-opinion
-cp -r /tmp/skills-for-ai/plugins/call-ai/skills/call-ai ~/.claude/skills/call-ai
-cp -r /tmp/skills-for-ai/plugins/complete-prompt/skills/complete-prompt ~/.claude/skills/complete-prompt
+cp -r /tmp/skills-for-ai/public/common/second-opinion ~/.claude/skills/second-opinion
+cp -r /tmp/skills-for-ai/public/common/call-ai ~/.claude/skills/call-ai
+cp -r /tmp/skills-for-ai/public/common/complete-prompt ~/.claude/skills/complete-prompt
 ```
 
 ## How It Works

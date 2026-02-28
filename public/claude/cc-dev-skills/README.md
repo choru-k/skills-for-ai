@@ -41,7 +41,7 @@ claude plugin install cc-dev-skills
 
 ```bash
 git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
-cp -r /tmp/skills-for-ai/plugins/cc-dev-skills/skills/cc-dev-skills ~/.claude/skills/cc-dev-skills
+cp -r /tmp/skills-for-ai/public/claude/cc-dev-skills ~/.claude/skills/cc-dev-skills
 ```
 
 ## License

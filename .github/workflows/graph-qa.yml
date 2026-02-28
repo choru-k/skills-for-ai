@@ -48,7 +48,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pyyaml
 
-      - name: Run catalog contract checks (public lane)
+      - name: Run lane-root contract checks (public outputs)
         run: bash scripts/check-public-output-drift.sh
 
       - name: Run private leak checks

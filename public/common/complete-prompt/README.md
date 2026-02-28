@@ -31,7 +31,7 @@ claude plugin install complete-prompt
 
 ```bash
 git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
-cp -r /tmp/skills-for-ai/plugins/complete-prompt/skills/complete-prompt ~/.claude/skills/complete-prompt
+cp -r /tmp/skills-for-ai/public/common/complete-prompt ~/.claude/skills/complete-prompt
 ```
 
 Claude Code discovers skills in `~/.claude/skills/` automatically.

@@ -25,7 +25,7 @@ claude plugin install context-fork
 
 ```bash
 git clone https://github.com/choru-k/skills-for-ai.git /tmp/skills-for-ai
-cp -r /tmp/skills-for-ai/plugins/context-fork/skills/context-fork ~/.claude/skills/cc-context-fork
+cp -r /tmp/skills-for-ai/public/claude/cc-context-fork ~/.claude/skills/cc-context-fork
 ```
 
 ## How It Works

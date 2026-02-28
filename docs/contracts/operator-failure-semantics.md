@@ -1,9 +1,9 @@
 # Operator Failure Semantics
 
-| Condition | Exit Code | Operator Output |
+| Condition | Exit Code | Operator Output Pattern |
 |---|---:|---|
-| lane-mismatch | 2 | ERROR: lane mismatch between requested lane and artifact lane metadata |
-| missing-generated-file | 3 | ERROR: expected generated artifact missing; run sync for active lane |
-| drift-detected | 4 | ERROR: generated artifact drift detected against canonical inputs |
-| private-leak-in-public | 5 | ERROR: private content detected in public lane output |
-| invalid-contract-input | 6 | ERROR: contract input metadata is invalid or incomplete |
+| lane-mismatch | 2 | `ERROR: lane-mismatch: this repository manages public distribution artifacts only` |
+| missing-generated-file | 3 | `ERROR: missing-generated-file: ...` |
+| drift-detected | 4 | `DRIFT <artifact> <field> ...` |
+| private-leak-in-public | 5 | `ERROR: private-leak-in-public: ...` |
+| invalid-contract-input | 6 | `ERROR: invalid-contract-input: ...` |
