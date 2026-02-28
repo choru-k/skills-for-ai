@@ -9,7 +9,7 @@ const ACTION_ICON = process.env.PI_MUNG_ACTION_ICON ?? "bell.badge.fill";
 const LEGACY_ACTION_ICONS = new Set(["🦴", "🟡"]);
 const UPDATE_ICON = process.env.PI_MUNG_UPDATE_ICON ?? "checkmark.circle.fill";
 const HOME_DIR = process.env.HOME ?? "/Users/choru";
-const FOCUS_SCRIPT_PATH = `${HOME_DIR}/dotfiles/pi/scripts/mung-focus.sh`;
+const FOCUS_SCRIPT_PATH = process.env.PI_MUNG_FOCUS_SCRIPT ?? `${HOME_DIR}/.pi/agent/scripts/mung-focus.sh`;
 
 type ExecResult = {
   code: number;
