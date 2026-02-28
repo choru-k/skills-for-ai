@@ -5,7 +5,7 @@ Managed artifacts:
 - package.json (pi.skills, pi.extensions)
 - .claude-plugin/marketplace.json (plugins list)
 
-Exit codes (aligned with docs/contracts/operator-failure-semantics.md):
+Exit codes:
 - 2: lane-mismatch
 - 3: missing-generated-file
 - 4: drift-detected
