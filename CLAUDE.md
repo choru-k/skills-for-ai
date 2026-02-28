@@ -18,8 +18,8 @@ Legacy root compatibility paths are not supported.
 ## Key files
 
 - `scripts/sync-catalog-artifacts.py`: sync/check public artifacts from lane-root paths
-- `scripts/check-public-output-drift.sh`: drift guard wrapper
-- `scripts/check-private-leaks.sh`: private leak guard
+- `scripts/check-public-output-drift.py`: drift guard wrapper
+- `scripts/check-private-leaks.py`: private leak guard
 - `public/common/call-ai/ai-registry.yaml`: call-ai registry
 
 ## Public/private semantics

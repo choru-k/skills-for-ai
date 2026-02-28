@@ -21,12 +21,12 @@ catalog-check:
 
 # CI/local guardrail: detect public-output drift.
 drift-check:
-    bash scripts/check-public-output-drift.sh
+    python3 scripts/check-public-output-drift.py
 
 # CI/local guardrail: detect non-public path leakage into public outputs.
 private-leak-check:
-    bash scripts/check-private-leaks.sh
+    python3 scripts/check-private-leaks.py
 
 # Validate negative drift/leak scenarios in isolated temp copies.
 contract-scenario-check:
-    bash scripts/validate-contract-scenarios.sh
+    python3 scripts/validate-contract-scenarios.py
