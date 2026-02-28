@@ -1,16 +1,7 @@
-# cc-front-compaction Claude E2E tests
+# cc-front-compaction Claude E2E case
 
-This folder contains Claude CLI E2E cases for the `cc-front-compaction` skill.
+This folder contains a sample Claude E2E case for `cc-front-compaction`:
 
-Run the skill-specific suite from the shared harness:
+- `front-compaction.e2e.json`
 
-```bash
-cd /Users/cheol/Desktop/choru/skills-for-ai
-bash scripts/claude-skill-e2e/test-claude-skills.sh --skill cc-front-compaction
-```
-
-Run a single case:
-
-```bash
-bash scripts/claude-skill-e2e/test-claude-skills.sh --case /Users/cheol/Desktop/choru/skills-for-ai/public/claude/cc-front-compaction/tests/claude/front-compaction.e2e.json
-```
+The shared in-repo E2E harness was removed. Run this case with your external/manual runner if needed.

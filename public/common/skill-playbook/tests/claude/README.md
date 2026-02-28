@@ -1,16 +1,7 @@
-# skill-playbook Claude E2E tests
+# skill-playbook Claude E2E case
 
-Claude CLI E2E cases for `skill-playbook`.
+This folder contains a sample Claude E2E case for `skill-playbook`:
 
-Run all `skill-playbook` E2E cases:
+- `skill-playbook.list.e2e.json`
 
-```bash
-cd /Users/cheol/Desktop/choru/skills-for-ai
-bash scripts/claude-skill-e2e/test-claude-skills.sh --skill skill-playbook
-```
-
-Run one case:
-
-```bash
-bash scripts/claude-skill-e2e/test-claude-skills.sh --case public/common/skill-playbook/tests/claude/skill-playbook.list.e2e.json
-```
+The shared in-repo E2E harness was removed. Run this case with your external/manual runner if needed.

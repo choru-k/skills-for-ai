@@ -1,16 +1,7 @@
-# clarify Claude E2E tests
+# clarify Claude E2E case
 
-Claude CLI E2E cases for `clarify`.
+This folder contains a sample Claude E2E case for `clarify`:
 
-Run all `clarify` E2E cases:
+- `clarify.smoke.e2e.json`
 
-```bash
-cd /Users/cheol/Desktop/choru/skills-for-ai
-bash scripts/claude-skill-e2e/test-claude-skills.sh --skill clarify
-```
-
-Run one case:
-
-```bash
-bash scripts/claude-skill-e2e/test-claude-skills.sh --case public/common/clarify/tests/claude/clarify.smoke.e2e.json
-```
+The shared in-repo E2E harness was removed. Run this case with your external/manual runner if needed.

@@ -28,8 +28,6 @@ Claude hook validation:
 bash plugins/front-compaction/claude/hooks/front-compaction/validate-front-compaction.sh
 ```
 
-Claude E2E:
+Claude E2E case file:
 
-```bash
-bash scripts/claude-skill-e2e/test-claude-skills.sh --skill cc-front-compaction
-```
+- `public/claude/cc-front-compaction/tests/claude/front-compaction.e2e.json`
