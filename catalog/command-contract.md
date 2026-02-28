@@ -1,6 +1,6 @@
-# Catalog Sync/Check Command Contract
+# Sync/Check Command Contract
 
-Defines behavior for catalog-driven public artifact generation.
+Defines behavior for lane-root-driven public artifact generation.
 
 ## Command interface
 
@@ -18,7 +18,7 @@ python3 scripts/sync-catalog-artifacts.py [--check] [--only marketplace,pi]
 
 ## Lane-root source contract
 
-Catalog paths are canonical lane-rooted paths:
+Source discovery reads canonical lane-rooted paths:
 - `public/common/*`
 - `public/claude/*`
 - `public/pi/*`
@@ -26,7 +26,7 @@ Catalog paths are canonical lane-rooted paths:
 - `private/claude/*`
 - `private/pi/*`
 
-Public outputs use only `visibility: public` entries.
+Public outputs use only discovered `public/*` paths.
 
 ## Legacy retirement contract
 

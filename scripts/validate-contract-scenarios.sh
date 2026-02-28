@@ -81,7 +81,7 @@ if [[ "${LEAK_RC}" -eq 0 ]]; then
   cat "${LEAK_OUTPUT}" >&2
   exit 1
 fi
-if ! grep -Eq 'private skill paths leaked|private ID leaked' "${LEAK_OUTPUT}"; then
+if ! grep -Eq 'private skill paths leaked|private ID leaked|non-public path leaked|non-public source leaked' "${LEAK_OUTPUT}"; then
   echo "ERROR: expected private-leak failure output" >&2
   cat "${LEAK_OUTPUT}" >&2
   exit 1

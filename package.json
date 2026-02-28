@@ -59,16 +59,16 @@
       "public/common/complete-prompt/SKILL.md",
       "public/common/feature-spec/SKILL.md",
       "public/common/jira/SKILL.md",
-      "public/pi/pi-front-compaction/SKILL.md",
       "public/common/second-opinion/SKILL.md",
       "public/common/skill-commons/SKILL.md",
       "public/common/skill-playbook/SKILL.md",
       "public/common/study/SKILL.md",
       "public/common/subagent-trace-debug/SKILL.md",
-      "public/common/superplan/SKILL.md",
       "public/common/superplan-big/SKILL.md",
       "public/common/superplan-medium/SKILL.md",
-      "public/common/superplan-small/SKILL.md"
+      "public/common/superplan-small/SKILL.md",
+      "public/common/superplan/SKILL.md",
+      "public/pi/pi-front-compaction/SKILL.md"
     ]
   },
   "peerDependencies": {

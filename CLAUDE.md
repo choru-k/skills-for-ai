@@ -22,8 +22,7 @@ Legacy roots are retired and guarded:
 
 ## Key files
 
-- `catalog/skills.yaml`: canonical inventory (`id`, `kind`, `visibility`, `target`, `path`)
-- `scripts/sync-catalog-artifacts.py`: sync/check public artifacts
+- `scripts/sync-catalog-artifacts.py`: sync/check public artifacts from lane-root paths
 - `scripts/check-legacy-bridges.sh`: fail if retired path surfaces reappear
 - `scripts/check-public-output-drift.sh`: drift guard wrapper
 - `scripts/check-private-leaks.sh`: private leak guard
@@ -32,7 +31,7 @@ Legacy roots are retired and guarded:
 ## Public/private semantics
 
 - `private/*` in this public repo is a lane contract, not access control.
-- Public outputs must not include `visibility: private` entries.
+- Public outputs must not include paths under `private/*`.
 
 ## Guardrail flow
 
@@ -49,5 +48,4 @@ just pi-pack-dry-run
 ## Adding/updating entries
 
 1. Update skill or extension sources in lane-root paths.
-2. Update `catalog/skills.yaml`.
-3. Run `just catalog-sync` then guardrail flow above.
+2. Run `just catalog-sync` then guardrail flow above.

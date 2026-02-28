@@ -30,7 +30,7 @@
 - **Common target artifacts**: may be shared by both lanes, but policy and leak guards remain lane-specific.
 
 ## Inputs
-- `catalog/skills.yaml` inventory and entry metadata.
+- Lane-root source discovery under `public/*` and `private/*`.
 - Mapping and policy contracts under `catalog/*.md`.
 - Existing generated artifacts for drift comparison.
 

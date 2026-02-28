@@ -1,87 +1,50 @@
-# Skills Catalog Schema
+# Source Discovery Schema (v3)
 
-This document defines the canonical metadata contract for generated Claude/Pi manifests and local runtime indexes.
+This document defines the canonical source-discovery contract for public artifact generation.
 
-## Required Fields
+## Source model
 
-Each catalog entry MUST include the following fields:
+There is no `catalog/skills.yaml` manifest.
 
-### id
-- Type: `string`
-- Purpose: stable entry identifier used across generated outputs.
-- Constraints:
-  - unique across the entire catalog
-  - lowercase kebab-case: `^[a-z0-9][a-z0-9-]*$`
+The source of truth is the lane-root filesystem layout:
 
-### visibility
-- Type: `string`
-- Purpose: publication and distribution boundary.
-- Constraints: MUST be one of `public` or `private`.
+- `public/common/*`
+- `public/claude/*`
+- `public/pi/*`
+- `private/common/*`
+- `private/claude/*`
+- `private/pi/*`
 
-### target
-- Type: `string`
-- Purpose: runtime lane selection.
-- Constraints: MUST be one of `claude`, `pi`, or `common`.
+## Discovery rules
 
-### path
-- Type: `string`
-- Purpose: repository-relative source path for the artifact.
-- Constraints:
-  - MUST be a relative path from repository root
-  - MUST NOT start with `/` or `./`
-  - MUST resolve to an existing file
+### Skills
+- Pattern: `<lane>/<target>/<skill-id>/SKILL.md`
+- `lane` must be `public` or `private`
+- `target` must be `common`, `claude`, or `pi`
+- `skill-id` must be kebab-case (`^[a-z0-9][a-z0-9-]*$`)
 
-### kind
-- Type: `string`
-- Purpose: artifact class for mapping rules.
-- Constraints: MUST be one of `skill` or `extension`.
+### Pi extensions
+- Pattern: `<lane>/pi/extensions/*.{ts,js,mjs,cjs}`
+- Entry point requirement: file content includes `export default`
+- Derived extension id = filename stem (kebab-case)
 
-## Enum Values
+## Derived metadata
 
-### visibility
-- `public`: eligible for public distribution outputs.
-- `private`: local/private lane only; never emitted to public outputs.
+Metadata is inferred from discovered path:
+- `lane` from segment 1
+- `target` from segment 2
+- `kind` (`skill` or `extension`) from path/file rule
+- `id` from directory/file name
 
-### target
-- `claude`: Claude runtime/distribution lane only.
-- `pi`: Pi runtime/distribution lane only.
-- `common`: shared lane; eligible for both runtimes when visibility permits.
+## Public-output rules
 
-### kind
-- `skill`: skill instruction artifact (`SKILL.md`).
-- `extension`: runtime extension artifact (for example Pi TypeScript extension files).
+Only discovered entries under `public/*` are eligible for generated public artifacts.
+Discovered entries under `private/*` are excluded from:
 
-## Validation Rules
+- `.claude-plugin/marketplace.json`
+- `package.json#pi.skills`
+- `package.json#pi.extensions`
 
-1. **Field completeness**
-   - `id`, `visibility`, `target`, `path`, and `kind` are all required.
+## Determinism
 
-2. **Enum validity**
-   - `visibility`, `target`, and `kind` MUST use allowed enum values only.
-
-3. **ID uniqueness**
-   - Each `id` MUST be unique in the full catalog.
-
-4. **Path validity**
-   - `path` MUST be relative, must exist, and must not escape repository root.
-
-5. **Kind/path consistency**
-   - If `kind = skill`, `path` MUST end with `SKILL.md`.
-   - If `kind = extension`, `path` MUST reference an extension source file.
-
-6. **Target/kind consistency (v1)**
-   - `target = claude` supports `kind = skill` only.
-   - `target = common` supports `kind = skill` only.
-   - `target = pi` supports `kind = skill` and `kind = extension`.
-
-7. **Visibility guardrail**
-   - `visibility = private` entries MUST be excluded from public outputs.
-
-8. **Normalization for deterministic generation**
-   - Generators should process entries sorted by `id`.
-   - Path strings should be normalized to POSIX separators.
-
-## Authority and Naming
-
-Prefix naming (`cc-*`, `pi-*`) is a convention for readability and lifecycle hints.
-Catalog metadata (`visibility`, `target`, `kind`) is authoritative for generation and policy decisions.
+Generators process discovered entries in deterministic `path` order (ascending POSIX paths).

@@ -20,7 +20,7 @@ private/
 Important:
 - `private/*` in this **public** repository is lane semantics, not security.
 - Secret material must stay outside this repo.
-- Public distribution artifacts are generated from `visibility: public` catalog entries only.
+- Public distribution artifacts are generated from discovered `public/*` lane-root paths only.
 
 ## Distribution metadata
 

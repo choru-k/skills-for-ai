@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Sync/check catalog-managed public artifacts.
+"""Sync/check public distribution artifacts from lane-root source paths.
 
 Managed artifacts:
 - package.json (pi.skills, pi.extensions)
@@ -23,12 +23,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-try:
-    import yaml
-except Exception as exc:  # pragma: no cover - dependency guard
-    print(f"ERROR: invalid-contract-input: PyYAML is required ({exc})", file=sys.stderr)
-    raise SystemExit(6)
-
 LANE_MISMATCH = 2
 MISSING_GENERATED_FILE = 3
 DRIFT_DETECTED = 4
@@ -36,16 +30,15 @@ PRIVATE_LEAK_IN_PUBLIC = 5
 INVALID_CONTRACT_INPUT = 6
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-CATALOG_FILE = REPO_ROOT / "catalog" / "skills.yaml"
 PACKAGE_FILE = REPO_ROOT / "package.json"
 MARKETPLACE_FILE = REPO_ROOT / ".claude-plugin" / "marketplace.json"
 PLUGINS_DIR = REPO_ROOT / "plugins"
 
-VALID_VISIBILITY = {"public", "private"}
-VALID_TARGET = {"claude", "pi", "common"}
-VALID_KIND = {"skill", "extension"}
+VALID_LANES = ("public", "private")
+VALID_TARGETS = ("common", "claude", "pi")
+VALID_EXTENSION_SUFFIXES = {".ts", ".js", ".mjs", ".cjs"}
 ID_PATTERN = re.compile(r"^[a-z0-9][a-z0-9-]*$")
-PRIVATE_IDS = {"choru-ticket", "work-lessons", "work-ticket", "work-workspace"}
+EXTENSION_ENTRYPOINT_PATTERN = re.compile(r"\bexport\s+default\b")
 SKILL_PLUGIN_NAME_OVERRIDES = {
     "cc-context-fork": "context-fork",
 }
@@ -54,7 +47,7 @@ SKILL_PLUGIN_NAME_OVERRIDES = {
 @dataclass(frozen=True)
 class CatalogEntry:
     id: str
-    visibility: str
+    lane: str
     target: str
     kind: str
     path: str
@@ -86,96 +79,105 @@ def save_json(path: Path, payload: Any) -> None:
     path.write_text(f"{json.dumps(payload, indent=2, ensure_ascii=False)}\n", encoding="utf-8")
 
 
-def load_catalog_entries() -> list[CatalogEntry]:
-    if not CATALOG_FILE.is_file():
-        raise ContractError(f"missing-generated-file: missing {rel(CATALOG_FILE)}", MISSING_GENERATED_FILE)
-
-    try:
-        data = yaml.safe_load(CATALOG_FILE.read_text(encoding="utf-8"))
-    except yaml.YAMLError as exc:
-        raise ContractError(f"invalid-contract-input: invalid YAML at {rel(CATALOG_FILE)} ({exc})") from exc
-
-    if not isinstance(data, dict):
-        raise ContractError("invalid-contract-input: catalog root must be an object")
-
-    entries = data.get("entries")
-    if not isinstance(entries, list):
-        raise ContractError("invalid-contract-input: catalog missing entries array")
-
-    seen_ids: set[str] = set()
-    result: list[CatalogEntry] = []
-
-    for index, raw in enumerate(entries):
-        if not isinstance(raw, dict):
-            raise ContractError(f"invalid-contract-input: entry[{index}] must be an object")
-
-        for field in ("id", "visibility", "target", "kind", "path"):
-            if field not in raw:
-                raise ContractError(f"invalid-contract-input: entry[{index}] missing field '{field}'")
-
-        entry_id = raw["id"]
-        visibility = raw["visibility"]
-        target = raw["target"]
-        kind = raw["kind"]
-        path = raw["path"]
-
-        if not isinstance(entry_id, str) or not ID_PATTERN.match(entry_id):
-            raise ContractError(f"invalid-contract-input: invalid id '{entry_id}'")
-        if entry_id in seen_ids:
-            raise ContractError(f"invalid-contract-input: duplicate id '{entry_id}'")
-        seen_ids.add(entry_id)
-
-        if visibility not in VALID_VISIBILITY:
-            raise ContractError(f"invalid-contract-input: invalid visibility '{visibility}' for id '{entry_id}'")
-        if target not in VALID_TARGET:
-            raise ContractError(f"invalid-contract-input: invalid target '{target}' for id '{entry_id}'")
-        if kind not in VALID_KIND:
-            raise ContractError(f"invalid-contract-input: invalid kind '{kind}' for id '{entry_id}'")
-        if not isinstance(path, str):
-            raise ContractError(f"invalid-contract-input: path must be string for id '{entry_id}'")
-
-        path_obj = Path(path)
-        if path_obj.is_absolute() or path.startswith("./"):
-            raise ContractError(f"invalid-contract-input: path must be repository-relative for id '{entry_id}'")
-
-        path_parts = path_obj.parts
-        if len(path_parts) < 3:
-            raise ContractError(f"invalid-contract-input: path must use lane-root layout for id '{entry_id}': {path}")
-
-        lane = path_parts[0]
-        path_target = path_parts[1]
-        if lane not in {"public", "private"}:
-            raise ContractError(f"invalid-contract-input: path lane must be public/private for id '{entry_id}': {path}")
-        if path_target not in VALID_TARGET:
-            raise ContractError(f"invalid-contract-input: path target must be common/claude/pi for id '{entry_id}': {path}")
-        if visibility != lane:
-            raise ContractError(
-                f"invalid-contract-input: visibility/path lane mismatch for id '{entry_id}' ({visibility} vs {lane})"
-            )
-        if target != path_target:
-            raise ContractError(f"invalid-contract-input: target/path mismatch for id '{entry_id}' ({target} vs {path_target})")
-
-        abs_path = REPO_ROOT / path_obj
-        if not abs_path.exists():
-            raise ContractError(f"invalid-contract-input: path does not exist for id '{entry_id}': {path}")
-
-        if kind == "skill" and not path.endswith("SKILL.md"):
-            raise ContractError(f"invalid-contract-input: skill path must end with SKILL.md for id '{entry_id}'")
-
-        if target in {"claude", "common"} and kind == "extension":
-            raise ContractError(f"invalid-contract-input: extensions are only supported for target=pi (id '{entry_id}')")
-
-        result.append(
-            CatalogEntry(
-                id=entry_id,
-                visibility=visibility,
-                target=target,
-                kind=kind,
-                path=path,
-            )
+def validate_entry_id(entry_id: str, path: str) -> None:
+    if not ID_PATTERN.match(entry_id):
+        raise ContractError(
+            f"invalid-contract-input: derived id '{entry_id}' is not kebab-case for path: {path}"
         )
 
-    return sorted(result, key=lambda entry: entry.id)
+
+def discover_skill_entries() -> list[CatalogEntry]:
+    entries: list[CatalogEntry] = []
+
+    for lane in VALID_LANES:
+        for target in VALID_TARGETS:
+            root = REPO_ROOT / lane / target
+            if not root.is_dir():
+                continue
+
+            for child in sorted(root.iterdir(), key=lambda item: item.name):
+                if not child.is_dir():
+                    continue
+
+                skill_file = child / "SKILL.md"
+                if not skill_file.is_file():
+                    continue
+
+                path = rel(skill_file)
+                entry_id = child.name
+                validate_entry_id(entry_id, path)
+
+                entries.append(
+                    CatalogEntry(
+                        id=entry_id,
+                        lane=lane,
+                        target=target,
+                        kind="skill",
+                        path=path,
+                    )
+                )
+
+    return entries
+
+
+def discover_extension_entries() -> list[CatalogEntry]:
+    entries: list[CatalogEntry] = []
+
+    for lane in VALID_LANES:
+        extensions_root = REPO_ROOT / lane / "pi" / "extensions"
+        if not extensions_root.is_dir():
+            continue
+
+        for file in sorted(extensions_root.iterdir(), key=lambda item: item.name):
+            if not file.is_file():
+                continue
+            if file.suffix not in VALID_EXTENSION_SUFFIXES:
+                continue
+
+            path = rel(file)
+
+            try:
+                source = file.read_text(encoding="utf-8")
+            except UnicodeDecodeError as exc:
+                raise ContractError(
+                    f"invalid-contract-input: extension source must be UTF-8 text ({path}: {exc})"
+                ) from exc
+
+            if not EXTENSION_ENTRYPOINT_PATTERN.search(source):
+                # Helper modules under extensions/ are allowed but are not runtime entrypoints.
+                continue
+
+            entry_id = file.stem
+            validate_entry_id(entry_id, path)
+
+            entries.append(
+                CatalogEntry(
+                    id=entry_id,
+                    lane=lane,
+                    target="pi",
+                    kind="extension",
+                    path=path,
+                )
+            )
+
+    return entries
+
+
+def load_catalog_entries() -> list[CatalogEntry]:
+    entries = discover_skill_entries() + discover_extension_entries()
+
+    if not entries:
+        raise ContractError(
+            "invalid-contract-input: no lane-root entries discovered under public/private",
+        )
+
+    seen_paths: set[str] = set()
+    for entry in entries:
+        if entry.path in seen_paths:
+            raise ContractError(f"invalid-contract-input: duplicate discovered path: {entry.path}")
+        seen_paths.add(entry.path)
+
+    return sorted(entries, key=lambda entry: entry.path)
 
 
 def expected_pi_lists(entries: list[CatalogEntry]) -> tuple[list[str], list[str]]:
@@ -183,15 +185,21 @@ def expected_pi_lists(entries: list[CatalogEntry]) -> tuple[list[str], list[str]
     extension_paths: list[str] = []
 
     for entry in entries:
-        if entry.visibility != "public":
+        if entry.lane != "public":
             continue
+
         if entry.kind == "skill" and entry.target in {"pi", "common"}:
             skill_paths.append(entry.path)
-        if entry.kind == "extension" and entry.target in {"pi", "common"}:
+        if entry.kind == "extension" and entry.target == "pi":
             extension_paths.append(entry.path)
 
-    if any(any(pid in path for pid in PRIVATE_IDS) for path in skill_paths):
-        raise ContractError("private-leak-in-public: private skill path emitted to pi.skills", PRIVATE_LEAK_IN_PUBLIC)
+    leaked_paths = [path for path in skill_paths + extension_paths if path.startswith("private/")]
+    if leaked_paths:
+        preview = ", ".join(sorted(leaked_paths))
+        raise ContractError(
+            f"private-leak-in-public: private path emitted to package.json pi payloads: {preview}",
+            PRIVATE_LEAK_IN_PUBLIC,
+        )
 
     return skill_paths, extension_paths
 
@@ -226,13 +234,13 @@ def expected_marketplace_plugins(entries: list[CatalogEntry]) -> list[dict[str, 
     plugin_records: dict[str, dict[str, str]] = {}
 
     for entry in entries:
-        if entry.visibility != "public" or entry.kind != "skill" or entry.target not in {"claude", "common"}:
+        if entry.lane != "public" or entry.kind != "skill" or entry.target not in {"claude", "common"}:
             continue
 
         plugin_name = SKILL_PLUGIN_NAME_OVERRIDES.get(entry.id, entry.id)
         plugin_meta = plugin_meta_index.get(plugin_name)
         if not plugin_meta:
-            # skill may be intentionally non-plugin-managed for marketplace.
+            # Skill may be intentionally non-plugin-managed for marketplace.
             continue
 
         source = Path(entry.path).parent.as_posix()
@@ -249,10 +257,11 @@ def expected_marketplace_plugins(entries: list[CatalogEntry]) -> list[dict[str, 
 
     plugins = sorted(plugin_records.values(), key=lambda plugin: plugin["name"])
 
-    leak_names = [plugin["name"] for plugin in plugins if plugin["name"] in PRIVATE_IDS]
-    if leak_names:
+    leaked_sources = [plugin["source"] for plugin in plugins if plugin["source"].startswith("private/")]
+    if leaked_sources:
+        preview = ", ".join(sorted(leaked_sources))
         raise ContractError(
-            f"private-leak-in-public: private plugin IDs emitted to marketplace: {', '.join(sorted(leak_names))}",
+            f"private-leak-in-public: private source emitted to marketplace: {preview}",
             PRIVATE_LEAK_IN_PUBLIC,
         )
 
@@ -348,7 +357,7 @@ def run(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Sync/check catalog-managed artifacts")
+    parser = argparse.ArgumentParser(description="Sync/check managed artifacts")
     parser.add_argument("--check", action="store_true", help="Do not modify files; fail on drift")
     parser.add_argument(
         "--lane",

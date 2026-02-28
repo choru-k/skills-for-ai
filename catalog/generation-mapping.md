@@ -1,58 +1,65 @@
-# Catalog Generation Mapping (v3)
+# Generation Mapping (v5, lane-root discovery)
 
-Deterministic mapping from `catalog/skills.yaml` to public artifacts.
+Deterministic mapping from lane-root sources to public artifacts.
 
 ## Inputs
 
-- Catalog entries (`id`, `visibility`, `target`, `kind`, `path`)
+- Discovered lane-root sources under:
+  - `public/common/*`, `public/claude/*`, `public/pi/*`
+  - `private/common/*`, `private/claude/*`, `private/pi/*`
 - Plugin metadata (`plugins/*/.claude-plugin/plugin.json`)
 
-## Source path contract
+## Discovery rules
 
-Catalog paths are lane-rooted:
-- `public/common/*`, `public/claude/*`, `public/pi/*`
-- `private/common/*`, `private/claude/*`, `private/pi/*`
+- Skills: `<lane>/<target>/<skill-id>/SKILL.md`
+- Pi extensions (entrypoints): `<lane>/pi/extensions/*.{ts,js,mjs,cjs}` containing `export default`
+
+Derived metadata:
+- `lane` from path segment 1
+- `target` from path segment 2
+- `kind` from path/file pattern
+- `id` from skill directory name or extension filename stem
 
 ## Global rules
 
-1. Sort entries by `id` ascending.
-2. Public outputs include only `visibility: public`.
-3. `visibility: private` entries are excluded from all public artifacts.
+1. Sort discovered entries by `path` ascending.
+2. Public outputs include only `lane = public` entries.
+3. Any `private/*` path in public outputs is a hard failure.
 4. Mapping ambiguity is a hard error.
 
 ## `.claude-plugin/marketplace.json`
 
 Eligibility:
-- `visibility: public`
-- `kind: skill`
-- `target: claude` or `target: common`
+- lane = `public`
+- kind = `skill`
+- target = `claude` or `common`
 
 Mapping:
-- Match skill id to plugin metadata name (`cc-context-fork -> context-fork` override)
+- Match derived skill id to plugin metadata name (`cc-context-fork -> context-fork` override)
 - Emit:
   - `name`
   - `description`
-  - `source = dirname(path)` (lane-rooted, e.g. `public/common/call-ai`)
+  - `source = dirname(path)` (for example `public/common/call-ai`)
 
 ## `package.json#pi`
 
 ### `pi.skills`
 Include when:
-- `visibility: public`
-- `kind: skill`
-- `target: pi` or `target: common`
+- lane = `public`
+- kind = `skill`
+- target = `pi` or `common`
 
 ### `pi.extensions`
 Include when:
-- `visibility: public`
-- `kind: extension`
-- `target: pi`
+- lane = `public`
+- kind = `extension`
+- target = `pi`
 
-Emit repository-relative POSIX paths from catalog.
+Emit repository-relative POSIX paths.
 
 ## Private exclusion
 
-Private paths/IDs must not appear in:
+Private paths must not appear in:
 - `.claude-plugin/marketplace.json`
 - `package.json#pi.skills`
 - `package.json#pi.extensions`

@@ -8,34 +8,46 @@ cd "${REPO_ROOT}"
 
 bash scripts/check-legacy-bridges.sh
 
-PRIVATE_IDS_REGEX='choru-ticket|work-lessons|work-ticket|work-workspace'
-
-if rg -n "${PRIVATE_IDS_REGEX}" .claude-plugin/marketplace.json; then
-  echo "ERROR: private IDs leaked into .claude-plugin/marketplace.json" >&2
-  exit 1
-fi
-
 python3 - <<'PY'
 import json
 from pathlib import Path
 
 root = Path.cwd()
+
+marketplace = json.loads((root / ".claude-plugin" / "marketplace.json").read_text(encoding="utf-8"))
+plugins = marketplace.get("plugins")
+if not isinstance(plugins, list):
+    raise SystemExit("ERROR: marketplace.json missing plugins array")
+
+for plugin in plugins:
+    if not isinstance(plugin, dict):
+        raise SystemExit(f"ERROR: invalid marketplace plugin entry: {plugin!r}")
+    source = plugin.get("source")
+    if not isinstance(source, str):
+        raise SystemExit(f"ERROR: marketplace plugin source must be string: {plugin!r}")
+    if not source.startswith("public/"):
+        raise SystemExit(f"ERROR: non-public source leaked into marketplace.json: {source}")
+
+print(f"validated marketplace private-leak policy: plugins={len(plugins)}")
+
 package = json.loads((root / "package.json").read_text(encoding="utf-8"))
-skills = package.get("pi", {}).get("skills", [])
-private_ids = {"choru-ticket", "work-lessons", "work-ticket", "work-workspace"}
+pi = package.get("pi")
+if not isinstance(pi, dict):
+    raise SystemExit("ERROR: package.json missing pi object")
 
-for raw in skills:
-    if not isinstance(raw, str):
-        raise SystemExit(f"ERROR: non-string pi.skills entry: {raw!r}")
-    for pid in private_ids:
-        if pid in raw:
-            raise SystemExit(f"ERROR: private ID leaked in pi.skills entry: {raw}")
+for field in ("skills", "extensions"):
+    values = pi.get(field)
+    if not isinstance(values, list):
+        raise SystemExit(f"ERROR: package.json pi.{field} missing array")
 
-print(f"validated pi.skills private-leak policy: {len(skills)} entries")
+    for raw in values:
+        if not isinstance(raw, str):
+            raise SystemExit(f"ERROR: non-string pi.{field} entry: {raw!r}")
+        if not raw.startswith("public/"):
+            raise SystemExit(f"ERROR: non-public path leaked in pi.{field} entry: {raw}")
+
+    print(f"validated package private-leak policy: pi.{field} entries={len(values)}")
 PY
-
-# Keep denylist aligned with catalog private assertions.
-rg -n "id: (choru-ticket|work-lessons|work-ticket|work-workspace)|visibility: private" catalog/skills.yaml >/dev/null
 
 if ! command -v npm >/dev/null 2>&1; then
   echo "ERROR: npm is required to verify publish artifact private-leak policy" >&2
@@ -61,28 +73,19 @@ if not isinstance(files, list):
     raise SystemExit("ERROR: npm pack payload missing files list")
 
 paths = [entry.get("path") for entry in files if isinstance(entry, dict)]
-private_prefixes = (
-    "private/common/choru-ticket/",
-    "private/common/work-lessons/",
-    "private/common/work-ticket/",
-    "private/common/work-workspace/",
-    "private/claude/",
-    "private/pi/",
+forbidden_prefixes = (
+    "private/",
     # legacy root prefixes retained as defense-in-depth
-    "skills/choru-ticket/",
-    "skills/work-lessons/",
-    "skills/work-ticket/",
-    "skills/work-workspace/",
-    "common/choru-ticket/",
-    "common/work-lessons/",
-    "common/work-ticket/",
-    "common/work-workspace/",
+    "skills/",
+    "common/",
+    "claude/",
+    "pi/",
 )
 
-leaks = [path for path in paths if isinstance(path, str) and path.startswith(private_prefixes)]
+leaks = [path for path in paths if isinstance(path, str) and path.startswith(forbidden_prefixes)]
 if leaks:
     preview = "\n".join(f"  - {path}" for path in leaks)
-    raise SystemExit(f"ERROR: private paths leaked into npm pack output:\n{preview}")
+    raise SystemExit(f"ERROR: non-public paths leaked into npm pack output:\n{preview}")
 
 print(f"validated npm pack private-leak policy: files={len(paths)}")
 PY

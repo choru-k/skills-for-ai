@@ -11,11 +11,11 @@ pi-install-local:
 pi-pack-dry-run:
     npm pack --dry-run
 
-# Sync all catalog-managed public artifacts.
+# Sync all lane-root-discovered public artifacts.
 catalog-sync:
     python3 scripts/sync-catalog-artifacts.py --lane public
 
-# Check all catalog-managed public artifacts (non-mutating).
+# Check all lane-root-discovered public artifacts (non-mutating).
 catalog-check:
     python3 scripts/sync-catalog-artifacts.py --check --lane public
 
