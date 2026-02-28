@@ -1,6 +1,6 @@
 ---
-name: study
-description: Import and manage study plans in Obsidian vault. Use for "study", "import study plan", "track learning", or managing study materials.
+name: choru-study
+description: Import and manage study plans in Obsidian vault. Use for "choru-study", "study", "import study plan", "track learning", or managing study materials.
 user-invocable: true
 allowed-tools: Read, Write, Bash, Glob, AskUserQuestion
 ---
@@ -135,7 +135,7 @@ When user wants to mark progress:
 ## Example Usage
 
 ```
-/study ~/go/src/cdf/docs/study/go-context-study-plan.md
+/choru-study ~/go/src/cdf/docs/study/go-context-study-plan.md
 ```
 
 This will:
