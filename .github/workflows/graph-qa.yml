@@ -43,6 +43,9 @@ jobs:
         with:
           node-version: "20"
 
+      - name: Install Python deps
+        run: python3 -m pip install --upgrade pip pyyaml
+
       - name: Run lane-root contract checks (public outputs)
         run: python3 scripts/check-public-output-drift.py
 
