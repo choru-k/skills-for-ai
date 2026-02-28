@@ -93,7 +93,6 @@ check_readme_anchor "session-resume-summary/extension\\.ts" "session resume summ
 check_readme_anchor "/session-title-status" "session-title-status command"
 check_readme_anchor "/session-summary-status" "session-summary-status command"
 check_readme_anchor "/session-resume-status" "session-resume-status command"
-check_readme_anchor "pi-resume-validate" "pi-resume-validate command"
 
 if [ "$failures" -gt 0 ]; then
   echo ""

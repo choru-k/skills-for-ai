@@ -9,23 +9,23 @@ allowed-tools: Bash, Read, AskUserQuestion
 
 Use this skill to analyze Pi subagent trace logs with the helper script:
 
-- Script: `~/.pi/agent/scripts/subagent-trace.py`
+- Script: `~/.pi/agent/extensions/subagent/scripts/subagent-trace.py`
 - Default trace: `~/.pi/agent/logs/subagent-trace.jsonl`
 
 ## Quick Commands
 
 ```bash
 # Recent roots
-~/.pi/agent/scripts/subagent-trace.py roots --limit 10
+~/.pi/agent/extensions/subagent/scripts/subagent-trace.py roots --limit 10
 
 # Latest reviewer root id
-~/.pi/agent/scripts/subagent-trace.py latest --agent reviewer --id-only
+~/.pi/agent/extensions/subagent/scripts/subagent-trace.py latest --agent reviewer --id-only
 
 # Tree
-~/.pi/agent/scripts/subagent-trace.py tree <rootInvocationId> --runs
+~/.pi/agent/extensions/subagent/scripts/subagent-trace.py tree <rootInvocationId> --runs
 
 # Full debug summary
-~/.pi/agent/scripts/subagent-trace.py debug <rootInvocationId>
+~/.pi/agent/extensions/subagent/scripts/subagent-trace.py debug <rootInvocationId>
 ```
 
 ## Workflow
