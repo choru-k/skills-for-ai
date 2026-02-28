@@ -7,13 +7,7 @@ Fixtures and a one-command smoke test for the Pi `lsp` extension.
 From any shell where Pi is installed:
 
 ```bash
-~/.pi/agent/lsp-lite-smoke/run.sh
-```
-
-Or from dotfiles via just:
-
-```bash
-just pi-lsp-smoke
+~/.pi/agent/extensions/lsp-lite/smoke/run.sh
 ```
 
 The script runs diagnostics for Go, Python, Bash, TypeScript, Lua, and Terraform, plus code-intel actions for:
