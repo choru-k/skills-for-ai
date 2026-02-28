@@ -807,6 +807,7 @@ export default function (pi: ExtensionAPI) {
 		description: [
 			"Delegate tasks to specialized subagents with isolated context.",
 			"Modes: single (agent + task), parallel (tasks array), chain (sequential with {previous} placeholder).",
+			"Routing hints: orchestrator for complex coordination; planner for planning; coder for implementation; tester for validation; debugger for root-cause; reviewer for final review; infra-runner for apply-level infra.",
 			'Default agent scope is "user" (from ~/.pi/agent/agents).',
 			'To enable project-local agents in .pi/agents, set agentScope: "both" (or "project").',
 		].join(" "),
