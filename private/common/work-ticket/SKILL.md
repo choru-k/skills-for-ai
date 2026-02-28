@@ -64,7 +64,7 @@ For each invocation, load in order:
 
 ## Integration Notes
 
-- `/jira` skill for direct ticket operations (`view`, `list`, `create`)
+- `/work-jira` skill for direct ticket operations (`view`, `list`, `create`)
 - `/work-workspace` for git worktree operations
 
 ## Important

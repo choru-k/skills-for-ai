@@ -1,11 +1,11 @@
 ---
-name: jira
-description: Interact with Jira issues via CLI. View ticket details, list assigned issues, create new tickets. Use for "jira", "view ticket", "my jira issues", "create jira ticket".
+name: work-jira
+description: Interact with Jira issues via CLI. View ticket details, list assigned issues, create new tickets. Use for "work-jira", "jira", "view ticket", "my jira issues", "create jira ticket".
 user-invocable: true
 allowed-tools: Bash, AskUserQuestion, Skill
 ---
 
-# Jira Skill
+# Work Jira Skill
 
 Interact with Jira issues using the `jira` CLI tool.
 Supports viewing, listing, and creating issues with integration to the `/work-ticket` skill.
@@ -32,11 +32,11 @@ Parse the user's input to determine the subcommand:
 
 | Pattern | Subcommand |
 |---------|------------|
-| `/jira` (no args) | `view` (extract ticket from git branch) |
-| `/jira CENG-1234` | `view CENG-1234` |
-| `/jira view [TICKET]` | `view` |
-| `/jira list` | `list` |
-| `/jira create` | `create` |
+| `/work-jira` (no args) | `view` (extract ticket from git branch) |
+| `/work-jira CENG-1234` | `view CENG-1234` |
+| `/work-jira view [TICKET]` | `view` |
+| `/work-jira list` | `list` |
+| `/work-jira create` | `create` |
 
 ## Subcommand: view
 
@@ -210,8 +210,8 @@ If `jira` command fails:
 
 | Command | Description |
 |---------|-------------|
-| `/jira` | View ticket from current branch |
-| `/jira CENG-1234` | View specific ticket |
-| `/jira view` | View ticket (prompts if needed) |
-| `/jira list` | List my assigned issues |
-| `/jira create` | Create new issue interactively |
+| `/work-jira` | View ticket from current branch |
+| `/work-jira CENG-1234` | View specific ticket |
+| `/work-jira view` | View ticket (prompts if needed) |
+| `/work-jira list` | List my assigned issues |
+| `/work-jira create` | Create new issue interactively |
