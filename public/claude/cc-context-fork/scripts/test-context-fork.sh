@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Test suite for context-fork.sh
-# Run: bash claude/skills/choru/context-fork/scripts/test-context-fork.sh
+# Run: bash public/claude/cc-context-fork/scripts/test-context-fork.sh
 #
 # Uses a mock `claude` CLI prepended to PATH. Each test function (test_*)
 # is auto-discovered and executed in isolation.
