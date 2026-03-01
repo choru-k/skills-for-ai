@@ -1,0 +1,9 @@
+{
+  "name": "cc-mung-notify",
+  "version": "0.1.0",
+  "description": "Mung desktop notification hooks for Claude Code with metadata-first session/action/update lanes",
+  "author": "choru-k",
+  "repository": "https://github.com/choru-k/skills-for-ai",
+  "license": "MIT",
+  "keywords": ["claude", "hooks", "notifications", "mung", "desktop"]
+}
